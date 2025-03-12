@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
+
 {% block title %}Cadastro de Funcionário{% endblock %}
+
 {% block content %}
 
 <style>
@@ -122,101 +124,94 @@
         
             <div class="foto-botoes">
                 <label for="id_foto" class="btn btn-azul">
-                    <i class="fas fa-upload"></i> Adicionar Foto
+                    <i class="fas fa-upload"></i> <span id="foto-label">Adicionar Foto</span>
                 </label>
-                <input type="file" id="id_foto" name="foto" style="display: none;">
+                {{ form.foto }}
             </div>
-        </div>        
+        </div>
 
         <div class="box-secao">Dados Pessoais</div>
         <div class="form-group">
-            <label for="id_nome">Nome Completo</label>
-            <input type="text" name="nome" class="form-control">
+            <label for="{{ form.nome_completo.id_for_label }}">Nome Completo</label>
+            {{ form.nome_completo }}
         </div>
         <div class="form-group">
-            <label for="id_cpf">CPF</label>
-            <input type="text" name="cpf" class="form-control">
+            <label for="{{ form.cpf.id_for_label }}">CPF</label>
+            {{ form.cpf }}
         </div>
         <div class="form-group">
-            <label for="id_rg">RG</label>
-            <input type="text" name="rg" class="form-control">
+            <label for="{{ form.rg.id_for_label }}">RG</label>
+            {{ form.rg }}
         </div>
         <div class="form-group">
-            <label for="id_data_nascimento">Data de Nascimento</label>
-            <input type="date" name="data_nascimento" class="form-control" id="data_nascimento">
+            <label for="{{ form.sexo.id_for_label }}">Sexo</label>
+            {{ form.sexo }}
         </div>
         <div class="form-group">
-            <label for="id_idade">Idade</label>
+            <label for="{{ form.data_nascimento.id_for_label }}">Data de Nascimento</label>
+            {{ form.data_nascimento }}
+        </div>
+        <div class="form-group">
+            <label for="idade">Idade</label>
             <input type="text" id="idade" class="form-control" disabled>
         </div>
         <div class="form-group">
-            <label for="id_sexo">Sexo</label>
-            <select name="sexo" class="form-control">
-                <option>Masculino</option>
-                <option>Feminino</option>
-                <option>Outro</option>
-            </select>
+            <label for="{{ form.cnh.id_for_label }}">CNH</label>
+            {{ form.cnh }}
         </div>
         <div class="form-group">
-            <label for="id_email">Email</label>
-            <input type="email" name="email" class="form-control">
+            <label for="{{ form.validade_cnh.id_for_label }}">Validade da CNH</label>
+            {{ form.validade_cnh }}
         </div>
         <div class="form-group">
-            <label for="id_cnh">CNH</label>
-            <input type="text" name="cnh" class="form-control">
+            <label for="{{ form.contato_pessoal.id_for_label }}">Contato Pessoal</label>
+            {{ form.contato_pessoal }}
         </div>
         <div class="form-group">
-            <label for="id_validade_cnh">Validade da CNH</label>
-            <input type="date" name="validade_cnh" class="form-control">
+            <label for="{{ form.contato_emergencia.id_for_label }}">Contato de Emergência</label>
+            {{ form.contato_emergencia }}
         </div>
         <div class="form-group">
-            <label for="id_contato_pessoal">Contato Pessoal</label>
-            <input type="text" name="contato_pessoal" class="form-control">
-        </div>
-        <div class="form-group">
-            <label for="id_contato_emergencia">Contato de Emergência</label>
-            <input type="text" name="contato_emergencia" class="form-control">
+            <label for="{{ form.email.id_for_label }}">Email</label>
+            {{ form.email }}
         </div>
 
         <div class="box-secao">Dados Profissionais</div>
         <div class="form-group">
-            <label for="id_funcionario">ID do Funcionário</label>
-            <input type="text" name="id_funcionario" class="form-control">
+            <label for="{{ form.id_funcionario.id_for_label }}">ID do Funcionário</label>
+            {{ form.id_funcionario }}
         </div>
         <div class="form-group">
-            <label for="id_funcao">Função</label>
-            <input type="text" name="funcao" class="form-control">
+            <label for="{{ form.funcao.id_for_label }}">Função</label>
+            {{ form.funcao }}
         </div>
         <div class="form-group">
-            <label for="id_departamento">Departamento</label>
-            <input type="text" name="departamento" class="form-control">
+            <label for="{{ form.departamento.id_for_label }}">Departamento</label>
+            {{ form.departamento }}
         </div>
         <div class="form-group">
-            <label for="id_status">Status</label>
-            <select name="status" class="form-control">
-                <option>Contratado</option>
-                <option>Desligado</option>
-            </select>
+            <label for="{{ form.status.id_for_label }}">Status</label>
+            {{ form.status }}
         </div>
         <div class="form-group">
-            <label for="id_data_admissao">Data de Admissão</label>
-            <input type="date" name="data_admissao" class="form-control">
+            <label for="{{ form.data_admissao.id_for_label }}">Data de Admissão</label>
+            {{ form.data_admissao }}
         </div>
         <div class="form-group">
-            <label for="id_data_mobilizacao">Data de Mobilização</label>
-            <input type="date" name="data_mobilizacao" class="form-control">
+            <label for="{{ form.data_mobilizacao.id_for_label }}">Data de Mobilização</label>
+            {{ form.data_mobilizacao }}
         </div>
         <div class="form-group">
-            <label for="id_data_desligamento">Data de Desligamento</label>
-            <input type="date" name="data_desligamento" class="form-control">
+            <label for="{{ form.data_desligamento.id_for_label }}">Data de Desligamento</label>
+            {{ form.data_desligamento }}
         </div>
         <div class="form-group">
-            <label for="id_data_desmobilizacao">Data de Desmobilização</label>
-            <input type="date" name="data_desmobilizacao" class="form-control">
+            <label for="{{ form.data_desmobilizacao.id_for_label }}">Data de Desmobilização</label>
+            {{ form.data_desmobilizacao }}
         </div>
         <div class="form-group">
-            <label for="id_cracha_vale">Crachá Vale</label>
-            <input type="text" name="cracha_vale" class="form-control">
+            <label for="{{ form.cracha_vale.id_for_label }}">Crachá Vale</label>
+            {{ form.cracha_vale }}
         </div>
 
         <button type="submit" class="btn btn-verde mt-3">Cadastrar Funcionário</button>
@@ -225,7 +220,7 @@
 
 <script>
     // Atualiza a idade ao inserir a data de nascimento
-    document.getElementById('data_nascimento').addEventListener('change', function () {
+    document.getElementById('{{ form.data_nascimento.auto_id }}').addEventListener('change', function () {
         let nascimento = new Date(this.value);
         let hoje = new Date();
         let idade = hoje.getFullYear() - nascimento.getFullYear();
@@ -239,6 +234,7 @@
     document.getElementById('id_foto').addEventListener('change', function (event) {
         const file = event.target.files[0];
         if (file) {
+            document.getElementById('foto-label').textContent = file.name;
             const reader = new FileReader();
             reader.onload = function (e) {
                 document.getElementById('foto-preview').src = e.target.result;
