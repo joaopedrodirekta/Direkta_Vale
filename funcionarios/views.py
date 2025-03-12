@@ -9,12 +9,13 @@ def cadastrar_funcionario(request):
     if request.method == 'POST':
         form = FuncionarioForm(request.POST, request.FILES)
         if form.is_valid():
-            try:
-                funcionario = form.save()
-                messages.success(request, "Funcionário cadastrado com sucesso!")
-                return redirect('listar_funcionarios')  # Redireciona para a lista de funcionários
-            except IntegrityError:
-                messages.error(request, "Erro: CPF já cadastrado!")
+            form.save()
+            messages.success(request, "Funcionário cadastrado com sucesso!")
+            return redirect('cadastrar_funcionario')
+        else:
+            messages.error(request, "Erro ao cadastrar. Verifique os campos!")
+            print(form.errors)  # Adiciona logs dos erros no terminal do Render
+    
     else:
         form = FuncionarioForm()
 
