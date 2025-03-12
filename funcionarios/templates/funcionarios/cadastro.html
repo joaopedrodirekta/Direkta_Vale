@@ -223,4 +223,31 @@
     </form>
 </div>
 
+<script>
+    // Atualiza a idade ao inserir a data de nascimento
+    document.getElementById('data_nascimento').addEventListener('change', function () {
+        let nascimento = new Date(this.value);
+        let hoje = new Date();
+        let idade = hoje.getFullYear() - nascimento.getFullYear();
+        if (hoje.getMonth() < nascimento.getMonth() || (hoje.getMonth() === nascimento.getMonth() && hoje.getDate() < nascimento.getDate())) {
+            idade--;
+        }
+        document.getElementById('idade').value = idade;
+    });
+
+    // Atualiza a imagem ao inserir uma nova foto
+    document.getElementById('id_foto').addEventListener('change', function (event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('foto-preview').src = e.target.result;
+                document.getElementById('foto-preview').style.display = "block";
+                document.getElementById('foto-icon').style.display = "none";
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+
 {% endblock %}
