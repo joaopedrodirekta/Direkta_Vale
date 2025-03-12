@@ -2,30 +2,109 @@
 {% block title %}Lista de Funcionários{% endblock %}
 {% block content %}
 
-<div class="container mt-4">
-    <h2 class="text-center">Lista de Funcionários</h2>
+<style>
+    .container-lista {
+        max-width: 1100px;
+        margin: auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .titulo-lista {
+        text-align: center;
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    .form-busca {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .input-group {
+        flex-grow: 1;
+        max-width: 600px;
+    }
+
+    .btn-adicionar {
+        white-space: nowrap;
+    }
+
+    .table {
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .table thead {
+        background-color: #03396e;
+        color: white;
+    }
+
+    .table tbody tr:hover {
+        background-color: #f2f2f2;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 15px;
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    .status-contratado {
+        background-color: #28a745;
+        color: white;
+    }
+
+    .status-desligado {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    .btn-acao {
+        font-size: 14px;
+        padding: 6px 10px;
+        border-radius: 5px;
+    }
+
+    .pagination {
+        margin-top: 20px;
+    }
+
+</style>
+
+<div class="container-lista">
+    <h2 class="titulo-lista">Lista de Funcionários</h2>
 
     <!-- Campo de Busca -->
-    <form method="GET" class="mb-3">
+    <form method="GET" class="form-busca">
         <div class="input-group">
             <input type="text" name="q" class="form-control" placeholder="Buscar por nome ou departamento..." value="{{ request.GET.q }}">
-            <button type="submit" class="btn btn-primary">Buscar</button>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-search"></i> Buscar
+            </button>
         </div>
+        <a href="{% url 'cadastrar_funcionario' %}" class="btn btn-success btn-adicionar">
+            <i class="fas fa-plus"></i> Adicionar Funcionário
+        </a>
     </form>
-
-    <!-- Botão de Cadastro -->
-    <a href="{% url 'cadastrar_funcionario' %}" class="btn btn-success mb-3">+ Adicionar Funcionário</a>
 
     <!-- Tabela de Funcionários -->
     <table class="table table-striped mt-3">
-        <thead class="thead-dark">
+        <thead>
             <tr>
                 <th>ID</th>
                 <th>Nome</th>
                 <th>Departamento</th>
                 <th>Função</th>
                 <th>Status</th>
-                <th>Ações</th>
+                <th class="text-center">Ações</th>
             </tr>
         </thead>
         <tbody>
@@ -36,13 +115,15 @@
                 <td>{{ funcionario.departamento }}</td>
                 <td>{{ funcionario.funcao }}</td>
                 <td>
-                    <span class="badge {% if funcionario.status == 'Contratado' %}bg-success{% else %}bg-danger{% endif %}">
+                    <span class="status-badge 
+                        {% if funcionario.status == 'Contratado' %} status-contratado 
+                        {% else %} status-desligado {% endif %}">
                         {{ funcionario.status }}
                     </span>
                 </td>
-                <td>
-                    <a href="{% url 'ficha_funcionario' funcionario.id_funcionario %}" class="btn btn-info btn-sm">
-                        Ver Ficha
+                <td class="text-center">
+                    <a href="{% url 'ficha_funcionario' funcionario.id_funcionario %}" class="btn btn-info btn-sm btn-acao">
+                        <i class="fas fa-eye"></i> Ver Ficha
                     </a>
                 </td>
             </tr>
