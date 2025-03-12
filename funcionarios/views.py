@@ -9,9 +9,9 @@ def cadastrar_funcionario(request):
         if form.is_valid():
             form.save()
             messages.success(request, "Funcionário cadastrado com sucesso!")
-            return redirect('cadastrar_funcionario')
+            return redirect('listar_funcionarios')
     else:
-        form = FuncionarioForm()
+        print(form.errors)  # Exibir erros no terminal para depuração
 
     return render(request, 'funcionarios/cadastro.html', {'form': form})
 

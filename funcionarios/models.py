@@ -14,7 +14,7 @@ class Funcionario(models.Model):
     ]
 
     # ID do Funcionário (Agora será inserido manualmente)
-    id_funcionario = models.CharField(max_length=10, primary_key=True, unique=True)
+    id_funcionario = models.CharField(max_length=20, primary_key=True, unique=True)
 
     # Foto
     foto = models.ImageField(upload_to='fotos_funcionarios/', blank=True, null=True)
