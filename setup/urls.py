@@ -13,7 +13,7 @@ def user_page(request):
     return HttpResponse("Página do Usuário - Em desenvolvimento")
 
 urlpatterns = [
-    path("", home),  # Página inicial para evitar erro 404
+    path("", home, name="home"),  # Página inicial para evitar erro 404
     path("admin/", admin.site.urls),  # Django Admin
     path("usuario/", user_page),  # Página de usuário (ajuste conforme necessário)
     path("funcionarios/", include("funcionarios.urls")),  # App Funcionários
