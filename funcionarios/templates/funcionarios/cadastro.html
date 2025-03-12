@@ -35,6 +35,7 @@
         border: 1px solid #ccc;
     }
 
+    /* Ajuste dos cabeçalhos */
     .box-secao {
         background-color: #03396e;
         color: white;
@@ -77,6 +78,23 @@
         justify-content: center;
     }
 
+    .btn {
+        padding: 10px 15px;
+        border-radius: 5px;
+        font-weight: bold;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 16px;
+        border: none;
+        cursor: pointer;
+        transition: 0.3s;
+        min-width: 180px;
+        justify-content: center;
+        height: 45px;
+    }
+
     .btn-azul {
         background-color: #03396e;
         color: white;
@@ -87,6 +105,7 @@
         color: white;
         width: 100%;
     }
+
 </style>
 
 <div class="container-cadastro">
@@ -97,13 +116,18 @@
 
         <div class="box-secao">Foto do Funcionário</div>
         <div class="foto-container">
-            <img id="foto-preview" class="foto-preview" src="{% static 'images/user-placeholder.png' %}" alt="Foto do Funcionário">
-            <i id="foto-icon" class="fas fa-user-circle foto-placeholder"></i>
-            <label for="id_foto" class="btn btn-azul">
-                <i class="fas fa-upload"></i> Adicionar Foto
-            </label>
-            <input type="file" id="id_foto" name="foto" style="display: none;">
-        </div>
+            <div class="foto-preview-container">
+                <img id="foto-preview" class="foto-preview" src="{% static 'images/user-placeholder.png' %}" alt="Foto do Funcionário">
+                <i id="foto-icon" class="fas fa-user-circle foto-placeholder"></i>
+            </div>
+        
+            <div class="foto-botoes">
+                <label for="id_foto" class="btn btn-azul">
+                    <i class="fas fa-upload"></i> Adicionar Foto
+                </label>
+                <input type="file" id="id_foto" name="foto" style="display: none;">
+            </div>
+        </div>        
 
         <div class="box-secao">Dados Pessoais</div>
         <div class="form-group">
@@ -113,6 +137,10 @@
         <div class="form-group">
             <label for="id_cpf">CPF</label>
             <input type="text" name="cpf" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="id_rg">RG</label>
+            <input type="text" name="rg" class="form-control">
         </div>
         <div class="form-group">
             <label for="id_data_nascimento">Data de Nascimento</label>
@@ -133,6 +161,22 @@
         <div class="form-group">
             <label for="id_email">Email</label>
             <input type="email" name="email" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="id_cnh">CNH</label>
+            <input type="text" name="cnh" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="id_validade_cnh">Validade da CNH</label>
+            <input type="date" name="validade_cnh" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="id_contato_pessoal">Contato Pessoal</label>
+            <input type="text" name="contato_pessoal" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="id_contato_emergencia">Contato de Emergência</label>
+            <input type="text" name="contato_emergencia" class="form-control">
         </div>
 
         <div class="box-secao">Dados Profissionais</div>
@@ -155,6 +199,11 @@
                 <option>Desligado</option>
             </select>
         </div>
+        <div class="form-group">
+            <label for="id_cracha_vale">Crachá Vale</label>
+            <input type="text" name="cracha_vale" class="form-control">
+        </div>
+
         <button type="submit" class="btn btn-verde mt-3">Cadastrar Funcionário</button>
     </form>
 </div>
@@ -165,21 +214,6 @@
         const hoje = new Date();
         let idade = hoje.getFullYear() - dataNascimento.getFullYear();
         document.getElementById('idade').value = idade >= 0 ? idade : '';
-    });
-</script>
-
-<script>
-    document.getElementById('id_foto').addEventListener('change', function(event) {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                document.getElementById('foto-preview').src = e.target.result;
-                document.getElementById('foto-preview').style.display = "block";
-                document.getElementById('foto-icon').style.display = "none";
-            };
-            reader.readAsDataURL(file);
-        }
     });
 </script>
 
