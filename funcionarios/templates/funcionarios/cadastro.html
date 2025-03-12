@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}Cadastro de Funcionário{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center">Cadastro de Funcionário</h2>
+    <form method="POST" enctype="multipart/form-data" class="mt-3">
+        {% csrf_token %}
+        
+        <div class="row">
+            <div class="col-md-4">
+                <label><strong>Foto do Funcionário</strong></label>
+                {{ form.foto }}
+            </div>
+        </div>
+
+        <h4 class="mt-4">Dados Pessoais</h4>
+        <div class="row">
+            <div class="col-md-3">{{ form.id_funcionario.label }} {{ form.id_funcionario }}</div>
+            <div class="col-md-6">{{ form.nome_completo.label }} {{ form.nome_completo }}</div>
+            <div class="col-md-3">{{ form.cpf.label }} {{ form.cpf }}</div>
+        </div>
+        <div class="row">
+            <div class="col-md-3">{{ form.rg.label }} {{ form.rg }}</div>
+            <div class="col-md-3">{{ form.sexo.label }} {{ form.sexo }}</div>
+            <div class="col-md-3">{{ form.data_nascimento.label }} {{ form.data_nascimento }}</div>
+            <div class="col-md-3">
+                <label>Idade</label>
+                <input type="text" class="form-control" id="idade" readonly>
+            </div>
+        </div>
+
+        <h4 class="mt-4">Dados Profissionais</h4>
+        <div class="row">
+            <div class="col-md-3">{{ form.funcao.label }} {{ form.funcao }}</div>
+            <div class="col-md-3">{{ form.departamento.label }} {{ form.departamento }}</div>
+            <div class="col-md-3">{{ form.status.label }} {{ form.status }}</div>
+        </div>
+
+        <div class="row mt-4">
+            <button type="submit" class="btn btn-primary btn-block">Salvar</button>
+        </div>
+    </form>
+</div>
+
+<script>
+document.getElementById('id_data_nascimento').addEventListener('change', function () {
+    let nascimento = new Date(this.value);
+    let hoje = new Date();
+    let idade = hoje.getFullYear() - nascimento.getFullYear();
+    if (hoje.getMonth() < nascimento.getMonth() || (hoje.getMonth() === nascimento.getMonth() && hoje.getDate() < nascimento.getDate())) {
+        idade--;
+    }
+    document.getElementById('idade').value = idade;
+});
+</script>
+{% endblock %}
