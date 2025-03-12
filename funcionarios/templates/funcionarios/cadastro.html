@@ -35,7 +35,6 @@
         border: 1px solid #ccc;
     }
 
-    /* Ajuste dos cabeçalhos */
     .box-secao {
         background-color: #03396e;
         color: white;
@@ -200,6 +199,22 @@
             </select>
         </div>
         <div class="form-group">
+            <label for="id_data_admissao">Data de Admissão</label>
+            <input type="date" name="data_admissao" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="id_data_mobilizacao">Data de Mobilização</label>
+            <input type="date" name="data_mobilizacao" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="id_data_desligamento">Data de Desligamento</label>
+            <input type="date" name="data_desligamento" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="id_data_desmobilizacao">Data de Desmobilização</label>
+            <input type="date" name="data_desmobilizacao" class="form-control">
+        </div>
+        <div class="form-group">
             <label for="id_cracha_vale">Crachá Vale</label>
             <input type="text" name="cracha_vale" class="form-control">
         </div>
@@ -207,14 +222,5 @@
         <button type="submit" class="btn btn-verde mt-3">Cadastrar Funcionário</button>
     </form>
 </div>
-
-<script>
-    document.getElementById('data_nascimento').addEventListener('change', function() {
-        const dataNascimento = new Date(this.value);
-        const hoje = new Date();
-        let idade = hoje.getFullYear() - dataNascimento.getFullYear();
-        document.getElementById('idade').value = idade >= 0 ? idade : '';
-    });
-</script>
 
 {% endblock %}
