@@ -21,9 +21,9 @@ class Funcionario(models.Model):
 
     # Dados Pessoais
     nome_completo = models.CharField(max_length=255)
-    cpf = models.CharField(max_length=14, unique=True)
+    cpf = models.CharField(max_length=20, unique=True)
     rg = models.CharField(max_length=20, blank=True, null=True)
-    sexo = models.CharField(max_length=1, choices=SEXO_CHOICES, default='M')
+    sexo = models.CharField(max_length=20, choices=SEXO_CHOICES, default='M')
     data_nascimento = models.DateField()
     cnh = models.CharField(max_length=20, blank=True, null=True)
     validade_cnh = models.DateField(blank=True, null=True)
@@ -34,7 +34,7 @@ class Funcionario(models.Model):
     # Dados Profissionais
     funcao = models.CharField(max_length=100)
     departamento = models.CharField(max_length=100)
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Contratado')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Contratado')
     data_admissao = models.DateField()
     data_mobilizacao = models.DateField(blank=True, null=True)
     data_desligamento = models.DateField(blank=True, null=True)
