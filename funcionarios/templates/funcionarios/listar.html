@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}Lista de Funcionários{% endblock %}
+{% block content %}
+
+<div class="container mt-4">
+    <h2 class="text-center">Lista de Funcionários</h2>
+    <table class="table table-striped mt-3">
+        <thead class="thead-dark">
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Departamento</th>
+                <th>Função</th>
+                <th>Status</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for funcionario in funcionarios %}
+            <tr>
+                <td>{{ funcionario.id_funcionario }}</td>
+                <td>{{ funcionario.nome_completo }}</td>
+                <td>{{ funcionario.departamento }}</td>
+                <td>{{ funcionario.funcao }}</td>
+                <td>{{ funcionario.status }}</td>
+                <td>
+                    <a href="{% url 'ficha_funcionario' funcionario.id_funcionario %}" class="btn btn-info btn-sm">
+                        Ver Ficha
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="text-center">Nenhum funcionário cadastrado.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
