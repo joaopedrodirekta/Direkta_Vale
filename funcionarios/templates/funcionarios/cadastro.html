@@ -1,57 +1,186 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}Cadastro de Funcionário{% endblock %}
 {% block content %}
 
-<div class="container mt-4">
-    <h2 class="text-center">Cadastro de Funcionário</h2>
-    <form method="POST" enctype="multipart/form-data" class="mt-3">
+<style>
+    .container-cadastro {
+        max-width: 900px;
+        margin: auto;
+        padding: 20px;
+        border: 2px solid #000;
+        border-radius: 10px;
+        background-color: #f8f9fa;
+    }
+
+    .titulo-cadastro {
+        text-align: center;
+        font-size: 22px;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    label {
+        font-weight: bold;
+    }
+
+    input, select {
+        width: 100%;
+        padding: 8px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+    }
+
+    .box-secao {
+        background-color: #03396e;
+        color: white;
+        padding: 10px;
+        font-weight: bold;
+        text-align: center;
+        border-radius: 5px;
+        margin-bottom: 10px;
+    }
+
+    .foto-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .foto-preview {
+        width: 140px;
+        height: 140px;
+        object-fit: cover;
+        border-radius: 10px;
+        border: 2px solid black;
+        box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+        margin-bottom: 10px;
+        display: none;
+    }
+
+    .foto-placeholder {
+        font-size: 120px;
+        color: #ccc;
+        display: block;
+    }
+
+    .foto-botoes {
+        display: flex;
+        gap: 15px;
+        margin-top: 10px;
+        justify-content: center;
+    }
+
+    .btn-azul {
+        background-color: #03396e;
+        color: white;
+    }
+
+    .btn-verde {
+        background-color: #28a745;
+        color: white;
+        width: 100%;
+    }
+</style>
+
+<div class="container-cadastro">
+    <div class="titulo-cadastro">Cadastro de Funcionário</div>
+
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        
-        <div class="row">
-            <div class="col-md-4">
-                <label><strong>Foto do Funcionário</strong></label>
-                {{ form.foto }}
-            </div>
+
+        <div class="box-secao">Foto do Funcionário</div>
+        <div class="foto-container">
+            <img id="foto-preview" class="foto-preview" src="{% static 'images/user-placeholder.png' %}" alt="Foto do Funcionário">
+            <i id="foto-icon" class="fas fa-user-circle foto-placeholder"></i>
+            <label for="id_foto" class="btn btn-azul">
+                <i class="fas fa-upload"></i> Adicionar Foto
+            </label>
+            <input type="file" id="id_foto" name="foto" style="display: none;">
         </div>
 
-        <h4 class="mt-4">Dados Pessoais</h4>
-        <div class="row">
-            <div class="col-md-3">{{ form.id_funcionario.label }} {{ form.id_funcionario }}</div>
-            <div class="col-md-6">{{ form.nome_completo.label }} {{ form.nome_completo }}</div>
-            <div class="col-md-3">{{ form.cpf.label }} {{ form.cpf }}</div>
+        <div class="box-secao">Dados Pessoais</div>
+        <div class="form-group">
+            <label for="id_nome">Nome Completo</label>
+            <input type="text" name="nome" class="form-control">
         </div>
-        <div class="row">
-            <div class="col-md-3">{{ form.rg.label }} {{ form.rg }}</div>
-            <div class="col-md-3">{{ form.sexo.label }} {{ form.sexo }}</div>
-            <div class="col-md-3">{{ form.data_nascimento.label }} {{ form.data_nascimento }}</div>
-            <div class="col-md-3">
-                <label>Idade</label>
-                <input type="text" class="form-control" id="idade" readonly>
-            </div>
+        <div class="form-group">
+            <label for="id_cpf">CPF</label>
+            <input type="text" name="cpf" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="id_data_nascimento">Data de Nascimento</label>
+            <input type="date" name="data_nascimento" class="form-control" id="data_nascimento">
+        </div>
+        <div class="form-group">
+            <label for="id_idade">Idade</label>
+            <input type="text" id="idade" class="form-control" disabled>
+        </div>
+        <div class="form-group">
+            <label for="id_sexo">Sexo</label>
+            <select name="sexo" class="form-control">
+                <option>Masculino</option>
+                <option>Feminino</option>
+                <option>Outro</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="id_email">Email</label>
+            <input type="email" name="email" class="form-control">
         </div>
 
-        <h4 class="mt-4">Dados Profissionais</h4>
-        <div class="row">
-            <div class="col-md-3">{{ form.funcao.label }} {{ form.funcao }}</div>
-            <div class="col-md-3">{{ form.departamento.label }} {{ form.departamento }}</div>
-            <div class="col-md-3">{{ form.status.label }} {{ form.status }}</div>
+        <div class="box-secao">Dados Profissionais</div>
+        <div class="form-group">
+            <label for="id_funcionario">ID do Funcionário</label>
+            <input type="text" name="id_funcionario" class="form-control">
         </div>
-
-        <div class="row mt-4">
-            <button type="submit" class="btn btn-primary btn-block">Salvar</button>
+        <div class="form-group">
+            <label for="id_funcao">Função</label>
+            <input type="text" name="funcao" class="form-control">
         </div>
+        <div class="form-group">
+            <label for="id_departamento">Departamento</label>
+            <input type="text" name="departamento" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="id_status">Status</label>
+            <select name="status" class="form-control">
+                <option>Contratado</option>
+                <option>Desligado</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-verde mt-3">Cadastrar Funcionário</button>
     </form>
 </div>
 
 <script>
-document.getElementById('id_data_nascimento').addEventListener('change', function () {
-    let nascimento = new Date(this.value);
-    let hoje = new Date();
-    let idade = hoje.getFullYear() - nascimento.getFullYear();
-    if (hoje.getMonth() < nascimento.getMonth() || (hoje.getMonth() === nascimento.getMonth() && hoje.getDate() < nascimento.getDate())) {
-        idade--;
-    }
-    document.getElementById('idade').value = idade;
-});
+    document.getElementById('data_nascimento').addEventListener('change', function() {
+        const dataNascimento = new Date(this.value);
+        const hoje = new Date();
+        let idade = hoje.getFullYear() - dataNascimento.getFullYear();
+        document.getElementById('idade').value = idade >= 0 ? idade : '';
+    });
 </script>
+
+<script>
+    document.getElementById('id_foto').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('foto-preview').src = e.target.result;
+                document.getElementById('foto-preview').style.display = "block";
+                document.getElementById('foto-icon').style.display = "none";
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+
 {% endblock %}
