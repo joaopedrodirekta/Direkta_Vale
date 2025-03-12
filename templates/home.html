@@ -4,55 +4,102 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Direkta Vale - Início</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
     <style>
         body {
-            font-family: Arial, sans-serif;
+            display: flex;
+            height: 100vh;
             margin: 0;
-            padding: 0;
-            text-align: center;
-            background-color: #f4f4f4;
         }
-        header {
-            background: #333;
+        /* Menu lateral */
+        .sidebar {
+            width: 250px;
+            background-color: #002855; /* Azul escuro */
             color: white;
             padding: 20px;
-            font-size: 24px;
         }
-        .container {
-            margin: 50px auto;
-            max-width: 800px;
-            padding: 20px;
-            background: white;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
+        .sidebar h3 {
+            text-align: center;
+            margin-bottom: 20px;
         }
-        .btn {
-            display: inline-block;
-            padding: 10px 20px;
-            margin: 10px;
-            background: #008cba;
+        .sidebar a {
             color: white;
             text-decoration: none;
+            display: flex;
+            align-items: center;
+            padding: 10px;
             border-radius: 5px;
         }
-        .btn:hover {
-            background: #005f73;
+        .sidebar a:hover {
+            background-color: #004080;
+        }
+        .sidebar i {
+            margin-right: 10px;
+        }
+        /* Conteúdo principal */
+        .content {
+            flex: 1;
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+        /* Cabeçalho superior */
+        .topbar {
+            background-color: #002855;
+            color: white;
+            padding: 15px;
+            text-align: right;
+            font-size: 1.2rem;
+        }
+        .topbar i {
+            margin-right: 10px;
+        }
+        /* Caixa de boas-vindas */
+        .welcome-box {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 700px;
+            margin: auto;
+            margin-top: 50px;
         }
     </style>
 </head>
 <body>
 
-<header>
-    Bem-vindo ao Sistema Direkta  🚀
-</header>
+    <!-- Menu Lateral -->
+    <div class="sidebar">
+        <h3>Direkta</h3>
+        <a href="#"><i class="fas fa-users"></i> Funcionários</a>
+        <a href="#"><i class="fas fa-user-plus"></i> Cadastro</a>
+        <a href="#"><i class="fas fa-id-card"></i> Ficha de Funcionário</a>
 
-<div class="container">
-    <h2>Seu Sistema Empresarial Online</h2>
-    <p>Gerencie funcionários, treinamentos, inventário e muito mais!</p>
+        <hr>
 
-    <a href="/admin/" class="btn">Acessar Admin</a>
-    <a href="/usuario/" class="btn">Área do Usuário</a>
-</div>
+        <a href="#"><i class="fas fa-graduation-cap"></i> Treinamentos</a>
+        <a href="#"><i class="fas fa-file-alt"></i> Cadastro</a>
+        <a href="#"><i class="fas fa-chart-bar"></i> Dashboard</a>
+
+        <hr>
+
+        <a href="#"><i class="fas fa-warehouse"></i> Almoxarifado</a>
+        <a href="#"><i class="fas fa-boxes"></i> Inventário</a>
+    </div>
+
+    <!-- Conteúdo Principal -->
+    <div class="content">
+        <div class="topbar">
+            <i class="fas fa-home"></i> Página Inicial
+        </div>
+
+        <div class="welcome-box">
+            <h2>Bem-vindo ao Sistema de Gerenciamento</h2>
+            <p>Aqui você poderá gerenciar funcionários, treinamentos e inventario.</p>
+        </div>
+    </div>
 
 </body>
 </html>
