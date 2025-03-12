@@ -59,10 +59,37 @@
             font-size: 1rem;
             margin-left: 15px;
         }
+        .btn-custom {
+            width: 100%;
+            text-align: left;
+            font-size: 1rem;
+            background-color: #03396e;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+            margin-bottom: 10px;
+        }
+        .btn-custom i {
+            margin-right: 8px;
+        }
+        .btn-custom:hover {
+            background-color: white;
+            color: #03396e;
+        }
         .content {
             flex: 1;
-            padding: 70px 20px 20px 240px;
-            width: 100%;
+            padding: 70px 20px 20px 200px;
+        }
+        .content h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         .sidebar a.btn-custom {
             display: flex;
@@ -78,9 +105,24 @@
             border-radius: 5px;
             transition: background 0.3s ease;
         }
+        .sidebar a.btn-custom i {
+            margin-right: 10px;
+        }
         .sidebar a.btn-custom:hover {
             background-color: white;
             color: #03396e;
+        }
+        .custom-success-message {
+            background-color: white;
+            color: #007f00;
+            border: 2px solid #007f00;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+            max-width: 400px;
+            margin: 10px auto;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
         }
     </style>    
 </head>
