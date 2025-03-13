@@ -151,6 +151,22 @@
             <th>Idade</th>
             <td>{{ funcionario.idade }} anos</td>
         </tr>
+        <tr>
+            <th>CNH</th>
+            <td>{{ funcionario.cnh }}</td>
+            <th>Validade da CNH</th>
+            <td>{{ funcionario.validade_cnh|date:"d/m/Y"|default:"-" }}</td>
+        </tr>
+        <tr>
+            <th>Contato Pessoal</th>
+            <td>{{ funcionario.contato_pessoal }}</td>
+            <th>Contato de Emergência</th>
+            <td>{{ funcionario.contato_emergencia }}</td>
+        </tr>
+        <tr>
+            <th>Email</th>
+            <td colspan="3">{{ funcionario.email }}</td>
+        </tr>
     </table>
 
     <div class="titulo-secao">Dados Profissionais</div>
@@ -166,6 +182,22 @@
             <td>{{ funcionario.status }}</td>
             <th>Departamento</th>
             <td>{{ funcionario.departamento }}</td>
+        </tr>
+        <tr>
+            <th>Crachá Vale</th>
+            <td>{{ funcionario.cracha_vale|default:"-" }}</td>
+            <th>Data de Admissão</th>
+            <td>{{ funcionario.data_admissao|date:"d/m/Y" }}</td>
+        </tr>
+        <tr>
+            <th>Mobilização</th>
+            <td>{{ funcionario.data_mobilizacao|default:"-"|date:"d/m/Y" }}</td>
+            <th>Desmobilização</th>
+            <td>{{ funcionario.data_desmobilizacao|default:"-"|date:"d/m/Y" }}</td>
+        </tr>
+        <tr>
+            <th>Desligamento</th>
+            <td colspan="3">{{ funcionario.data_desligamento|default:"-"|date:"d/m/Y" }}</td>
         </tr>
     </table>
 
