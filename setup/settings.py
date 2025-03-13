@@ -80,8 +80,13 @@ USE_I18N = True
 
 USE_TZ = True
 
+# Configuração de arquivos de mídia (fotos, uploads, etc.)
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+# Se não estiver em modo de depuração, servir mídia corretamente
+if not DEBUG:
+    MEDIAFILES_LOCATION = "media"
 
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")] 

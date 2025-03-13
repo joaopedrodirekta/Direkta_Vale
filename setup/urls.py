@@ -1,27 +1,27 @@
 from django.contrib import admin
 from django.urls import path, include
 from django.shortcuts import render
-from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.static import serve  # Adiciona suporte manual para mídia
 
 # Página inicial para evitar erro 404
 def home(request):
     return render(request, "home.html")
 
-# Página de usuário (apenas para testar)
-def user_page(request):
-    return HttpResponse("Página do Usuário - Em desenvolvimento")
-
 urlpatterns = [
-    path("", home, name="home"),  # Página inicial para evitar erro 404
-    path("admin/", admin.site.urls),  # Django Admin
-    path("usuario/", user_page),  # Página de usuário (ajuste conforme necessário)
-    path("funcionarios/", include("funcionarios.urls")),  # App Funcionários
-    path("treinamentos/", include("treinamentos.urls")),  # App Treinamentos
-    path("inventario/", include("inventario.urls")),  # App Inventário
+    path("", home, name="home"),
+    path("admin/", admin.site.urls),
+    path("funcionarios/", include("funcionarios.urls")),
+    path("treinamentos/", include("treinamentos.urls")),
+    path("inventario/", include("inventario.urls")),
 ]
 
+# Configuração para servir arquivos de mídia em produção no Render
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+else:
+    urlpatterns += [
+        path("media/<path:path>", serve, {"document_root": settings.MEDIA_ROOT}),
+    ]

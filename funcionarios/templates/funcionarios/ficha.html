@@ -84,7 +84,7 @@
         </tr>
         <tr>
             <th>RG</th>
-            <td>{{ funcionario.rg }}</td>
+            <td>{{ funcionario.rg|default:"-" }}</td>
             <th>Data de Nascimento</th>
             <td>{{ funcionario.data_nascimento|date:"d/m/Y" }}</td>
         </tr>
@@ -96,9 +96,9 @@
         </tr>
         <tr>
             <th>CNH</th>
-            <td>{{ funcionario.cnh }}</td>
+            <td>{{ funcionario.cnh|default:"-" }}</td>
             <th>Validade da CNH</th>
-            <td>{{ funcionario.validade_cnh|date:"d/m/Y" }}</td>
+            <td>{{ funcionario.validade_cnh|date:"d/m/Y"|default:"-" }}</td>
         </tr>
         <tr>
             <th>Contato Pessoal</th>
@@ -128,19 +128,19 @@
         </tr>
         <tr>
             <th>Crachá Vale</th>
-            <td>{{ funcionario.cracha_vale }}</td>
+            <td>{{ funcionario.cracha_vale|default:"-" }}</td>
             <th>Data de Admissão</th>
             <td>{{ funcionario.data_admissao|date:"d/m/Y" }}</td>
         </tr>
         <tr>
             <th>Mobilização</th>
-            <td>{{ funcionario.data_mobilizacao|default:"-"|date:"d/m/Y" }}</td>
+            <td>{{ funcionario.data_mobilizacao|date:"d/m/Y"|default:"-" }}</td>
             <th>Desmobilização</th>
-            <td>{{ funcionario.data_desmobilizacao|default:"-"|date:"d/m/Y" }}</td>
+            <td>{{ funcionario.data_desmobilizacao|date:"d/m/Y"|default:"-" }}</td>
         </tr>
         <tr>
             <th>Desligamento</th>
-            <td colspan="3">{{ funcionario.data_desligamento|default:"-"|date:"d/m/Y" }}</td>
+            <td colspan="3">{{ funcionario.data_desligamento|date:"d/m/Y"|default:"-" }}</td>
         </tr>
     </table>
 </div>
