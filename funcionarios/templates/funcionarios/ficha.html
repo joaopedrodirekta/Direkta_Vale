@@ -76,6 +76,9 @@
         border-radius: 5px;
         cursor: pointer;
         font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 5px;
     }
 
     .btn-voltar {
@@ -106,6 +109,7 @@
         .container-ficha {
             position: absolute;
             left: 50%;
+            top: 0;
             transform: translateX(-50%);
             width: auto;
         }
@@ -147,22 +151,6 @@
             <th>Idade</th>
             <td>{{ funcionario.idade }} anos</td>
         </tr>
-        <tr>
-            <th>CNH</th>
-            <td>{{ funcionario.cnh }}</td>
-            <th>Validade da CNH</th>
-            <td>{{ funcionario.validade_cnh|date:"d/m/Y" }}</td>
-        </tr>
-        <tr>
-            <th>Contato Pessoal</th>
-            <td>{{ funcionario.contato_pessoal }}</td>
-            <th>Contato de Emergência</th>
-            <td>{{ funcionario.contato_emergencia }}</td>
-        </tr>
-        <tr>
-            <th>Email</th>
-            <td colspan="3">{{ funcionario.email }}</td>
-        </tr>
     </table>
 
     <div class="titulo-secao">Dados Profissionais</div>
@@ -179,28 +167,16 @@
             <th>Departamento</th>
             <td>{{ funcionario.departamento }}</td>
         </tr>
-        <tr>
-            <th>Crachá Vale</th>
-            <td>{{ funcionario.cracha_vale }}</td>
-            <th>Data de Admissão</th>
-            <td>{{ funcionario.data_admissao|date:"d/m/Y" }}</td>
-        </tr>
-        <tr>
-            <th>Mobilização</th>
-            <td>{{ funcionario.data_mobilizacao|default:"-"|date:"d/m/Y" }}</td>
-            <th>Desmobilização</th>
-            <td>{{ funcionario.data_desmobilizacao|default:"-"|date:"d/m/Y" }}</td>
-        </tr>
-        <tr>
-            <th>Desligamento</th>
-            <td colspan="3">{{ funcionario.data_desligamento|default:"-"|date:"d/m/Y" }}</td>
-        </tr>
     </table>
 
     <!-- Botões de Voltar e Imprimir -->
     <div class="botoes-ficha">
-        <button class="btn-voltar" onclick="window.location.href='{% url 'listar_funcionarios' %}'">Voltar</button>
-        <button class="btn-imprimir" onclick="imprimirFicha()">Imprimir</button>
+        <button class="btn-voltar" onclick="window.location.href='{% url 'listar_funcionarios' %}'">
+            <i class="fas fa-arrow-left"></i> Voltar
+        </button>
+        <button class="btn-imprimir" onclick="imprimirFicha()">
+            <i class="fas fa-print"></i> Imprimir
+        </button>
     </div>
 </div>
 
@@ -210,5 +186,8 @@
         window.print();
     }
 </script>
+
+<!-- Importação de ícones Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
 {% endblock %}
