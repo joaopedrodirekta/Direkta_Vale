@@ -3,6 +3,8 @@ from django.urls import path, include
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from django.http import HttpResponse
+from django.conf import settings
+from django.conf.urls.static import static
 
 # Página inicial para evitar erro 404
 def home(request):
@@ -20,3 +22,6 @@ urlpatterns = [
     path("treinamentos/", include("treinamentos.urls")),  # App Treinamentos
     path("inventario/", include("inventario.urls")),  # App Inventário
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
