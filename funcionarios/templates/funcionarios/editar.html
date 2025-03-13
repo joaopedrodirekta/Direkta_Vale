@@ -1,0 +1,232 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Editar Funcionário{% endblock %}
+
+{% block content %}
+
+<style>
+    .container-cadastro {
+        max-width: 900px;
+        margin: auto;
+        padding: 20px;
+        border: 2px solid #000;
+        border-radius: 10px;
+        background-color: #f8f9fa;
+    }
+
+    .titulo-cadastro {
+        text-align: center;
+        font-size: 22px;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    label {
+        font-weight: bold;
+    }
+
+    input, select {
+        width: 100%;
+        padding: 8px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+    }
+
+    .box-secao {
+        background-color: #03396e;
+        color: white;
+        padding: 10px;
+        font-weight: bold;
+        text-align: center;
+        border-radius: 5px;
+        margin-bottom: 10px;
+    }
+
+    .foto-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .foto-preview {
+        width: 140px;
+        height: 140px;
+        object-fit: cover;
+        border-radius: 10px;
+        border: 2px solid black;
+        box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+        margin-bottom: 10px;
+    }
+
+    .foto-placeholder {
+        font-size: 120px;
+        color: #ccc;
+    }
+
+    .foto-botoes {
+        display: flex;
+        gap: 15px;
+        margin-top: 10px;
+        justify-content: center;
+    }
+
+    .btn {
+        padding: 10px 15px;
+        border-radius: 5px;
+        font-weight: bold;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 16px;
+        border: none;
+        cursor: pointer;
+        transition: 0.3s;
+        min-width: 180px;
+        justify-content: center;
+        height: 45px;
+    }
+
+    .btn-azul {
+        background-color: #03396e;
+        color: white;
+    }
+
+    .btn-verde {
+        background-color: #28a745;
+        color: white;
+        width: 100%;
+    }
+
+    .btn-voltar {
+        background-color: #6c757d;
+        color: white;
+    }
+
+    .btn-voltar:hover {
+        background-color: #5a6268;
+    }
+</style>
+
+<div class="container-cadastro">
+    <div class="titulo-cadastro">Editar Funcionário</div>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="box-secao">Foto do Funcionário</div>
+        <div class="foto-container">
+            <div class="foto-preview-container">
+                {% if funcionario.foto %}
+                    <img id="foto-preview" class="foto-preview" src="{{ funcionario.foto.url }}" alt="Foto do Funcionário">
+                {% else %}
+                    <img id="foto-preview" class="foto-preview" src="{% static 'images/user-placeholder.png' %}" alt="Sem Foto">
+                {% endif %}
+            </div>
+
+            <div class="foto-botoes">
+                <label for="id_foto" class="btn btn-azul">
+                    <i class="fas fa-upload"></i> <span id="foto-label">Alterar Foto</span>
+                </label>
+                {{ form.foto }}
+            </div>
+        </div>
+
+        <div class="box-secao">Dados Pessoais</div>
+        <div class="form-group">
+            <label for="{{ form.nome_completo.id_for_label }}">Nome Completo</label>
+            {{ form.nome_completo }}
+        </div>
+        <div class="form-group">
+            <label for="{{ form.cpf.id_for_label }}">CPF</label>
+            {{ form.cpf }}
+        </div>
+        <div class="form-group">
+            <label for="{{ form.rg.id_for_label }}">RG</label>
+            {{ form.rg }}
+        </div>
+        <div class="form-group">
+            <label for="{{ form.sexo.id_for_label }}">Sexo</label>
+            {{ form.sexo }}
+        </div>
+        <div class="form-group">
+            <label for="{{ form.data_nascimento.id_for_label }}">Data de Nascimento</label>
+            {{ form.data_nascimento }}
+        </div>
+        <div class="form-group">
+            <label for="{{ form.cnh.id_for_label }}">CNH</label>
+            {{ form.cnh }}
+        </div>
+        <div class="form-group">
+            <label for="{{ form.validade_cnh.id_for_label }}">Validade da CNH</label>
+            {{ form.validade_cnh }}
+        </div>
+        <div class="form-group">
+            <label for="{{ form.contato_pessoal.id_for_label }}">Contato Pessoal</label>
+            {{ form.contato_pessoal }}
+        </div>
+        <div class="form-group">
+            <label for="{{ form.contato_emergencia.id_for_label }}">Contato de Emergência</label>
+            {{ form.contato_emergencia }}
+        </div>
+        <div class="form-group">
+            <label for="{{ form.email.id_for_label }}">Email</label>
+            {{ form.email }}
+        </div>
+
+        <div class="box-secao">Dados Profissionais</div>
+        <div class="form-group">
+            <label for="{{ form.id_funcionario.id_for_label }}">ID do Funcionário</label>
+            {{ form.id_funcionario }}
+        </div>
+        <div class="form-group">
+            <label for="{{ form.funcao.id_for_label }}">Função</label>
+            {{ form.funcao }}
+        </div>
+        <div class="form-group">
+            <label for="{{ form.departamento.id_for_label }}">Departamento</label>
+            {{ form.departamento }}
+        </div>
+        <div class="form-group">
+            <label for="{{ form.status.id_for_label }}">Status</label>
+            {{ form.status }}
+        </div>
+        <div class="form-group">
+            <label for="{{ form.data_admissao.id_for_label }}">Data de Admissão</label>
+            {{ form.data_admissao }}
+        </div>
+        <div class="form-group">
+            <label for="{{ form.data_mobilizacao.id_for_label }}">Data de Mobilização</label>
+            {{ form.data_mobilizacao }}
+        </div>
+        <div class="form-group">
+            <label for="{{ form.data_desligamento.id_for_label }}">Data de Desligamento</label>
+            {{ form.data_desligamento }}
+        </div>
+        <div class="form-group">
+            <label for="{{ form.data_desmobilizacao.id_for_label }}">Data de Desmobilização</label>
+            {{ form.data_desmobilizacao }}
+        </div>
+        <div class="form-group">
+            <label for="{{ form.cracha_vale.id_for_label }}">Crachá Vale</label>
+            {{ form.cracha_vale }}
+        </div>
+
+        <button type="submit" class="btn btn-verde mt-3"><i class="fas fa-save"></i> Salvar Alterações</button>
+        <a href="{% url 'ficha_funcionario' funcionario.id_funcionario %}" class="btn btn-voltar mt-3">
+            <i class="fas fa-arrow-left"></i> Cancelar
+        </a>
+    </form>
+</div>
+
+<!-- Importação de Ícones Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+{% endblock %}

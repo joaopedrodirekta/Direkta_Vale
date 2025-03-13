@@ -118,6 +118,16 @@
             display: none;
         }
     }
+    
+    .btn-editar {
+        background-color: #007bff;
+        color: white;
+    }
+    
+    .btn-editar:hover {
+        background-color: #0056b3;
+    }
+    
 </style>
 
 <div class="container-ficha" id="fichaFuncionario">
@@ -210,6 +220,9 @@
         <button class="btn-imprimir" onclick="imprimirFicha()">
             <i class="fas fa-print"></i> Imprimir
         </button>
+        <button class="btn-editar" onclick="window.location.href='{% url 'editar_funcionario' funcionario.id_funcionario %}'">
+            <i class="fas fa-edit"></i> Editar Dados
+        </button>        
     </div>
 </div>
 

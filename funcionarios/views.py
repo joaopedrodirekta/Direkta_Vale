@@ -37,3 +37,16 @@ def listar_funcionarios(request):
 def ficha_funcionario(request, id_funcionario):
     funcionario = get_object_or_404(Funcionario, id_funcionario=id_funcionario)
     return render(request, "funcionarios/ficha.html", {"funcionario": funcionario})
+
+def editar_funcionario(request, id_funcionario):
+    funcionario = get_object_or_404(Funcionario, id_funcionario=id_funcionario)
+    
+    if request.method == 'POST':
+        form = FuncionarioForm(request.POST, request.FILES, instance=funcionario)
+        if form.is_valid():
+            form.save()
+            return redirect('ficha_funcionario', id_funcionario=funcionario.id_funcionario)
+    else:
+        form = FuncionarioForm(instance=funcionario)
+
+    return render(request, 'funcionarios/editar.html', {'form': form, 'funcionario': funcionario})
