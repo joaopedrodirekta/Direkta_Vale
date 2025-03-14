@@ -66,8 +66,16 @@
     }
 
     .foto-placeholder {
-        font-size: 120px;
-        color: #ccc;
+        width: 140px;
+        height: 140px;
+        border-radius: 10px;
+        background-color: #ddd;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 50px;
+        color: #777;
+        border: 2px solid black;
     }
 
     .foto-botoes {
@@ -123,7 +131,7 @@
                 <label for="id_foto" class="btn btn-azul">
                     <i class="fas fa-upload"></i> <span id="foto-label">Adicionar Foto</span>
                 </label>
-                {{ form.foto }}
+                <input type="file" id="id_foto" name="foto" accept="image/*">
             </div>
         </div>
 
@@ -215,18 +223,18 @@
     </form>
 </div>
 
-{% if form.errors %}
-    <div class="alert alert-danger">
-        <strong>Erro ao cadastrar funcionário!</strong>
-        <ul>
-            {% for field, errors in form.errors.items %}
-                <li><strong>{{ field }}:</strong> {{ errors|striptags }}</li>
-            {% endfor %}
-        </ul>
-    </div>
-{% endif %}
-
 <script>
+    document.getElementById("id_foto").addEventListener("change", function (event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById("foto-preview").src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
     // Atualiza a idade ao inserir a data de nascimento
     document.getElementById('{{ form.data_nascimento.auto_id }}').addEventListener('change', function () {
         let nascimento = new Date(this.value);
