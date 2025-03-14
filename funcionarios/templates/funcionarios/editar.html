@@ -105,6 +105,11 @@
         width: 100%;
     }
 
+    .btn-vermelho {
+        background-color: #dc3545;
+        color: white;
+    }
+
     .btn-voltar {
         background-color: #6c757d;
         color: white;
@@ -133,9 +138,12 @@
 
             <div class="foto-botoes">
                 <label for="id_foto" class="btn btn-azul">
-                    <i class="fas fa-upload"></i> <span id="foto-label">Alterar Foto</span>
+                    <i class="fas fa-upload"></i> Alterar Foto
                 </label>
-                {{ form.foto }}
+                <button type="button" class="btn btn-vermelho" onclick="limparFoto()">
+                    <i class="fas fa-trash-alt"></i> Limpar
+                </button>
+                <input type="file" id="id_foto" name="foto" style="display: none;">
             </div>
         </div>
 
@@ -158,7 +166,7 @@
         </div>
         <div class="form-group">
             <label for="{{ form.data_nascimento.id_for_label }}">Data de Nascimento</label>
-            {{ form.data_nascimento }}
+            <input type="date" name="data_nascimento" value="{{ form.data_nascimento.value|date:'Y-m-d' }}" class="form-control">
         </div>
         <div class="form-group">
             <label for="{{ form.cnh.id_for_label }}">CNH</label>
@@ -166,7 +174,7 @@
         </div>
         <div class="form-group">
             <label for="{{ form.validade_cnh.id_for_label }}">Validade da CNH</label>
-            {{ form.validade_cnh }}
+            <input type="date" name="validade_cnh" value="{{ form.validade_cnh.value|date:'Y-m-d' }}" class="form-control">
         </div>
         <div class="form-group">
             <label for="{{ form.contato_pessoal.id_for_label }}">Contato Pessoal</label>
@@ -200,19 +208,19 @@
         </div>
         <div class="form-group">
             <label for="{{ form.data_admissao.id_for_label }}">Data de Admissão</label>
-            {{ form.data_admissao }}
+            <input type="date" name="data_admissao" value="{{ form.data_admissao.value|date:'Y-m-d' }}" class="form-control">
         </div>
         <div class="form-group">
             <label for="{{ form.data_mobilizacao.id_for_label }}">Data de Mobilização</label>
-            {{ form.data_mobilizacao }}
+            <input type="date" name="data_mobilizacao" value="{{ form.data_mobilizacao.value|date:'Y-m-d' }}" class="form-control">
         </div>
         <div class="form-group">
             <label for="{{ form.data_desligamento.id_for_label }}">Data de Desligamento</label>
-            {{ form.data_desligamento }}
+            <input type="data" name"data_desligamento" value="{{ form.data_desligamento.value|date:'Y-m-d' }}" class="form-control">
         </div>
         <div class="form-group">
             <label for="{{ form.data_desmobilizacao.id_for_label }}">Data de Desmobilização</label>
-            {{ form.data_desmobilizacao }}
+            <input type="data" name"data_desmobilizacao" value="{{ form.data_desmobilizacao.value|date:'Y-m-d' }}" class="form-control">
         </div>
         <div class="form-group">
             <label for="{{ form.cracha_vale.id_for_label }}">Crachá Vale</label>
@@ -226,7 +234,13 @@
     </form>
 </div>
 
-<!-- Importação de Ícones Font Awesome -->
+<script>
+    function limparFoto() {
+        document.getElementById("id_foto").value = "";
+        document.getElementById("foto-preview").src = "{% static 'images/user-placeholder.png' %}";
+    }
+</script>
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
 {% endblock %}

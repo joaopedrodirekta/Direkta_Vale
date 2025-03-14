@@ -63,20 +63,15 @@
         border: 2px solid black;
         box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
         margin-bottom: 10px;
-        display: none;
     }
 
     .foto-placeholder {
         font-size: 120px;
         color: #ccc;
-        display: block;
     }
 
     .foto-botoes {
-        display: flex;
-        gap: 15px;
         margin-top: 10px;
-        justify-content: center;
     }
 
     .btn {
@@ -91,7 +86,6 @@
         border: none;
         cursor: pointer;
         transition: 0.3s;
-        min-width: 180px;
         justify-content: center;
         height: 45px;
     }
@@ -107,6 +101,10 @@
         width: 100%;
     }
 
+    #id_foto {
+        display: none;
+    }
+
 </style>
 
 <div class="container-cadastro">
@@ -119,9 +117,8 @@
         <div class="foto-container">
             <div class="foto-preview-container">
                 <img id="foto-preview" class="foto-preview" src="{% static 'images/user-placeholder.png' %}" alt="Foto do Funcionário">
-                <i id="foto-icon" class="fas fa-user-circle foto-placeholder"></i>
             </div>
-        
+
             <div class="foto-botoes">
                 <label for="id_foto" class="btn btn-azul">
                     <i class="fas fa-upload"></i> <span id="foto-label">Adicionar Foto</span>
@@ -239,21 +236,6 @@
             idade--;
         }
         document.getElementById('idade').value = idade;
-    });
-
-    // Atualiza a imagem ao inserir uma nova foto
-    document.getElementById('id_foto').addEventListener('change', function (event) {
-        const file = event.target.files[0];
-        if (file) {
-            document.getElementById('foto-label').textContent = file.name;
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                document.getElementById('foto-preview').src = e.target.result;
-                document.getElementById('foto-preview').style.display = "block";
-                document.getElementById('foto-icon').style.display = "none";
-            };
-            reader.readAsDataURL(file);
-        }
     });
 </script>
 
