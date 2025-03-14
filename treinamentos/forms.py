@@ -14,6 +14,11 @@ class TreinamentoForm(forms.ModelForm):
         label="Nome do Treinamento",
     )
 
+    carga_horaria = forms.TimeField(
+        label="Carga Horária (HH:MM)",
+        widget=forms.TimeInput(format='%H:%M', attrs={'type': 'time'})
+    )
+
     class Meta:
         model = Treinamento
         fields = [

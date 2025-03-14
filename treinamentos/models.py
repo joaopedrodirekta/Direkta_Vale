@@ -59,7 +59,7 @@ NORMAS = {
         "PRO RAC 01", "PRO RAC 02", "PRO RAC 03", "PRO RAC 04", "PRO RAC 05", "PRO RAC 07",
         "PRO RAC 10", "PRO - 006218", "PRO - 015971", "PRO - 025676", "PGS - 003632",
         "PGS - 004633", "PGS - 004728", "TBSSMA", "--", "NR 18", "--", "NR 12",
-        "NR 18", "--", "NR 18", "--", "NR 11", "--", "--", "--", "--", "NR 11",
+        "NR 18", "--", "NR 18", "--", "NR 11", "--", "--", "--", "--", "NR 11", "--",
     ])
 }
 
@@ -67,7 +67,7 @@ class Treinamento(models.Model):
     funcionario = models.ForeignKey(Funcionario, on_delete=models.CASCADE)
     nome_treinamento = models.CharField(max_length=255, choices=TREINAMENTOS_CHOICES)
     norma = models.CharField(max_length=50, blank=True)
-    carga_horaria = models.PositiveIntegerField()
+    carga_horaria = models.TimeField()
     data_inicio = models.DateField()
     data_fim = models.DateField()
     validade_certificado = models.DateField()
