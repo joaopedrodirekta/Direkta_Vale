@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+{% block title %}Cadastro de Treinamento{% endblock %}
+{% block content %}
+
+<style>
+    .container-cadastro {
+        max-width: 900px;
+        margin: auto;
+        padding: 20px;
+        border: 2px solid #000;
+        border-radius: 10px;
+        background-color: #f8f9fa;
+    }
+
+    .titulo-cadastro {
+        text-align: center;
+        font-size: 22px;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    label {
+        font-weight: bold;
+    }
+
+    input, select {
+        width: 100%;
+        padding: 8px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+    }
+
+    .box-secao {
+        background-color: #03396e;
+        color: white;
+        padding: 10px;
+        font-weight: bold;
+        text-align: center;
+        border-radius: 5px;
+        margin-bottom: 10px;
+    }
+
+    .status {
+        font-weight: bold;
+        padding: 5px 10px;
+        border-radius: 5px;
+        display: inline-block;
+    }
+
+    .status-verde { background-color: #28a745; color: white; }
+    .status-azul { background-color: #007bff; color: white; }
+    .status-amarelo { background-color: #ffc107; color: black; }
+    .status-vermelho { background-color: #dc3545; color: white; }
+
+</style>
+
+<div class="container-cadastro">
+    <div class="titulo-cadastro">Cadastro de Treinamento</div>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="box-secao">Dados do Funcionário</div>
+        <div class="form-group">
+            <label for="id_funcionario">Nome do Funcionário</label>
+            <select id="id_funcionario" name="id_funcionario" class="form-control" required>
+                <option value="">Selecione...</option>
+                {% for funcionario in funcionarios %}
+                    <option value="{{ funcionario.id_funcionario }}" data-funcao="{{ funcionario.funcao }}">{{ funcionario.nome_completo }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label>ID do Funcionário</label>
+            <input type="text" id="funcionario_id" class="form-control" disabled>
+        </div>
+        <div class="form-group">
+            <label>Função</label>
+            <input type="text" id="funcionario_funcao" class="form-control" disabled>
+        </div>
+
+        <div class="box-secao">Dados do Treinamento</div>
+        <div class="form-group">
+            <label>Nome do Treinamento</label>
+            <select id="nome_treinamento" name="nome_treinamento" class="form-control" required>
+                <option value="">Selecione...</option>
+                {% for treinamento in treinamentos %}
+                    <option value="{{ treinamento }}">{{ treinamento }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Norma</label>
+            <input type="text" id="norma" class="form-control" disabled>
+        </div>
+        <div class="form-group">
+            <label>Carga Horária</label>
+            <input type="number" name="carga_horaria" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label>Data Inicial</label>
+            <input type="date" id="data_inicial" name="data_inicial" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label>Data Final</label>
+            <input type="date" id="data_final" name="data_final" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label>Validade do Certificado</label>
+            <input type="date" name="validade_certificado" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label>Validade Passaporte - Vale</label>
+            <input type="date" id="validade_passaporte" name="validade_passaporte" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label>Status</label>
+            <span id="status_treinamento" class="status"></span>
+        </div>
+
+        <button type="submit" class="btn btn-verde mt-3">Cadastrar Treinamento</button>
+    </form>
+</div>
+
+<script>
+    const normas = {{ normas|safe }};
+
+    document.getElementById('id_funcionario').addEventListener('change', function() {
+        const selectedOption = this.options[this.selectedIndex];
+        document.getElementById('funcionario_id').value = selectedOption.value;
+        document.getElementById('funcionario_funcao').value = selectedOption.getAttribute('data-funcao');
+    });
+
+    document.getElementById('nome_treinamento').addEventListener('change', function() {
+        document.getElementById('norma').value = normas[this.value] || '';
+    });
+
+    document.getElementById('validade_passaporte').addEventListener('change', function() {
+        const validade = new Date(this.value);
+        const hoje = new Date();
+        const diferenca = Math.ceil((validade - hoje) / (1000 * 60 * 60 * 24));
+        const statusEl = document.getElementById('status_treinamento');
+
+        if (diferenca > 30) {
+            statusEl.textContent = `Faltam ${diferenca} dias para vencer`;
+            statusEl.className = 'status status-verde';
+        } else if (diferenca >= 15) {
+            statusEl.textContent = `Faltam ${diferenca} dias para vencer`;
+            statusEl.className = 'status status-azul';
+        } else if (diferenca >= 1) {
+            statusEl.textContent = `Faltam ${diferenca} dias para vencer`;
+            statusEl.className = 'status status-amarelo';
+        } else {
+            statusEl.textContent = 'VENCIDO';
+            statusEl.className = 'status status-vermelho';
+        }
+    });
+</script>
+
+{% endblock %}
