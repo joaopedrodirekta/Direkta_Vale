@@ -85,7 +85,7 @@
             <select id="id_funcionario" name="funcionario_nome" class="form-control" required>
                 <option value="">Selecione...</option>
                 {% for funcionario in funcionarios %}
-                    <option value="{{ funcionario.id }}" data-funcao="{{ funcionario.funcao }}">{{ funcionario.nome_completo }}</option>
+                <option value="{{ funcionario.id_funcionario }}" data-id="{{ funcionario.id_funcionario }}" data-funcao="{{ funcionario.funcao }}">{{ funcionario.nome_completo }}</option>
                 {% endfor %}
             </select>
         </div>
@@ -114,7 +114,7 @@
         </div>
         <div class="form-group">
             <label>Carga Horária</label>
-            <input type="number" name="carga_horaria" class="form-control" required>
+            <input type="number" name="carga_horaria" class="form-control" step="0.1" min="0" required>
         </div>
         <div class="form-group">
             <label>Data Inicial</label>
@@ -134,8 +134,8 @@
         </div>
         <div class="form-group">
             <label>Status</label>
-            <span id="status_treinamento" class="status"></span>
-        </div>
+            <span id="status_treinamento" class="status">Selecione uma data</span>
+        </div>        
 
         <button type="submit" class="btn-verde">Cadastrar Treinamento</button>
     </form>
@@ -146,12 +146,41 @@
 
     document.getElementById('id_funcionario').addEventListener('change', function() {
         const selectedOption = this.options[this.selectedIndex];
-        document.getElementById('funcionario_id').value = selectedOption.value;
+        document.getElementById('funcionario_id').value = selectedOption.getAttribute('data-id');
         document.getElementById('funcionario_funcao').value = selectedOption.getAttribute('data-funcao');
     });
 
     document.getElementById('nome_treinamento').addEventListener('change', function() {
         document.getElementById('norma').value = normas[this.value] || '';
+    });
+</script>
+
+<script>
+    document.getElementById('validade_passaporte').addEventListener('change', function() {
+        const validade = new Date(this.value);
+        const hoje = new Date();
+        const diferenca = Math.ceil((validade - hoje) / (1000 * 60 * 60 * 24));
+        const statusEl = document.getElementById('status_treinamento');
+
+        if (isNaN(diferenca)) {
+            statusEl.textContent = "Selecione uma data válida";
+            statusEl.className = 'status';
+            return;
+        }
+
+        if (diferenca > 30) {
+            statusEl.textContent = `Faltam ${diferenca} dias para vencer`;
+            statusEl.className = 'status status-verde';
+        } else if (diferenca >= 15) {
+            statusEl.textContent = `Faltam ${diferenca} dias para vencer`;
+            statusEl.className = 'status status-azul';
+        } else if (diferenca >= 1) {
+            statusEl.textContent = `Faltam ${diferenca} dias para vencer`;
+            statusEl.className = 'status status-amarelo';
+        } else {
+            statusEl.textContent = 'VENCIDO';
+            statusEl.className = 'status status-vermelho';
+        }
     });
 </script>
 
