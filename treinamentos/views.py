@@ -32,10 +32,10 @@ def cadastrar_treinamento(request):
             treinamento.save()
             
             messages.success(request, "Treinamento cadastrado com sucesso!")
-            return redirect("dashboard_treinamentos")  
+            form = TreinamentoForm()  # Reinicia o formulário para um novo cadastro
         else:
             messages.error(request, "Erro ao cadastrar treinamento. Verifique os campos obrigatórios.")
-            print(form.errors)
+            print(form.errors)  # Para depuração no terminal
 
     else:
         form = TreinamentoForm()

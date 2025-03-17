@@ -72,10 +72,40 @@
         margin-top: 15px;
     }
 
+    .alert-container {
+        margin-bottom: 15px;
+    }
+
+    .alert {
+        padding: 10px;
+        border-radius: 5px;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .alert-success {
+        background-color: #28a745;
+        color: white;
+    }
+
+    .alert-error {
+        background-color: #dc3545;
+        color: white;
+    }
+
 </style>
 
 <div class="container-cadastro">
     <div class="titulo-cadastro">Cadastro de Treinamento</div>
+    {% if messages %}
+    <div class="alert-container">
+        {% for message in messages %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
 
     <form method="post">
         {% csrf_token %}
