@@ -225,4 +225,16 @@
     });
 </script>
 
+<script>
+    // Esconder automaticamente a mensagem após 5 segundos (5000 ms)
+    setTimeout(function() {
+        let alertBox = document.querySelector('.alert-container');
+        if (alertBox) {
+            alertBox.style.transition = "opacity 0.5s";
+            alertBox.style.opacity = "0";
+            setTimeout(() => alertBox.remove(), 500);
+        }
+    }, 5000);
+</script>
+
 {% endblock %}
