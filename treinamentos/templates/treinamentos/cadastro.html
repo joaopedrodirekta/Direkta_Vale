@@ -55,6 +55,7 @@
     .status-azul { background-color: #007bff; color: white; }
     .status-amarelo { background-color: #ffc107; color: black; }
     .status-vermelho { background-color: #dc3545; color: white; }
+    .status-cinza { background-color: #6c757d; color: white; } /* Novo status */
 
     .btn-verde {
         background-color: #28a745;
@@ -110,31 +111,31 @@
         </div>
         <div class="form-group">
             <label>Norma</label>
-            <input type="text" id="norma" class="form-control" disabled>
+            <input type="text" id="norma" name="norma" class="form-control" readonly required>
         </div>
         <div class="form-group">
             <label>Carga Horária (HH:MM)</label>
-            <input type="time" name="carga_horaria" class="form-control" required>
+            <input type="time" name="carga_horaria" class="form-control">
         </div>        
         <div class="form-group">
             <label>Data Inicial</label>
-            <input type="date" id="data_inicial" name="data_inicio" class="form-control" required>
+            <input type="date" id="data_inicial" name="data_inicio" class="form-control">
         </div>
         <div class="form-group">
             <label>Data Final</label>
-            <input type="date" id="data_final" name="data_fim" class="form-control" required>
+            <input type="date" id="data_final" name="data_fim" class="form-control">
         </div>
         <div class="form-group">
             <label>Validade do Certificado</label>
-            <input type="date" name="validade_certificado" class="form-control" required>
+            <input type="date" name="validade_certificado" class="form-control">
         </div>
         <div class="form-group">
             <label>Validade Passaporte - Vale</label>
-            <input type="date" id="validade_passaporte" name="validade_passaporte" class="form-control" required>
+            <input type="date" id="validade_passaporte" name="validade_passaporte" class="form-control">
         </div>
         <div class="form-group">
             <label>Status</label>
-            <span id="status_treinamento" class="status">Selecione uma data</span>
+            <span id="status_treinamento" class="status">Sem Validade</span>
         </div>        
 
         <button type="submit" class="btn-verde">Cadastrar Treinamento</button>
@@ -153,14 +154,19 @@
     document.getElementById('nome_treinamento').addEventListener('change', function() {
         document.getElementById('norma').value = normas[this.value] || '';
     });
-</script>
 
-<script>
     document.getElementById('validade_passaporte').addEventListener('change', function() {
         const validade = new Date(this.value);
         const hoje = new Date();
-        const diferenca = Math.ceil((validade - hoje) / (1000 * 60 * 60 * 24));
         const statusEl = document.getElementById('status_treinamento');
+
+        if (!this.value) {
+            statusEl.textContent = "Sem Validade";
+            statusEl.className = 'status status-cinza';
+            return;
+        }
+
+        const diferenca = Math.ceil((validade - hoje) / (1000 * 60 * 60 * 24));
 
         if (isNaN(diferenca)) {
             statusEl.textContent = "Selecione uma data válida";

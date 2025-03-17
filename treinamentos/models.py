@@ -64,18 +64,23 @@ NORMAS = {
 }
 
 class Treinamento(models.Model):
-    funcionario = models.ForeignKey(Funcionario, on_delete=models.CASCADE)
-    nome_treinamento = models.CharField(max_length=255, choices=TREINAMENTOS_CHOICES)
-    norma = models.CharField(max_length=50, blank=True)
-    carga_horaria = models.TimeField()
-    data_inicio = models.DateField()
-    data_fim = models.DateField()
-    validade_certificado = models.DateField()
-    validade_passaporte = models.DateField()
+    funcionario = models.ForeignKey(Funcionario, on_delete=models.CASCADE)  # Obrigatório
+    nome_treinamento = models.CharField(max_length=255, choices=TREINAMENTOS_CHOICES)  # Obrigatório
+    norma = models.CharField(max_length=50)  # Obrigatório
+    carga_horaria = models.TimeField(blank=True, null=True)  # Opcional
+    data_inicio = models.DateField(blank=True, null=True)  # Opcional
+    data_fim = models.DateField(blank=True, null=True)  # Opcional
+    validade_certificado = models.DateField(blank=True, null=True)  # Opcional
+    validade_passaporte = models.DateField(blank=True, null=True)  # Opcional
 
     def calcular_status(self):
         """Calcula os dias restantes para o vencimento e retorna um status formatado"""
         hoje = date.today()
+        
+        # Verifica se a validade do passaporte está em branco
+        if not self.validade_passaporte:
+            return "Sem Validade", "cinza"
+        
         dias_restantes = (self.validade_passaporte - hoje).days
 
         if dias_restantes > 30:
@@ -94,4 +99,7 @@ class Treinamento(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.funcionario.nome_completo} - {self.nome_treinamento}"
+        """Evita erro ao acessar o nome do funcionário se ele não estiver vinculado"""
+        if self.funcionario:
+            return f"{self.funcionario.nome_completo} - {self.nome_treinamento}"
+        return f"{self.nome_treinamento}"
