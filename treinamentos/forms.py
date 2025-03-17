@@ -1,5 +1,5 @@
 from django import forms
-from .models import Treinamento, TREINAMENTOS_CHOICES
+from .models import Treinamento, TREINAMENTOS_CHOICES, NORMAS
 from funcionarios.models import Funcionario
 
 class TreinamentoForm(forms.ModelForm):
@@ -71,3 +71,19 @@ class TreinamentoForm(forms.ModelForm):
         # Preencher automaticamente a norma baseada no treinamento selecionado
         self.fields["nome_treinamento"].widget.attrs["onchange"] = "atualizarNorma()"
         self.fields["funcionario"].widget.attrs["onchange"] = "atualizarDadosFuncionario()"
+
+        # Caso o formulário tenha sido instanciado com um treinamento selecionado, definir automaticamente a norma
+        if "instance" in kwargs and kwargs["instance"]:
+            treinamento = kwargs["instance"]
+            if treinamento.nome_treinamento in NORMAS:
+                self.fields["norma"].initial = NORMAS[treinamento.nome_treinamento]
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        # Preenchimento automático da norma
+        nome_treinamento = cleaned_data.get("nome_treinamento")
+        if nome_treinamento in NORMAS:
+            cleaned_data["norma"] = NORMAS[nome_treinamento]
+
+        return cleaned_data
