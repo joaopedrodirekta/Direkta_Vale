@@ -6,16 +6,16 @@ from .models import Treinamento, TREINAMENTOS_CHOICES, NORMAS
 from funcionarios.models import Funcionario
 
 def cadastrar_treinamento(request):
-    funcionarios = Funcionario.objects.all()
-    treinamentos = [treinamento[0] for treinamento in TREINAMENTOS_CHOICES]
+    funcionarios = Funcionario.objects.all()  
+    treinamentos = [treinamento[0] for treinamento in TREINAMENTOS_CHOICES]  
 
     if request.method == "POST":
         form = TreinamentoForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect("dashboard_treinamentos")  # Redireciona para o dashboard
+            return redirect("listar_treinamentos")  
         else:
-            print(form.errors)  # Exibe os erros no terminal
+            print(form.errors)  # Para depuração no terminal
     else:
         form = TreinamentoForm()
 
