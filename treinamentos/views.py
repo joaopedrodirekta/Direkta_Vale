@@ -6,20 +6,16 @@ from .models import Treinamento, TREINAMENTOS_CHOICES, NORMAS
 from funcionarios.models import Funcionario
 
 def cadastrar_treinamento(request):
-    # Obtém todos os funcionários cadastrados
     funcionarios = Funcionario.objects.all()
-    
-    # Extraindo apenas os nomes dos treinamentos disponíveis
     treinamentos = [treinamento[0] for treinamento in TREINAMENTOS_CHOICES]
 
     if request.method == "POST":
         form = TreinamentoForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request, "Treinamento cadastrado com sucesso!")  # Mensagem de sucesso
-            return redirect(reverse_lazy("listar_treinamentos"))  # Redireciona após salvar
+            return redirect("dashboard_treinamentos")  # Redireciona para o dashboard
         else:
-            messages.error(request, "Erro ao cadastrar o treinamento. Verifique os campos.")  # Mensagem de erro
+            print(form.errors)  # Exibe os erros no terminal
     else:
         form = TreinamentoForm()
 
