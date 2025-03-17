@@ -64,23 +64,32 @@ NORMAS = {
 }
 
 class Treinamento(models.Model):
-    funcionario = models.ForeignKey(Funcionario, on_delete=models.CASCADE)  # Obrigatório
-    nome_treinamento = models.CharField(max_length=255, choices=TREINAMENTOS_CHOICES)  # Obrigatório
-    norma = models.CharField(max_length=50)  # Obrigatório
-    carga_horaria = models.TimeField(blank=True, null=True)  # Opcional
-    data_inicio = models.DateField(blank=True, null=True)  # Opcional
-    data_fim = models.DateField(blank=True, null=True)  # Opcional
-    validade_certificado = models.DateField(blank=True, null=True)  # Opcional
-    validade_passaporte = models.DateField(blank=True, null=True)  # Opcional
+    funcionario = models.ForeignKey(
+        Funcionario, on_delete=models.CASCADE, verbose_name="Funcionário"
+    )  # Obrigatório
+    nome_treinamento = models.CharField(
+        max_length=255, choices=TREINAMENTOS_CHOICES, verbose_name="Nome do Treinamento"
+    )  # Obrigatório
+    norma = models.CharField(max_length=50, verbose_name="Norma")  # Obrigatório
+    carga_horaria = models.TimeField(blank=True, null=True, verbose_name="Carga Horária")  # Opcional
+    data_inicio = models.DateField(blank=True, null=True, verbose_name="Data de Início")  # Opcional
+    data_fim = models.DateField(blank=True, null=True, verbose_name="Data de Fim")  # Opcional
+    validade_certificado = models.DateField(blank=True, null=True, verbose_name="Validade do Certificado")  # Opcional
+    validade_passaporte = models.DateField(blank=True, null=True, verbose_name="Validade do Passaporte")  # Opcional
+
+    class Meta:
+        verbose_name = "Treinamento"
+        verbose_name_plural = "Treinamentos"
+        ordering = ["nome_treinamento"]
 
     def calcular_status(self):
         """Calcula os dias restantes para o vencimento e retorna um status formatado"""
         hoje = date.today()
-        
+
         # Verifica se a validade do passaporte está em branco
         if not self.validade_passaporte:
             return "Sem Validade", "cinza"
-        
+
         dias_restantes = (self.validade_passaporte - hoje).days
 
         if dias_restantes > 30:
@@ -100,6 +109,4 @@ class Treinamento(models.Model):
 
     def __str__(self):
         """Evita erro ao acessar o nome do funcionário se ele não estiver vinculado"""
-        if self.funcionario:
-            return f"{self.funcionario.nome_completo} - {self.nome_treinamento}"
-        return f"{self.nome_treinamento}"
+        return f"{self.funcionario.nome_completo} - {self.nome_treinamento}" if self.funcionario else self.nome_treinamento
