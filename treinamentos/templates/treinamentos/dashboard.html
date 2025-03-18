@@ -22,80 +22,75 @@
 
     .chart-container {
         display: flex;
+        flex-wrap: wrap;
         justify-content: space-between;
-        gap: 10px;
-        border-bottom: 5px solid black; /* Linha preta forte para separar */
-        padding-bottom: 20px;
+        gap: 20px;
     }
 
     .chart-box {
-        width: 200px;
-        height: 200px;
+        width: 220px;
         text-align: center;
         background-color: white;
         padding: 15px;
         border-radius: 10px;
         box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
-        position: relative;
+        border: 3px solid black;
     }
 
-    .chart-box canvas {
-        width: 100% !important;
-        height: 100% !important;
+    .chart-box .chart-label {
+        font-size: 14px;
+        font-weight: bold;
+        margin-top: 5px;
     }
 
-    /* Posicionar os números no centro dos gráficos */
-    .chart-box .chart-number {
+    .chart-number {
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        font-size: 22px;
+        font-size: 20px;
         font-weight: bold;
     }
 
-    /* Estilizando os números com as cores corretas */
-    .status-vencidos { color: #dc3545; } /* Vermelho */
-    .status-urgencia { color: #ffc107; } /* Amarelo */
-    .status-atencao { color: #007bff; } /* Azul */
-    .status-validos { color: #28a745; } /* Verde */
-    .status-sem-validade { color: #6c757d; } /* Cinza */
+    .chart-wrapper {
+        position: relative;
+    }
 
+    canvas {
+        width: 100% !important;
+        height: auto !important;
+    }
+
+    .status-vencidos { color: #dc3545; } 
+    .status-urgencia { color: #ffc107; } 
+    .status-atencao { color: #007bff; } 
+    .status-validos { color: #28a745; } 
+    .status-sem-validade { color: #6c757d; } 
 </style>
 
 <div class="dashboard-container">
     <h2 class="dashboard-title">Dashboard de Treinamentos</h2>
 
     <div class="chart-container">
+        {% for status, color, count in [
+            ("Vencidos", "#dc3545", vencidos),
+            ("Urgência", "#ffc107", alerta),
+            ("Atenção", "#007bff", atencao),
+            ("Válidos", "#28a745", ok),
+            ("Sem Validade", "#6c757d", sem_validade)
+        ] %}
         <div class="chart-box">
-            <canvas id="statusVencidos"></canvas>
-            <div class="chart-number status-vencidos">{{ vencidos }}</div>
+            <div class="chart-wrapper">
+                <canvas id="chart-{{ status|lower|slugify }}"></canvas>
+                <span class="chart-number status-{{ status|lower|slugify }}">{{ count }}</span>
+            </div>
+            <p class="chart-label status-{{ status|lower|slugify }}">{{ status }}</p>
         </div>
-        
-        <div class="chart-box">
-            <canvas id="statusAlerta"></canvas>
-            <div class="chart-number status-urgencia">{{ alerta }}</div>
-        </div>
-
-        <div class="chart-box">
-            <canvas id="statusAtencao"></canvas>
-            <div class="chart-number status-atencao">{{ atencao }}</div>
-        </div>
-
-        <div class="chart-box">
-            <canvas id="statusOk"></canvas>
-            <div class="chart-number status-validos">{{ ok }}</div>
-        </div>
-
-        <div class="chart-box">
-            <canvas id="statusSemValidade"></canvas>
-            <div class="chart-number status-sem-validade">{{ sem_validade }}</div>
-        </div>
+        {% endfor %}
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <script>
     const totalTreinamentos = {{ total_treinamentos }};
     const statusData = {
@@ -103,7 +98,7 @@
         alerta: {{ alerta }},
         atencao: {{ atencao }},
         ok: {{ ok }},
-        semValidade: {{ sem_validade }},
+        semValidade: {{ sem_validade }}
     };
 
     function calcularRestante(valor) {
@@ -114,7 +109,7 @@
         new Chart(ctx, {
             type: "doughnut",
             data: {
-                labels: ["", ""],
+                labels: ["", "Outros"],
                 datasets: [{
                     data: [valor, calcularRestante(valor)],
                     backgroundColor: [cor, "#000000"]
@@ -123,17 +118,16 @@
             options: {
                 responsive: true,
                 plugins: { legend: { display: false } },
-                cutout: "70%" // Deixa um espaço maior para o número centralizado
+                cutout: "60%"
             }
         });
     }
 
-    criarGraficoRosca(document.getElementById("statusVencidos"), statusData.vencidos, "#dc3545");
-    criarGraficoRosca(document.getElementById("statusAlerta"), statusData.alerta, "#ffc107");
-    criarGraficoRosca(document.getElementById("statusAtencao"), statusData.atencao, "#007bff");
-    criarGraficoRosca(document.getElementById("statusOk"), statusData.ok, "#28a745");
-    criarGraficoRosca(document.getElementById("statusSemValidade"), statusData.semValidade, "#6c757d");
-
+    criarGraficoRosca(document.getElementById("chart-vencidos"), statusData.vencidos, "#dc3545");
+    criarGraficoRosca(document.getElementById("chart-urgencia"), statusData.alerta, "#ffc107");
+    criarGraficoRosca(document.getElementById("chart-atencao"), statusData.atencao, "#007bff");
+    criarGraficoRosca(document.getElementById("chart-validos"), statusData.ok, "#28a745");
+    criarGraficoRosca(document.getElementById("chart-sem-validade"), statusData.semValidade, "#6c757d");
 </script>
 
 {% endblock %}
