@@ -22,53 +22,44 @@
 
     .chart-container {
         display: flex;
-        flex-wrap: wrap;
-        justify-content: space-around;
-        gap: 20px;
+        justify-content: space-between;
+        gap: 10px;
+        border-bottom: 5px solid black; /* Linha preta forte para separar */
+        padding-bottom: 20px;
     }
 
     .chart-box {
-        width: 280px;
+        width: 200px;
+        height: 200px;
         text-align: center;
         background-color: white;
         padding: 15px;
         border-radius: 10px;
         box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+        position: relative;
     }
 
-    .chart-box p {
-        font-size: 16px;
-        font-weight: bold;
-        margin-top: 10px;
-    }
-
-    .chart-box span {
-        font-size: 18px;
-        font-weight: bold;
-    }
-
-    canvas {
+    .chart-box canvas {
         width: 100% !important;
-        height: auto !important;
+        height: 100% !important;
     }
 
-    /* Estilizando os textos com as cores corretas */
+    /* Posicionar os números no centro dos gráficos */
+    .chart-box .chart-number {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 22px;
+        font-weight: bold;
+    }
+
+    /* Estilizando os números com as cores corretas */
     .status-vencidos { color: #dc3545; } /* Vermelho */
     .status-urgencia { color: #ffc107; } /* Amarelo */
     .status-atencao { color: #007bff; } /* Azul */
     .status-validos { color: #28a745; } /* Verde */
     .status-sem-validade { color: #6c757d; } /* Cinza */
-
-    /* Estilos para a tabela de treinamentos */
-    .table-container {
-        margin-top: 40px;
-    }
-
-    .filter-container {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 10px;
-    }
 
 </style>
 
@@ -78,73 +69,32 @@
     <div class="chart-container">
         <div class="chart-box">
             <canvas id="statusVencidos"></canvas>
-            <p class="status-vencidos"><span>{{ vencidos }}</span> treinamentos vencidos</p>
+            <div class="chart-number status-vencidos">{{ vencidos }}</div>
         </div>
         
         <div class="chart-box">
             <canvas id="statusAlerta"></canvas>
-            <p class="status-urgencia"><span>{{ alerta }}</span> treinamentos em urgência</p>
+            <div class="chart-number status-urgencia">{{ alerta }}</div>
         </div>
 
         <div class="chart-box">
             <canvas id="statusAtencao"></canvas>
-            <p class="status-atencao"><span>{{ atencao }}</span> treinamentos em atenção</p>
+            <div class="chart-number status-atencao">{{ atencao }}</div>
         </div>
-    </div>
 
-    <div class="chart-container">
         <div class="chart-box">
             <canvas id="statusOk"></canvas>
-            <p class="status-validos"><span>{{ ok }}</span> treinamentos válidos</p>
+            <div class="chart-number status-validos">{{ ok }}</div>
         </div>
 
         <div class="chart-box">
             <canvas id="statusSemValidade"></canvas>
-            <p class="status-sem-validade"><span>{{ sem_validade }}</span> treinamentos sem validade</p>
+            <div class="chart-number status-sem-validade">{{ sem_validade }}</div>
         </div>
-    </div>
-
-    <!-- 🔽 Área da Tabela de Treinamentos -->
-    <div class="table-container">
-        <h3 class="dashboard-title">Treinamentos Cadastrados</h3>
-
-        <div class="filter-container">
-            <input type="text" id="search" placeholder="Pesquisar..." class="form-control" style="width: 300px;">
-            <button id="exportExcel" class="btn btn-success">Exportar Excel</button>
-            <button id="exportPDF" class="btn btn-danger">Exportar PDF</button>
-        </div>
-
-        <table class="table table-striped" id="treinamentosTable">
-            <thead>
-                <tr>
-                    <th>Funcionário</th>
-                    <th>Treinamento</th>
-                    <th>Norma</th>
-                    <th>Data Início</th>
-                    <th>Data Fim</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for treinamento in treinamentos %}
-                <tr>
-                    <td>{{ treinamento.funcionario }}</td>
-                    <td>{{ treinamento.nome_treinamento }}</td>
-                    <td>{{ treinamento.norma }}</td>
-                    <td>{{ treinamento.data_inicio }}</td>
-                    <td>{{ treinamento.data_fim }}</td>
-                    <td class="status-{{ treinamento.calcular_status.1 }}">{{ treinamento.calcular_status.0 }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
 
 <script>
     const totalTreinamentos = {{ total_treinamentos }};
@@ -160,11 +110,11 @@
         return totalTreinamentos - valor >= 0 ? totalTreinamentos - valor : 0;
     }
 
-    function criarGraficoRosca(ctx, titulo, valor, cor) {
+    function criarGraficoRosca(ctx, valor, cor) {
         new Chart(ctx, {
             type: "doughnut",
             data: {
-                labels: [titulo, "Outros"],
+                labels: ["", ""],
                 datasets: [{
                     data: [valor, calcularRestante(valor)],
                     backgroundColor: [cor, "#000000"]
@@ -173,16 +123,16 @@
             options: {
                 responsive: true,
                 plugins: { legend: { display: false } },
-                cutout: "60%"
+                cutout: "70%" // Deixa um espaço maior para o número centralizado
             }
         });
     }
 
-    criarGraficoRosca(document.getElementById("statusVencidos"), "Vencidos", statusData.vencidos, "#dc3545");
-    criarGraficoRosca(document.getElementById("statusAlerta"), "Urgência", statusData.alerta, "#ffc107");
-    criarGraficoRosca(document.getElementById("statusAtencao"), "Atenção", statusData.atencao, "#007bff");
-    criarGraficoRosca(document.getElementById("statusOk"), "Válidos", statusData.ok, "#28a745");
-    criarGraficoRosca(document.getElementById("statusSemValidade"), "Sem Validade", statusData.semValidade, "#6c757d");
+    criarGraficoRosca(document.getElementById("statusVencidos"), statusData.vencidos, "#dc3545");
+    criarGraficoRosca(document.getElementById("statusAlerta"), statusData.alerta, "#ffc107");
+    criarGraficoRosca(document.getElementById("statusAtencao"), statusData.atencao, "#007bff");
+    criarGraficoRosca(document.getElementById("statusOk"), statusData.ok, "#28a745");
+    criarGraficoRosca(document.getElementById("statusSemValidade"), statusData.semValidade, "#6c757d");
 
 </script>
 
