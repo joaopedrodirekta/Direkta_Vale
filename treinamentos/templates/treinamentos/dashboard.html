@@ -5,107 +5,93 @@
 
 <style>
     .dashboard-container {
-        max-width: 90%;
+        max-width: 1400px;
         margin: auto;
         padding: 20px;
         background-color: #f8f9fa;
         border-radius: 10px;
         box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+        text-align: center;
     }
 
     .dashboard-title {
-        text-align: center;
-        font-size: 26px;
+        font-size: 28px;
         font-weight: bold;
-        margin-bottom: 30px;
+        margin-bottom: 20px;
     }
 
-    .charts-wrapper {
+    .chart-container {
         display: flex;
         justify-content: center;
-        flex-wrap: wrap;
         gap: 40px;
-        max-width: 100%;
+        flex-wrap: wrap;
     }
 
     .chart-box {
-        width: 220px;
-        height: 220px;
-        text-align: center;
+        width: 250px;
+        height: 250px;
         background-color: white;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+        padding: 15px;
+        border-radius: 15px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-    }
-
-    .chart-wrapper {
-        position: relative;
-        width: 180px;
-        height: 180px;
     }
 
     .chart-number {
         position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        font-size: 22px;
+        font-size: 26px;
         font-weight: bold;
     }
 
     .chart-label {
-        font-size: 16px;
-        font-weight: bold;
         margin-top: 10px;
+        font-size: 18px;
+        font-weight: bold;
     }
 </style>
 
 <div class="dashboard-container">
     <h2 class="dashboard-title">Dashboard de Treinamentos</h2>
 
-    <div class="charts-wrapper">
+    <div class="chart-container">
         <div class="chart-box">
-            <div class="chart-wrapper">
-                <canvas id="chartVencidos"></canvas>
+            <div style="position: relative;">
+                <canvas id="statusVencidos"></canvas>
                 <span class="chart-number" style="color: #dc3545;">{{ vencidos }}</span>
             </div>
             <p class="chart-label" style="color: #dc3545;">Vencidos</p>
         </div>
 
         <div class="chart-box">
-            <div class="chart-wrapper">
-                <canvas id="chartUrgencia"></canvas>
+            <div style="position: relative;">
+                <canvas id="statusAlerta"></canvas>
                 <span class="chart-number" style="color: #ffc107;">{{ alerta }}</span>
             </div>
             <p class="chart-label" style="color: #ffc107;">Urgência</p>
         </div>
 
         <div class="chart-box">
-            <div class="chart-wrapper">
-                <canvas id="chartAtencao"></canvas>
+            <div style="position: relative;">
+                <canvas id="statusAtencao"></canvas>
                 <span class="chart-number" style="color: #007bff;">{{ atencao }}</span>
             </div>
             <p class="chart-label" style="color: #007bff;">Atenção</p>
         </div>
 
         <div class="chart-box">
-            <div class="chart-wrapper">
-                <canvas id="chartValidos"></canvas>
+            <div style="position: relative;">
+                <canvas id="statusOk"></canvas>
                 <span class="chart-number" style="color: #28a745;">{{ ok }}</span>
             </div>
             <p class="chart-label" style="color: #28a745;">Válidos</p>
         </div>
 
         <div class="chart-box">
-            <div class="chart-wrapper">
-                <canvas id="chartSemValidade"></canvas>
+            <div style="position: relative;">
+                <canvas id="statusSemValidade"></canvas>
                 <span class="chart-number" style="color: #6c757d;">{{ sem_validade }}</span>
             </div>
             <p class="chart-label" style="color: #6c757d;">Sem Validade</p>
@@ -132,7 +118,7 @@
         new Chart(ctx, {
             type: "doughnut",
             data: {
-                labels: ["", ""],
+                labels: ["", "Outros"],
                 datasets: [{
                     data: [valor, calcularRestante(valor)],
                     backgroundColor: [cor, "#000000"]
@@ -146,11 +132,11 @@
         });
     }
 
-    criarGraficoRosca(document.getElementById("chartVencidos"), statusData.vencidos, "#dc3545");
-    criarGraficoRosca(document.getElementById("chartUrgencia"), statusData.alerta, "#ffc107");
-    criarGraficoRosca(document.getElementById("chartAtencao"), statusData.atencao, "#007bff");
-    criarGraficoRosca(document.getElementById("chartValidos"), statusData.ok, "#28a745");
-    criarGraficoRosca(document.getElementById("chartSemValidade"), statusData.semValidade, "#6c757d");
+    criarGraficoRosca(document.getElementById("statusVencidos"), statusData.vencidos, "#dc3545");
+    criarGraficoRosca(document.getElementById("statusAlerta"), statusData.alerta, "#ffc107");
+    criarGraficoRosca(document.getElementById("statusAtencao"), statusData.atencao, "#007bff");
+    criarGraficoRosca(document.getElementById("statusOk"), statusData.ok, "#28a745");
+    criarGraficoRosca(document.getElementById("statusSemValidade"), statusData.semValidade, "#6c757d");
 </script>
 
 {% endblock %}
