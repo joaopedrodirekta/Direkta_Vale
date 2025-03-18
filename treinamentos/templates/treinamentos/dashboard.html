@@ -1,6 +1,4 @@
 {% extends 'base.html' %}
-{% load humanize %}  <!-- Garantindo que os filtros sejam carregados -->
-
 {% block title %}Dashboard de Treinamentos{% endblock %}
 
 {% block content %}
@@ -22,10 +20,12 @@
         margin-bottom: 20px;
     }
 
-    .chart-container {
+    .charts-container {
         display: flex;
-        justify-content: space-around;
-        gap: 20px;
+        justify-content: space-between;
+        gap: 10px;
+        padding-bottom: 20px;
+        border-bottom: 3px solid black; /* Linha preta para dividir */
     }
 
     .chart-box {
@@ -35,17 +35,12 @@
         padding: 15px;
         border-radius: 10px;
         box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
-        border: 2px solid black; /* Linha divisória preta forte */
     }
 
     .chart-wrapper {
         position: relative;
         width: 100%;
-    }
-
-    canvas {
-        width: 100% !important;
-        height: auto !important;
+        height: auto;
     }
 
     .chart-number {
@@ -53,29 +48,29 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        font-size: 22px;
+        font-size: 24px;
         font-weight: bold;
     }
 
     .chart-label {
-        font-size: 14px;
+        font-size: 16px;
         font-weight: bold;
-        margin-top: 5px;
+        margin-top: 10px;
     }
 
-    /* Estilizando os textos com as cores corretas */
-    .status-vencidos { color: #dc3545; } /* Vermelho */
-    .status-urgencia { color: #ffc107; } /* Amarelo */
-    .status-atencao { color: #007bff; } /* Azul */
-    .status-validos { color: #28a745; } /* Verde */
-    .status-sem-validade { color: #6c757d; } /* Cinza */
+    /* Cores dos status */
+    .status-vencidos { color: #dc3545; }
+    .status-urgencia { color: #ffc107; }
+    .status-atencao { color: #007bff; }
+    .status-validos { color: #28a745; }
+    .status-semvalidade { color: #6c757d; }
 
 </style>
 
 <div class="dashboard-container">
     <h2 class="dashboard-title">Dashboard de Treinamentos</h2>
 
-    <div class="chart-container">
+    <div class="charts-container">
         {% for status, color, count in [
             ("Vencidos", "#dc3545", vencidos),
             ("Urgência", "#ffc107", alerta),
@@ -85,17 +80,16 @@
         ] %}
         <div class="chart-box">
             <div class="chart-wrapper">
-                <canvas id="chart-{{ status|lower|slugify }}"></canvas>
-                <span class="chart-number status-{{ status|lower|slugify }}">{{ count }}</span>
+                <canvas id="chart-{{ status|lower|cut:' ' }}"></canvas>
+                <span class="chart-number status-{{ status|lower|cut:' ' }}">{{ count }}</span>
             </div>
-            <p class="chart-label status-{{ status|lower|slugify }}">{{ status }}</p>
+            <p class="chart-label status-{{ status|lower|cut:' ' }}">{{ status }}</p>
         </div>
         {% endfor %}
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <script>
     const totalTreinamentos = {{ total_treinamentos }};
     const statusData = {
@@ -110,10 +104,11 @@
         return totalTreinamentos - valor >= 0 ? totalTreinamentos - valor : 0;
     }
 
-    function criarGraficoRosca(ctx, valor, cor) {
+    function criarGraficoRosca(ctx, titulo, valor, cor) {
         new Chart(ctx, {
             type: "doughnut",
             data: {
+                labels: [titulo, "Outros"],
                 datasets: [{
                     data: [valor, calcularRestante(valor)],
                     backgroundColor: [cor, "#000000"]
@@ -127,11 +122,11 @@
         });
     }
 
-    criarGraficoRosca(document.getElementById("chart-vencidos"), statusData.vencidos, "#dc3545");
-    criarGraficoRosca(document.getElementById("chart-urgencia"), statusData.alerta, "#ffc107");
-    criarGraficoRosca(document.getElementById("chart-atencao"), statusData.atencao, "#007bff");
-    criarGraficoRosca(document.getElementById("chart-validos"), statusData.ok, "#28a745");
-    criarGraficoRosca(document.getElementById("chart-sem-validade"), statusData.semValidade, "#6c757d");
+    criarGraficoRosca(document.getElementById("chart-vencidos"), "Vencidos", statusData.vencidos, "#dc3545");
+    criarGraficoRosca(document.getElementById("chart-urgencia"), "Urgência", statusData.alerta, "#ffc107");
+    criarGraficoRosca(document.getElementById("chart-atencao"), "Atenção", statusData.atencao, "#007bff");
+    criarGraficoRosca(document.getElementById("chart-validos"), "Válidos", statusData.ok, "#28a745");
+    criarGraficoRosca(document.getElementById("chart-semvalidade"), "Sem Validade", statusData.semValidade, "#6c757d");
 
 </script>
 
