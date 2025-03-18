@@ -22,26 +22,49 @@
 
     .chart-container {
         margin-bottom: 40px;
-        max-width: 600px;
-        max-height: 300px;
-        margin:auto;
+        max-width: 400px;
+        max-height: 400px;
+        margin: auto;
     }
 
     canvas {
         max-width: 100% !important;
-        max-height: 300px !important;
+        max-height: 400px !important;
     }
-    
+
 </style>
 
 <div class="dashboard-container">
     <h2 class="dashboard-title">Dashboard de Treinamentos</h2>
 
     <div class="chart-container">
+        <h4>Total de Treinamentos</h4>
         <canvas id="totalChart"></canvas>
     </div>
+
     <div class="chart-container">
-        <canvas id="statusChart"></canvas>
+        <h4>Status - Vencidos</h4>
+        <canvas id="vencidosChart"></canvas>
+    </div>
+
+    <div class="chart-container">
+        <h4>Status - Urgência</h4>
+        <canvas id="alertaChart"></canvas>
+    </div>
+
+    <div class="chart-container">
+        <h4>Status - Atenção</h4>
+        <canvas id="atencaoChart"></canvas>
+    </div>
+
+    <div class="chart-container">
+        <h4>Status - Válidos</h4>
+        <canvas id="okChart"></canvas>
+    </div>
+
+    <div class="chart-container">
+        <h4>Status - Sem Validade</h4>
+        <canvas id="semValidadeChart"></canvas>
     </div>
 </div>
 
@@ -56,6 +79,26 @@
         ok: {{ ok }},
         semValidade: {{ sem_validade }},
     };
+
+    // Função para criar gráficos de status individuais
+    function createDoughnutChart(canvasId, label, value, color) {
+        new Chart(document.getElementById(canvasId), {
+            type: "doughnut",
+            data: {
+                labels: [label, "Total"],
+                datasets: [{
+                    data: [value, totalTreinamentos - value],
+                    backgroundColor: [color, "#e0e0e0"]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: true }
+                }
+            }
+        });
+    }
 
     // Gráfico do total de treinamentos
     new Chart(document.getElementById("totalChart"), {
@@ -74,20 +117,13 @@
         }
     });
 
-    // Gráfico de status (pizza)
-    new Chart(document.getElementById("statusChart"), {
-        type: "pie",
-        data: {
-            labels: ["Vencidos", "Alerta", "Atenção", "OK", "Sem Validade"],
-            datasets: [{
-                data: [statusData.vencidos, statusData.alerta, statusData.atencao, statusData.ok, statusData.semValidade],
-                backgroundColor: ["#dc3545", "#ffc107", "#007bff", "#28a745", "#6c757d"]
-            }]
-        },
-        options: {
-            responsive: true
-        }
-    });
+    // Criar gráficos individuais de status
+    createDoughnutChart("vencidosChart", "Vencidos", statusData.vencidos, "#dc3545");
+    createDoughnutChart("alertaChart", "Urgência", statusData.alerta, "#ffc107");
+    createDoughnutChart("atencaoChart", "Atenção", statusData.atencao, "#007bff");
+    createDoughnutChart("okChart", "Válidos", statusData.ok, "#28a745");
+    createDoughnutChart("semValidadeChart", "Sem Validade", statusData.semValidade, "#6c757d");
+
 </script>
 
 {% endblock %}
