@@ -5,112 +5,83 @@
 
 <style>
     .dashboard-container {
-        max-width: 1200px;
+        max-width: 100%;
         margin: auto;
         padding: 20px;
         background-color: #f8f9fa;
         border-radius: 10px;
         box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
     }
 
     .dashboard-title {
-        text-align: center;
-        font-size: 24px;
+        font-size: 28px;
         font-weight: bold;
         margin-bottom: 20px;
     }
 
-    .chart-container {
+    .charts-container {
         display: flex;
-        justify-content: space-between;
-        gap: 10px;
-        border-bottom: 5px solid black; /* Linha preta forte para separar */
-        padding-bottom: 20px;
+        justify-content: center;
+        gap: 30px;
+        flex-wrap: wrap;
     }
 
     .chart-box {
         width: 200px;
-        height: 220px;
-        text-align: center;
+        height: 200px;
         background-color: white;
-        padding: 15px;
         border-radius: 10px;
         box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 10px;
         position: relative;
     }
 
     .chart-box canvas {
-        width: 100% !important;
-        height: 100% !important;
+        width: 100px !important;
+        height: 100px !important;
     }
 
-    /* Posicionar os números no centro dos gráficos */
-    .chart-box .chart-number {
+    .chart-number {
         position: absolute;
-        top: 45%;
-        left: 50%;
-        transform: translate(-50%, -50%);
         font-size: 22px;
         font-weight: bold;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
     }
 
-    /* Nome do status abaixo do número */
-    .chart-box .chart-label {
-        position: absolute;
-        bottom: 10px;
-        left: 50%;
-        transform: translateX(-50%);
+    .chart-label {
         font-size: 14px;
         font-weight: bold;
+        margin-top: 5px;
     }
-
-    /* Estilizando os textos com as cores corretas */
-    .status-vencidos { color: #dc3545; } /* Vermelho */
-    .status-urgencia { color: #ffc107; } /* Amarelo */
-    .status-atencao { color: #007bff; } /* Azul */
-    .status-validos { color: #28a745; } /* Verde */
-    .status-sem-validade { color: #6c757d; } /* Cinza */
-
 </style>
 
 <div class="dashboard-container">
     <h2 class="dashboard-title">Dashboard de Treinamentos</h2>
-
-    <div class="chart-container">
+    <div class="charts-container">
+        {% for status, color, count in [
+            ("Vencidos", "#dc3545", vencidos),
+            ("Urgência", "#ffc107", alerta),
+            ("Atenção", "#007bff", atencao),
+            ("Válidos", "#28a745", ok),
+            ("Sem Validade", "#6c757d", sem_validade)
+        ] %}
         <div class="chart-box">
-            <canvas id="statusVencidos"></canvas>
-            <div class="chart-number status-vencidos">{{ vencidos }}</div>
-            <p class="chart-label status-vencidos">Vencidos</p>
+            <canvas id="chart-{{ status|lower|cut:' ' }}"></canvas>
+            <span class="chart-number" style="color: {{ color }};">{{ count }}</span>
+            <p class="chart-label" style="color: {{ color }};">{{ status }}</p>
         </div>
-        
-        <div class="chart-box">
-            <canvas id="statusAlerta"></canvas>
-            <div class="chart-number status-urgencia">{{ alerta }}</div>
-            <p class="chart-label status-urgencia">Urgência</p>
-        </div>
-
-        <div class="chart-box">
-            <canvas id="statusAtencao"></canvas>
-            <div class="chart-number status-atencao">{{ atencao }}</div>
-            <p class="chart-label status-atencao">Atenção</p>
-        </div>
-
-        <div class="chart-box">
-            <canvas id="statusOk"></canvas>
-            <div class="chart-number status-validos">{{ ok }}</div>
-            <p class="chart-label status-validos">Válidos</p>
-        </div>
-
-        <div class="chart-box">
-            <canvas id="statusSemValidade"></canvas>
-            <div class="chart-number status-sem-validade">{{ sem_validade }}</div>
-            <p class="chart-label status-sem-validade">Sem Validade</p>
-        </div>
+        {% endfor %}
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <script>
     const totalTreinamentos = {{ total_treinamentos }};
     const statusData = {
@@ -118,36 +89,32 @@
         alerta: {{ alerta }},
         atencao: {{ atencao }},
         ok: {{ ok }},
-        semValidade: {{ sem_validade }},
+        semValidade: {{ sem_validade }}
     };
-
-    function calcularRestante(valor) {
-        return totalTreinamentos - valor >= 0 ? totalTreinamentos - valor : 0;
-    }
 
     function criarGraficoRosca(ctx, valor, cor) {
         new Chart(ctx, {
             type: "doughnut",
             data: {
-                labels: ["", ""],
+                labels: ["", "Outros"],
                 datasets: [{
-                    data: [valor, calcularRestante(valor)],
-                    backgroundColor: [cor, "#000000"]
+                    data: [valor, totalTreinamentos - valor],
+                    backgroundColor: [cor, "#000000"],
                 }]
             },
             options: {
                 responsive: true,
-                plugins: { legend: { display: false } },
-                cutout: "70%" // Deixa um espaço maior para o número centralizado
+                cutout: "65%",
+                plugins: { legend: { display: false } }
             }
         });
     }
 
-    criarGraficoRosca(document.getElementById("statusVencidos"), statusData.vencidos, "#dc3545");
-    criarGraficoRosca(document.getElementById("statusAlerta"), statusData.alerta, "#ffc107");
-    criarGraficoRosca(document.getElementById("statusAtencao"), statusData.atencao, "#007bff");
-    criarGraficoRosca(document.getElementById("statusOk"), statusData.ok, "#28a745");
-    criarGraficoRosca(document.getElementById("statusSemValidade"), statusData.semValidade, "#6c757d");
+    criarGraficoRosca(document.getElementById("chart-vencidos"), statusData.vencidos, "#dc3545");
+    criarGraficoRosca(document.getElementById("chart-urgencia"), statusData.alerta, "#ffc107");
+    criarGraficoRosca(document.getElementById("chart-atencao"), statusData.atencao, "#007bff");
+    criarGraficoRosca(document.getElementById("chart-validos"), statusData.ok, "#28a745");
+    criarGraficoRosca(document.getElementById("chart-semvalidade"), statusData.semValidade, "#6c757d");
 </script>
 
 {% endblock %}
