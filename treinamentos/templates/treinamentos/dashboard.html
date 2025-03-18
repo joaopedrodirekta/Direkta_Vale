@@ -1,4 +1,6 @@
 {% extends 'base.html' %}
+{% load humanize %}  <!-- Garantindo que os filtros sejam carregados -->
+
 {% block title %}Dashboard de Treinamentos{% endblock %}
 
 {% block content %}
@@ -22,8 +24,7 @@
 
     .chart-container {
         display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
+        justify-content: space-around;
         gap: 20px;
     }
 
@@ -34,26 +35,12 @@
         padding: 15px;
         border-radius: 10px;
         box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
-        border: 3px solid black;
-    }
-
-    .chart-box .chart-label {
-        font-size: 14px;
-        font-weight: bold;
-        margin-top: 5px;
-    }
-
-    .chart-number {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        font-size: 20px;
-        font-weight: bold;
+        border: 2px solid black; /* Linha divisória preta forte */
     }
 
     .chart-wrapper {
         position: relative;
+        width: 100%;
     }
 
     canvas {
@@ -61,11 +48,28 @@
         height: auto !important;
     }
 
-    .status-vencidos { color: #dc3545; } 
-    .status-urgencia { color: #ffc107; } 
-    .status-atencao { color: #007bff; } 
-    .status-validos { color: #28a745; } 
-    .status-sem-validade { color: #6c757d; } 
+    .chart-number {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 22px;
+        font-weight: bold;
+    }
+
+    .chart-label {
+        font-size: 14px;
+        font-weight: bold;
+        margin-top: 5px;
+    }
+
+    /* Estilizando os textos com as cores corretas */
+    .status-vencidos { color: #dc3545; } /* Vermelho */
+    .status-urgencia { color: #ffc107; } /* Amarelo */
+    .status-atencao { color: #007bff; } /* Azul */
+    .status-validos { color: #28a745; } /* Verde */
+    .status-sem-validade { color: #6c757d; } /* Cinza */
+
 </style>
 
 <div class="dashboard-container">
@@ -91,6 +95,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script>
     const totalTreinamentos = {{ total_treinamentos }};
     const statusData = {
@@ -98,7 +103,7 @@
         alerta: {{ alerta }},
         atencao: {{ atencao }},
         ok: {{ ok }},
-        semValidade: {{ sem_validade }}
+        semValidade: {{ sem_validade }},
     };
 
     function calcularRestante(valor) {
@@ -109,7 +114,6 @@
         new Chart(ctx, {
             type: "doughnut",
             data: {
-                labels: ["", "Outros"],
                 datasets: [{
                     data: [valor, calcularRestante(valor)],
                     backgroundColor: [cor, "#000000"]
@@ -128,6 +132,7 @@
     criarGraficoRosca(document.getElementById("chart-atencao"), statusData.atencao, "#007bff");
     criarGraficoRosca(document.getElementById("chart-validos"), statusData.ok, "#28a745");
     criarGraficoRosca(document.getElementById("chart-sem-validade"), statusData.semValidade, "#6c757d");
+
 </script>
 
 {% endblock %}
