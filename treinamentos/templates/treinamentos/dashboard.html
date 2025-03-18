@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load custom_filters %}  {# Carregar os filtros personalizados #}
+{% load custom_filters %}  <!-- Carregando os filtros personalizados -->
 
 {% block title %}Dashboard de Treinamentos{% endblock %}
 
@@ -7,7 +7,7 @@
 
 <style>
     .dashboard-container {
-        max-width: 1100px;
+        max-width: 1200px;
         margin: auto;
         padding: 20px;
         background-color: #f8f9fa;
@@ -30,12 +30,12 @@
     }
 
     .chart-box {
-        width: 250px;
-        background-color: white;
-        padding: 15px;
+        background: white;
         border-radius: 10px;
-        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+        padding: 15px;
         text-align: center;
+        width: 250px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
 
     .chart-title {
@@ -44,11 +44,12 @@
         margin-bottom: 10px;
     }
 
-    .status-vermelho { color: #dc3545; }
-    .status-amarelo { color: #ffc107; }
-    .status-azul { color: #007bff; }
-    .status-verde { color: #28a745; }
-    .status-cinza { color: #6c757d; }
+    .status-vencidos { color: #dc3545; }
+    .status-urgência { color: #ffc107; }
+    .status-atenção { color: #007bff; }
+    .status-válidos { color: #28a745; }
+    .status-sem-validade { color: #6c757d; }
+
 </style>
 
 <div class="dashboard-container">
@@ -78,77 +79,67 @@
             <tr>
                 <th>Funcionário</th>
                 <th>Treinamento</th>
-                <th>Data Inicial</th>
-                <th>Data Final</th>
+                <th>Norma</th>
+                <th>Validade</th>
                 <th>Status</th>
             </tr>
         </thead>
         <tbody>
             {% for treinamento in treinamentos %}
             <tr>
-                <td>{{ treinamento.funcionario.nome_completo }}</td>
+                <td>{{ treinamento.funcionario }}</td>
                 <td>{{ treinamento.nome_treinamento }}</td>
-                <td>{{ treinamento.data_inicio|default:"-" }}</td>
-                <td>{{ treinamento.data_fim|default:"-" }}</td>
-                <td class="status-{{ treinamento.calcular_status.1 }}">
-                    {{ treinamento.calcular_status.0 }}
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="5" class="text-center">Nenhum treinamento cadastrado</td>
+                <td>{{ treinamento.norma }}</td>
+                <td>{{ treinamento.validade_passaporte|default:"Sem validade" }}</td>
+                <td class="status-{{ treinamento.calcular_status.1 }}">{{ treinamento.calcular_status.0 }}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     const statusData = {
-        vencidos: {{ vencidos }},
-        alerta: {{ alerta }},
-        atencao: {{ atencao }},
-        ok: {{ ok }},
-        semValidade: {{ sem_validade }},
-        total: {{ total_treinamentos }}
+        "Vencidos": {{ vencidos }},
+        "Urgência": {{ alerta }},
+        "Atenção": {{ atencao }},
+        "Válidos": {{ ok }},
+        "Sem Validade": {{ sem_validade }},
+        "Total": {{ total_treinamentos }}
     };
 
-    const colors = {
+    const statusColors = {
         "Vencidos": "#dc3545",
         "Urgência": "#ffc107",
         "Atenção": "#007bff",
         "Válidos": "#28a745",
-        "Sem Validade": "#6c757d"
+        "Sem Validade": "#6c757d",
+        "Total": "#000000"
     };
 
-    const statuses = ["Vencidos", "Urgência", "Atenção", "Válidos", "Sem Validade"];
-
-    statuses.forEach(status => {
-        const id = status.toLowerCase().replace(/ /g, "-");
-        new Chart(document.getElementById("chart-" + id), {
-            type: "doughnut",
-            data: {
-                labels: [status, "Total"],
-                datasets: [{
-                    data: [statusData[id], statusData.total - statusData[id]],
-                    backgroundColor: [colors[status], "#000000"]
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        callbacks: {
-                            label: function (tooltipItem) {
-                                return tooltipItem.raw + " treinamentos";
-                            }
+    document.addEventListener("DOMContentLoaded", function () {
+        for (const [status, count] of Object.entries(statusData)) {
+            if (document.getElementById(`chart-${status.toLowerCase().replace(' ', '-')}`)) {
+                new Chart(document.getElementById(`chart-${status.toLowerCase().replace(' ', '-')}`), {
+                    type: "doughnut",
+                    data: {
+                        labels: [status, "Outros"],
+                        datasets: [{
+                            data: [count, statusData["Total"] - count],
+                            backgroundColor: [statusColors[status], "#000000"]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { display: false }
                         }
                     }
-                }
+                });
             }
-        });
+        }
     });
 </script>
 
