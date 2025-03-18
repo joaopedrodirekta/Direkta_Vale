@@ -20,128 +20,120 @@
         margin-bottom: 20px;
     }
 
-    .chart-container {
+    .charts-container {
         display: flex;
         flex-wrap: wrap;
-        justify-content: space-around;
-        gap: 20px;
+        justify-content: space-between;
     }
 
     .chart-box {
-        width: 280px;
-        text-align: center;
-        background-color: white;
+        width: 48%;
+        background: white;
         padding: 15px;
-        border-radius: 10px;
-        box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        margin-bottom: 20px;
     }
 
-    .chart-box h4 {
+    .chart-title {
+        font-size: 18px;
+        font-weight: bold;
         margin-bottom: 10px;
-        font-size: 18px;
-        font-weight: bold;
     }
 
-    .chart-box p {
-        font-size: 16px;
-        font-weight: bold;
-        margin-top: 10px;
-    }
+    .status-vencidos { color: #dc3545; }
+    .status-alerta { color: #ffc107; }
+    .status-atencao { color: #007bff; }
+    .status-ok { color: #28a745; }
+    .status-sem-validade { color: #6c757d; }
 
-    .chart-box span {
-        font-size: 18px;
-    }
-
-    canvas {
-        width: 100% !important;
-        height: auto !important;
+    .btn-export {
+        margin-top: 20px;
     }
 </style>
 
 <div class="dashboard-container">
     <h2 class="dashboard-title">Dashboard de Treinamentos</h2>
 
-    <div class="chart-container">
+    <div class="charts-container">
+        {% for status, color, count in [
+            ("Vencidos", "#dc3545", vencidos),
+            ("Urgência", "#ffc107", alerta),
+            ("Atenção", "#007bff", atencao),
+            ("Válidos", "#28a745", ok),
+            ("Sem Validade", "#6c757d", sem_validade)
+        ] %}
         <div class="chart-box">
-            <h4>Status - Vencidos</h4>
-            <canvas id="statusVencidos"></canvas>
-            <p><span style="color:#dc3545;">{{ vencidos }}</span> treinamentos vencidos</p>
+            <div class="chart-title status-{{ status|lower|replace(' ', '-') }}">{{ status }}</div>
+            <canvas id="chart-{{ status|lower|replace(' ', '-') }}"></canvas>
+            <p class="status-{{ status|lower|replace(' ', '-') }}"><strong>{{ count }}</strong> treinamentos {{ status|lower }}</p>
         </div>
-        
-        <div class="chart-box">
-            <h4>Status - Urgência</h4>
-            <canvas id="statusAlerta"></canvas>
-            <p><span style="color:#ffc107;">{{ alerta }}</span> treinamentos em urgência</p>
-        </div>
-
-        <div class="chart-box">
-            <h4>Status - Atenção</h4>
-            <canvas id="statusAtencao"></canvas>
-            <p><span style="color:#007bff;">{{ atencao }}</span> treinamentos em atenção</p>
-        </div>
+        {% endfor %}
     </div>
 
-    <div class="chart-container">
-        <div class="chart-box">
-            <h4>Status - Válidos</h4>
-            <canvas id="statusOk"></canvas>
-            <p><span style="color:#28a745;">{{ ok }}</span> treinamentos válidos</p>
-        </div>
+    <h3 class="dashboard-title">Treinamentos Cadastrados</h3>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Funcionário</th>
+                <th>Treinamento</th>
+                <th>Data Inicial</th>
+                <th>Data Final</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for treinamento in treinamentos %}
+            <tr>
+                <td>{{ treinamento.funcionario.nome_completo }}</td>
+                <td>{{ treinamento.nome_treinamento }}</td>
+                <td>{{ treinamento.data_inicio }}</td>
+                <td>{{ treinamento.data_fim }}</td>
+                <td class="status-{{ treinamento.calcular_status.1 }}">{{ treinamento.calcular_status.0 }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
-        <div class="chart-box">
-            <h4>Status - Sem Validade</h4>
-            <canvas id="statusSemValidade"></canvas>
-            <p><span style="color:#6c757d;">{{ sem_validade }}</span> treinamentos sem validade</p>
-        </div>
-    </div>
+    <button class="btn btn-primary btn-export" onclick="window.print()">Imprimir Relatório</button>
+    <button class="btn btn-success btn-export" onclick="exportToExcel()">Exportar para Excel</button>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // Dados passados pelo Django
-    const totalTreinamentos = {{ total_treinamentos }};
-    const statusData = {
-        vencidos: {{ vencidos }},
-        alerta: {{ alerta }},
-        atencao: {{ atencao }},
-        ok: {{ ok }},
-        semValidade: {{ sem_validade }},
-    };
-
-    // 🚨 Correção na matemática: Calculando corretamente o total restante
-    function calcularRestante(valor) {
-        return totalTreinamentos - valor >= 0 ? totalTreinamentos - valor : 0;
-    }
-
-    // 🏆 Função para criar gráfico de rosca
-    function criarGraficoRosca(ctx, titulo, valor, cor) {
-        new Chart(ctx, {
+    function createChart(id, count, color) {
+        new Chart(document.getElementById(id), {
             type: "doughnut",
             data: {
-                labels: [titulo, "Outros"],
+                labels: ["{{ status }}", "Total"],
                 datasets: [{
-                    data: [valor, calcularRestante(valor)],
-                    backgroundColor: [cor, "#000000"]
+                    data: [count, {{ total_treinamentos }} - count],
+                    backgroundColor: [color, "#000"]
                 }]
             },
             options: {
                 responsive: true,
                 plugins: {
                     legend: { display: false },
-                    title: { display: false }
-                },
-                cutout: "60%" // Ajusta o tamanho do círculo no meio
+                    tooltip: { enabled: true }
+                }
             }
         });
     }
 
-    // Criar gráficos individuais para cada status
-    criarGraficoRosca(document.getElementById("statusVencidos"), "Vencidos", statusData.vencidos, "#dc3545");
-    criarGraficoRosca(document.getElementById("statusAlerta"), "Urgência", statusData.alerta, "#ffc107");
-    criarGraficoRosca(document.getElementById("statusAtencao"), "Atenção", statusData.atencao, "#007bff");
-    criarGraficoRosca(document.getElementById("statusOk"), "Válidos", statusData.ok, "#28a745");
-    criarGraficoRosca(document.getElementById("statusSemValidade"), "Sem Validade", statusData.semValidade, "#6c757d");
+    createChart("chart-vencidos", {{ vencidos }}, "#dc3545");
+    createChart("chart-urgencia", {{ alerta }}, "#ffc107");
+    createChart("chart-atencao", {{ atencao }}, "#007bff");
+    createChart("chart-validos", {{ ok }}, "#28a745");
+    createChart("chart-sem-validade", {{ sem_validade }}, "#6c757d");
 
+    function exportToExcel() {
+        let table = document.querySelector(".table");
+        let wb = XLSX.utils.table_to_book(table);
+        XLSX.writeFile(wb, "Treinamentos.xlsx");
+    }
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
 
 {% endblock %}
