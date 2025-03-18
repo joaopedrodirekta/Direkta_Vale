@@ -1,6 +1,4 @@
 {% extends 'base.html' %}
-{% load custom_filters %}  <!-- Carregando os filtros personalizados -->
-
 {% block title %}Dashboard de Treinamentos{% endblock %}
 
 {% block content %}
@@ -22,125 +20,170 @@
         margin-bottom: 20px;
     }
 
-    .charts-container {
+    .chart-container {
         display: flex;
         flex-wrap: wrap;
-        justify-content: center;
+        justify-content: space-around;
         gap: 20px;
     }
 
     .chart-box {
-        background: white;
-        border-radius: 10px;
-        padding: 15px;
+        width: 280px;
         text-align: center;
-        width: 250px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        background-color: white;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
     }
 
-    .chart-title {
+    .chart-box p {
+        font-size: 16px;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+
+    .chart-box span {
         font-size: 18px;
         font-weight: bold;
-        margin-bottom: 10px;
     }
 
-    .status-vencidos { color: #dc3545; }
-    .status-urgência { color: #ffc107; }
-    .status-atenção { color: #007bff; }
-    .status-válidos { color: #28a745; }
-    .status-sem-validade { color: #6c757d; }
+    canvas {
+        width: 100% !important;
+        height: auto !important;
+    }
+
+    /* Estilizando os textos com as cores corretas */
+    .status-vencidos { color: #dc3545; } /* Vermelho */
+    .status-urgencia { color: #ffc107; } /* Amarelo */
+    .status-atencao { color: #007bff; } /* Azul */
+    .status-validos { color: #28a745; } /* Verde */
+    .status-sem-validade { color: #6c757d; } /* Cinza */
+
+    /* Estilos para a tabela de treinamentos */
+    .table-container {
+        margin-top: 40px;
+    }
+
+    .filter-container {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
 
 </style>
 
 <div class="dashboard-container">
     <h2 class="dashboard-title">Dashboard de Treinamentos</h2>
 
-    <div class="charts-container">
-        {% for status, color, count in [
-            ("Vencidos", "#dc3545", vencidos),
-            ("Urgência", "#ffc107", alerta),
-            ("Atenção", "#007bff", atencao),
-            ("Válidos", "#28a745", ok),
-            ("Sem Validade", "#6c757d", sem_validade)
-        ] %}
+    <div class="chart-container">
         <div class="chart-box">
-            <div class="chart-title status-{{ status|lower|replace:' ' '-' }}">{{ status }}</div>
-            <canvas id="chart-{{ status|lower|replace:' ' '-' }}"></canvas>
-            <p class="status-{{ status|lower|replace:' ' '-' }}">
-                <strong>{{ count }}</strong> treinamentos {{ status|lower }}
-            </p>
+            <canvas id="statusVencidos"></canvas>
+            <p class="status-vencidos"><span>{{ vencidos }}</span> treinamentos vencidos</p>
         </div>
-        {% endfor %}
+        
+        <div class="chart-box">
+            <canvas id="statusAlerta"></canvas>
+            <p class="status-urgencia"><span>{{ alerta }}</span> treinamentos em urgência</p>
+        </div>
+
+        <div class="chart-box">
+            <canvas id="statusAtencao"></canvas>
+            <p class="status-atencao"><span>{{ atencao }}</span> treinamentos em atenção</p>
+        </div>
     </div>
 
-    <h3 class="dashboard-title">Treinamentos Cadastrados</h3>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Funcionário</th>
-                <th>Treinamento</th>
-                <th>Norma</th>
-                <th>Validade</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for treinamento in treinamentos %}
-            <tr>
-                <td>{{ treinamento.funcionario }}</td>
-                <td>{{ treinamento.nome_treinamento }}</td>
-                <td>{{ treinamento.norma }}</td>
-                <td>{{ treinamento.validade_passaporte|default:"Sem validade" }}</td>
-                <td class="status-{{ treinamento.calcular_status.1 }}">{{ treinamento.calcular_status.0 }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="chart-container">
+        <div class="chart-box">
+            <canvas id="statusOk"></canvas>
+            <p class="status-validos"><span>{{ ok }}</span> treinamentos válidos</p>
+        </div>
 
+        <div class="chart-box">
+            <canvas id="statusSemValidade"></canvas>
+            <p class="status-sem-validade"><span>{{ sem_validade }}</span> treinamentos sem validade</p>
+        </div>
+    </div>
+
+    <!-- 🔽 Área da Tabela de Treinamentos -->
+    <div class="table-container">
+        <h3 class="dashboard-title">Treinamentos Cadastrados</h3>
+
+        <div class="filter-container">
+            <input type="text" id="search" placeholder="Pesquisar..." class="form-control" style="width: 300px;">
+            <button id="exportExcel" class="btn btn-success">Exportar Excel</button>
+            <button id="exportPDF" class="btn btn-danger">Exportar PDF</button>
+        </div>
+
+        <table class="table table-striped" id="treinamentosTable">
+            <thead>
+                <tr>
+                    <th>Funcionário</th>
+                    <th>Treinamento</th>
+                    <th>Norma</th>
+                    <th>Data Início</th>
+                    <th>Data Fim</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for treinamento in treinamentos %}
+                <tr>
+                    <td>{{ treinamento.funcionario }}</td>
+                    <td>{{ treinamento.nome_treinamento }}</td>
+                    <td>{{ treinamento.norma }}</td>
+                    <td>{{ treinamento.data_inicio }}</td>
+                    <td>{{ treinamento.data_fim }}</td>
+                    <td class="status-{{ treinamento.calcular_status.1 }}">{{ treinamento.calcular_status.0 }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+
 <script>
+    const totalTreinamentos = {{ total_treinamentos }};
     const statusData = {
-        "Vencidos": {{ vencidos }},
-        "Urgência": {{ alerta }},
-        "Atenção": {{ atencao }},
-        "Válidos": {{ ok }},
-        "Sem Validade": {{ sem_validade }},
-        "Total": {{ total_treinamentos }}
+        vencidos: {{ vencidos }},
+        alerta: {{ alerta }},
+        atencao: {{ atencao }},
+        ok: {{ ok }},
+        semValidade: {{ sem_validade }},
     };
 
-    const statusColors = {
-        "Vencidos": "#dc3545",
-        "Urgência": "#ffc107",
-        "Atenção": "#007bff",
-        "Válidos": "#28a745",
-        "Sem Validade": "#6c757d",
-        "Total": "#000000"
-    };
+    function calcularRestante(valor) {
+        return totalTreinamentos - valor >= 0 ? totalTreinamentos - valor : 0;
+    }
 
-    document.addEventListener("DOMContentLoaded", function () {
-        for (const [status, count] of Object.entries(statusData)) {
-            if (document.getElementById(`chart-${status.toLowerCase().replace(' ', '-')}`)) {
-                new Chart(document.getElementById(`chart-${status.toLowerCase().replace(' ', '-')}`), {
-                    type: "doughnut",
-                    data: {
-                        labels: [status, "Outros"],
-                        datasets: [{
-                            data: [count, statusData["Total"] - count],
-                            backgroundColor: [statusColors[status], "#000000"]
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            legend: { display: false }
-                        }
-                    }
-                });
+    function criarGraficoRosca(ctx, titulo, valor, cor) {
+        new Chart(ctx, {
+            type: "doughnut",
+            data: {
+                labels: [titulo, "Outros"],
+                datasets: [{
+                    data: [valor, calcularRestante(valor)],
+                    backgroundColor: [cor, "#000000"]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                cutout: "60%"
             }
-        }
-    });
+        });
+    }
+
+    criarGraficoRosca(document.getElementById("statusVencidos"), "Vencidos", statusData.vencidos, "#dc3545");
+    criarGraficoRosca(document.getElementById("statusAlerta"), "Urgência", statusData.alerta, "#ffc107");
+    criarGraficoRosca(document.getElementById("statusAtencao"), "Atenção", statusData.atencao, "#007bff");
+    criarGraficoRosca(document.getElementById("statusOk"), "Válidos", statusData.ok, "#28a745");
+    criarGraficoRosca(document.getElementById("statusSemValidade"), "Sem Validade", statusData.semValidade, "#6c757d");
+
 </script>
 
 {% endblock %}
