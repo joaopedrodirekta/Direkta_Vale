@@ -23,20 +23,36 @@
     .chart-container {
         display: flex;
         flex-wrap: wrap;
-        justify-content: center;
+        justify-content: space-around;
         gap: 20px;
     }
 
     .chart-box {
-        width: 45%;
-        max-width: 400px;
-        min-width: 300px;
+        width: 30%;
+        max-width: 300px;
+        min-width: 250px;
         text-align: center;
+        background-color: white;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .chart-box h4 {
+        margin-bottom: 10px;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .chart-box p {
+        font-size: 16px;
+        font-weight: bold;
+        margin-top: 10px;
     }
 
     canvas {
         max-width: 100% !important;
-        height: 250px !important;
+        height: 200px !important;
     }
 </style>
 
@@ -45,28 +61,35 @@
 
     <div class="chart-container">
         <div class="chart-box">
-            <canvas id="totalChart"></canvas>
-        </div>
-        <div class="chart-box">
+            <h4>Status - Vencidos</h4>
             <canvas id="statusVencidos"></canvas>
+            <p><span style="color:#dc3545;">{{ vencidos }}</span> treinamentos vencidos</p>
         </div>
-    </div>
-    
-    <div class="chart-container">
+        
         <div class="chart-box">
+            <h4>Status - Urgência</h4>
             <canvas id="statusAlerta"></canvas>
+            <p><span style="color:#ffc107;">{{ alerta }}</span> treinamentos em urgência</p>
         </div>
+
         <div class="chart-box">
+            <h4>Status - Atenção</h4>
             <canvas id="statusAtencao"></canvas>
+            <p><span style="color:#007bff;">{{ atencao }}</span> treinamentos em atenção</p>
         </div>
     </div>
 
     <div class="chart-container">
         <div class="chart-box">
+            <h4>Status - Válidos</h4>
             <canvas id="statusOk"></canvas>
+            <p><span style="color:#28a745;">{{ ok }}</span> treinamentos válidos</p>
         </div>
+
         <div class="chart-box">
+            <h4>Status - Sem Validade</h4>
             <canvas id="statusSemValidade"></canvas>
+            <p><span style="color:#6c757d;">{{ sem_validade }}</span> treinamentos sem validade</p>
         </div>
     </div>
 </div>
@@ -97,8 +120,8 @@
             options: {
                 responsive: true,
                 plugins: {
-                    legend: { position: "bottom" },
-                    title: { display: true, text: `Status - ${titulo}` }
+                    legend: { display: false },
+                    title: { display: false }
                 },
                 cutout: "70%" // Ajusta o tamanho do círculo no meio
             }
@@ -111,23 +134,6 @@
     criarGraficoRosca(document.getElementById("statusAtencao"), "Atenção", statusData.atencao, "#007bff");
     criarGraficoRosca(document.getElementById("statusOk"), "Válidos", statusData.ok, "#28a745");
     criarGraficoRosca(document.getElementById("statusSemValidade"), "Sem Validade", statusData.semValidade, "#6c757d");
-
-    // Gráfico total de treinamentos
-    new Chart(document.getElementById("totalChart"), {
-        type: "bar",
-        data: {
-            labels: ["Total de Treinamentos"],
-            datasets: [{
-                label: "Quantidade",
-                data: [totalTreinamentos],
-                backgroundColor: "#343a40"
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: { legend: { display: false } }
-        }
-    });
 
 </script>
 
