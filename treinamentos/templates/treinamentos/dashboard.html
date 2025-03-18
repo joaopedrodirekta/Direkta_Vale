@@ -5,7 +5,7 @@
 
 <style>
     .dashboard-container {
-        max-width: 1000px;
+        max-width: 1200px;
         margin: auto;
         padding: 20px;
         background-color: #f8f9fa;
@@ -21,56 +21,59 @@
     }
 
     .chart-container {
-        margin-bottom: 40px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+    }
+
+    .chart-box {
+        width: 45%;
         max-width: 400px;
-        max-height: 400px;
-        margin: auto;
+        min-width: 300px;
+        text-align: center;
     }
 
     canvas {
         max-width: 100% !important;
-        max-height: 400px !important;
+        height: 250px !important;
     }
-
 </style>
 
 <div class="dashboard-container">
     <h2 class="dashboard-title">Dashboard de Treinamentos</h2>
 
     <div class="chart-container">
-        <h4>Total de Treinamentos</h4>
-        <canvas id="totalChart"></canvas>
+        <div class="chart-box">
+            <canvas id="totalChart"></canvas>
+        </div>
+        <div class="chart-box">
+            <canvas id="statusVencidos"></canvas>
+        </div>
+    </div>
+    
+    <div class="chart-container">
+        <div class="chart-box">
+            <canvas id="statusAlerta"></canvas>
+        </div>
+        <div class="chart-box">
+            <canvas id="statusAtencao"></canvas>
+        </div>
     </div>
 
     <div class="chart-container">
-        <h4>Status - Vencidos</h4>
-        <canvas id="vencidosChart"></canvas>
-    </div>
-
-    <div class="chart-container">
-        <h4>Status - Urgência</h4>
-        <canvas id="alertaChart"></canvas>
-    </div>
-
-    <div class="chart-container">
-        <h4>Status - Atenção</h4>
-        <canvas id="atencaoChart"></canvas>
-    </div>
-
-    <div class="chart-container">
-        <h4>Status - Válidos</h4>
-        <canvas id="okChart"></canvas>
-    </div>
-
-    <div class="chart-container">
-        <h4>Status - Sem Validade</h4>
-        <canvas id="semValidadeChart"></canvas>
+        <div class="chart-box">
+            <canvas id="statusOk"></canvas>
+        </div>
+        <div class="chart-box">
+            <canvas id="statusSemValidade"></canvas>
+        </div>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // Dados dos treinamentos (passados pelo Django)
+    // Dados passados pelo Django
     const totalTreinamentos = {{ total_treinamentos }};
     const statusData = {
         vencidos: {{ vencidos }},
@@ -80,27 +83,36 @@
         semValidade: {{ sem_validade }},
     };
 
-    // Função para criar gráficos de status individuais
-    function createDoughnutChart(canvasId, label, value, color) {
-        new Chart(document.getElementById(canvasId), {
+    // Função para criar gráfico de rosca
+    function criarGraficoRosca(ctx, titulo, valor, cor) {
+        new Chart(ctx, {
             type: "doughnut",
             data: {
-                labels: [label, "Total"],
+                labels: [titulo, "Total"],
                 datasets: [{
-                    data: [value, totalTreinamentos - value],
-                    backgroundColor: [color, "#e0e0e0"]
+                    data: [valor, totalTreinamentos - valor],
+                    backgroundColor: [cor, "#000000"]
                 }]
             },
             options: {
                 responsive: true,
                 plugins: {
-                    legend: { display: true }
-                }
+                    legend: { position: "bottom" },
+                    title: { display: true, text: `Status - ${titulo}` }
+                },
+                cutout: "70%" // Ajusta o tamanho do círculo no meio
             }
         });
     }
 
-    // Gráfico do total de treinamentos
+    // Criar gráficos individuais para cada status
+    criarGraficoRosca(document.getElementById("statusVencidos"), "Vencidos", statusData.vencidos, "#dc3545");
+    criarGraficoRosca(document.getElementById("statusAlerta"), "Urgência", statusData.alerta, "#ffc107");
+    criarGraficoRosca(document.getElementById("statusAtencao"), "Atenção", statusData.atencao, "#007bff");
+    criarGraficoRosca(document.getElementById("statusOk"), "Válidos", statusData.ok, "#28a745");
+    criarGraficoRosca(document.getElementById("statusSemValidade"), "Sem Validade", statusData.semValidade, "#6c757d");
+
+    // Gráfico total de treinamentos
     new Chart(document.getElementById("totalChart"), {
         type: "bar",
         data: {
@@ -108,7 +120,7 @@
             datasets: [{
                 label: "Quantidade",
                 data: [totalTreinamentos],
-                backgroundColor: "#343a40",
+                backgroundColor: "#343a40"
             }]
         },
         options: {
@@ -116,13 +128,6 @@
             plugins: { legend: { display: false } }
         }
     });
-
-    // Criar gráficos individuais de status
-    createDoughnutChart("vencidosChart", "Vencidos", statusData.vencidos, "#dc3545");
-    createDoughnutChart("alertaChart", "Urgência", statusData.alerta, "#ffc107");
-    createDoughnutChart("atencaoChart", "Atenção", statusData.atencao, "#007bff");
-    createDoughnutChart("okChart", "Válidos", statusData.ok, "#28a745");
-    createDoughnutChart("semValidadeChart", "Sem Validade", statusData.semValidade, "#6c757d");
 
 </script>
 
