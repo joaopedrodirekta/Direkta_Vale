@@ -28,9 +28,7 @@
     }
 
     .chart-box {
-        width: 30%;
-        max-width: 300px;
-        min-width: 250px;
+        width: 280px;
         text-align: center;
         background-color: white;
         padding: 15px;
@@ -50,9 +48,13 @@
         margin-top: 10px;
     }
 
+    .chart-box span {
+        font-size: 18px;
+    }
+
     canvas {
-        max-width: 100% !important;
-        height: 200px !important;
+        width: 100% !important;
+        height: auto !important;
     }
 </style>
 
@@ -106,14 +108,19 @@
         semValidade: {{ sem_validade }},
     };
 
-    // Função para criar gráfico de rosca
+    // 🚨 Correção na matemática: Calculando corretamente o total restante
+    function calcularRestante(valor) {
+        return totalTreinamentos - valor >= 0 ? totalTreinamentos - valor : 0;
+    }
+
+    // 🏆 Função para criar gráfico de rosca
     function criarGraficoRosca(ctx, titulo, valor, cor) {
         new Chart(ctx, {
             type: "doughnut",
             data: {
-                labels: [titulo, "Total"],
+                labels: [titulo, "Outros"],
                 datasets: [{
-                    data: [valor, totalTreinamentos - valor],
+                    data: [valor, calcularRestante(valor)],
                     backgroundColor: [cor, "#000000"]
                 }]
             },
@@ -123,7 +130,7 @@
                     legend: { display: false },
                     title: { display: false }
                 },
-                cutout: "70%" // Ajusta o tamanho do círculo no meio
+                cutout: "60%" // Ajusta o tamanho do círculo no meio
             }
         });
     }
