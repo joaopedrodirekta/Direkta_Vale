@@ -1,11 +1,13 @@
 {% extends 'base.html' %}
+{% load custom_filters %}  {# Carregar os filtros personalizados #}
+
 {% block title %}Dashboard de Treinamentos{% endblock %}
 
 {% block content %}
 
 <style>
     .dashboard-container {
-        max-width: 1200px;
+        max-width: 1100px;
         margin: auto;
         padding: 20px;
         background-color: #f8f9fa;
@@ -23,17 +25,17 @@
     .charts-container {
         display: flex;
         flex-wrap: wrap;
-        justify-content: space-between;
+        justify-content: center;
+        gap: 20px;
     }
 
     .chart-box {
-        width: 48%;
-        background: white;
+        width: 250px;
+        background-color: white;
         padding: 15px;
-        border-radius: 8px;
-        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
         text-align: center;
-        margin-bottom: 20px;
     }
 
     .chart-title {
@@ -42,15 +44,11 @@
         margin-bottom: 10px;
     }
 
-    .status-vencidos { color: #dc3545; }
-    .status-alerta { color: #ffc107; }
-    .status-atencao { color: #007bff; }
-    .status-ok { color: #28a745; }
-    .status-sem-validade { color: #6c757d; }
-
-    .btn-export {
-        margin-top: 20px;
-    }
+    .status-vermelho { color: #dc3545; }
+    .status-amarelo { color: #ffc107; }
+    .status-azul { color: #007bff; }
+    .status-verde { color: #28a745; }
+    .status-cinza { color: #6c757d; }
 </style>
 
 <div class="dashboard-container">
@@ -65,9 +63,11 @@
             ("Sem Validade", "#6c757d", sem_validade)
         ] %}
         <div class="chart-box">
-            <div class="chart-title status-{{ status|lower|replace(' ', '-') }}">{{ status }}</div>
-            <canvas id="chart-{{ status|lower|replace(' ', '-') }}"></canvas>
-            <p class="status-{{ status|lower|replace(' ', '-') }}"><strong>{{ count }}</strong> treinamentos {{ status|lower }}</p>
+            <div class="chart-title status-{{ status|lower|replace:' ' '-' }}">{{ status }}</div>
+            <canvas id="chart-{{ status|lower|replace:' ' '-' }}"></canvas>
+            <p class="status-{{ status|lower|replace:' ' '-' }}">
+                <strong>{{ count }}</strong> treinamentos {{ status|lower }}
+            </p>
         </div>
         {% endfor %}
     </div>
@@ -88,52 +88,68 @@
             <tr>
                 <td>{{ treinamento.funcionario.nome_completo }}</td>
                 <td>{{ treinamento.nome_treinamento }}</td>
-                <td>{{ treinamento.data_inicio }}</td>
-                <td>{{ treinamento.data_fim }}</td>
-                <td class="status-{{ treinamento.calcular_status.1 }}">{{ treinamento.calcular_status.0 }}</td>
+                <td>{{ treinamento.data_inicio|default:"-" }}</td>
+                <td>{{ treinamento.data_fim|default:"-" }}</td>
+                <td class="status-{{ treinamento.calcular_status.1 }}">
+                    {{ treinamento.calcular_status.0 }}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-center">Nenhum treinamento cadastrado</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
-
-    <button class="btn btn-primary btn-export" onclick="window.print()">Imprimir Relatório</button>
-    <button class="btn btn-success btn-export" onclick="exportToExcel()">Exportar para Excel</button>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    function createChart(id, count, color) {
-        new Chart(document.getElementById(id), {
+    const statusData = {
+        vencidos: {{ vencidos }},
+        alerta: {{ alerta }},
+        atencao: {{ atencao }},
+        ok: {{ ok }},
+        semValidade: {{ sem_validade }},
+        total: {{ total_treinamentos }}
+    };
+
+    const colors = {
+        "Vencidos": "#dc3545",
+        "Urgência": "#ffc107",
+        "Atenção": "#007bff",
+        "Válidos": "#28a745",
+        "Sem Validade": "#6c757d"
+    };
+
+    const statuses = ["Vencidos", "Urgência", "Atenção", "Válidos", "Sem Validade"];
+
+    statuses.forEach(status => {
+        const id = status.toLowerCase().replace(/ /g, "-");
+        new Chart(document.getElementById("chart-" + id), {
             type: "doughnut",
             data: {
-                labels: ["{{ status }}", "Total"],
+                labels: [status, "Total"],
                 datasets: [{
-                    data: [count, {{ total_treinamentos }} - count],
-                    backgroundColor: [color, "#000"]
+                    data: [statusData[id], statusData.total - statusData[id]],
+                    backgroundColor: [colors[status], "#000000"]
                 }]
             },
             options: {
                 responsive: true,
                 plugins: {
                     legend: { display: false },
-                    tooltip: { enabled: true }
+                    tooltip: {
+                        callbacks: {
+                            label: function (tooltipItem) {
+                                return tooltipItem.raw + " treinamentos";
+                            }
+                        }
+                    }
                 }
             }
         });
-    }
-
-    createChart("chart-vencidos", {{ vencidos }}, "#dc3545");
-    createChart("chart-urgencia", {{ alerta }}, "#ffc107");
-    createChart("chart-atencao", {{ atencao }}, "#007bff");
-    createChart("chart-validos", {{ ok }}, "#28a745");
-    createChart("chart-sem-validade", {{ sem_validade }}, "#6c757d");
-
-    function exportToExcel() {
-        let table = document.querySelector(".table");
-        let wb = XLSX.utils.table_to_book(table);
-        XLSX.writeFile(wb, "Treinamentos.xlsx");
-    }
+    });
 </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
 
 {% endblock %}
