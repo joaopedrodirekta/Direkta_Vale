@@ -20,76 +20,97 @@
         margin-bottom: 20px;
     }
 
-    .charts-container {
+    .chart-container {
         display: flex;
         justify-content: space-between;
         gap: 10px;
+        border-bottom: 5px solid black; /* Linha preta forte para separar */
         padding-bottom: 20px;
-        border-bottom: 3px solid black; /* Linha preta para dividir */
     }
 
     .chart-box {
-        width: 220px;
+        width: 200px;
+        height: 220px;
         text-align: center;
         background-color: white;
         padding: 15px;
         border-radius: 10px;
         box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    .chart-wrapper {
         position: relative;
-        width: 100%;
-        height: auto;
     }
 
-    .chart-number {
+    .chart-box canvas {
+        width: 100% !important;
+        height: 100% !important;
+    }
+
+    /* Posicionar os números no centro dos gráficos */
+    .chart-box .chart-number {
         position: absolute;
-        top: 50%;
+        top: 45%;
         left: 50%;
         transform: translate(-50%, -50%);
-        font-size: 24px;
+        font-size: 22px;
         font-weight: bold;
     }
 
-    .chart-label {
-        font-size: 16px;
+    /* Nome do status abaixo do número */
+    .chart-box .chart-label {
+        position: absolute;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 14px;
         font-weight: bold;
-        margin-top: 10px;
     }
 
-    /* Cores dos status */
-    .status-vencidos { color: #dc3545; }
-    .status-urgencia { color: #ffc107; }
-    .status-atencao { color: #007bff; }
-    .status-validos { color: #28a745; }
-    .status-semvalidade { color: #6c757d; }
+    /* Estilizando os textos com as cores corretas */
+    .status-vencidos { color: #dc3545; } /* Vermelho */
+    .status-urgencia { color: #ffc107; } /* Amarelo */
+    .status-atencao { color: #007bff; } /* Azul */
+    .status-validos { color: #28a745; } /* Verde */
+    .status-sem-validade { color: #6c757d; } /* Cinza */
 
 </style>
 
 <div class="dashboard-container">
     <h2 class="dashboard-title">Dashboard de Treinamentos</h2>
 
-    <div class="charts-container">
-        {% for status, color, count in [
-            ("Vencidos", "#dc3545", vencidos),
-            ("Urgência", "#ffc107", alerta),
-            ("Atenção", "#007bff", atencao),
-            ("Válidos", "#28a745", ok),
-            ("Sem Validade", "#6c757d", sem_validade)
-        ] %}
+    <div class="chart-container">
         <div class="chart-box">
-            <div class="chart-wrapper">
-                <canvas id="chart-{{ status|lower|cut:' ' }}"></canvas>
-                <span class="chart-number status-{{ status|lower|cut:' ' }}">{{ count }}</span>
-            </div>
-            <p class="chart-label status-{{ status|lower|cut:' ' }}">{{ status }}</p>
+            <canvas id="statusVencidos"></canvas>
+            <div class="chart-number status-vencidos">{{ vencidos }}</div>
+            <p class="chart-label status-vencidos">Vencidos</p>
         </div>
-        {% endfor %}
+        
+        <div class="chart-box">
+            <canvas id="statusAlerta"></canvas>
+            <div class="chart-number status-urgencia">{{ alerta }}</div>
+            <p class="chart-label status-urgencia">Urgência</p>
+        </div>
+
+        <div class="chart-box">
+            <canvas id="statusAtencao"></canvas>
+            <div class="chart-number status-atencao">{{ atencao }}</div>
+            <p class="chart-label status-atencao">Atenção</p>
+        </div>
+
+        <div class="chart-box">
+            <canvas id="statusOk"></canvas>
+            <div class="chart-number status-validos">{{ ok }}</div>
+            <p class="chart-label status-validos">Válidos</p>
+        </div>
+
+        <div class="chart-box">
+            <canvas id="statusSemValidade"></canvas>
+            <div class="chart-number status-sem-validade">{{ sem_validade }}</div>
+            <p class="chart-label status-sem-validade">Sem Validade</p>
+        </div>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script>
     const totalTreinamentos = {{ total_treinamentos }};
     const statusData = {
@@ -104,11 +125,11 @@
         return totalTreinamentos - valor >= 0 ? totalTreinamentos - valor : 0;
     }
 
-    function criarGraficoRosca(ctx, titulo, valor, cor) {
+    function criarGraficoRosca(ctx, valor, cor) {
         new Chart(ctx, {
             type: "doughnut",
             data: {
-                labels: [titulo, "Outros"],
+                labels: ["", ""],
                 datasets: [{
                     data: [valor, calcularRestante(valor)],
                     backgroundColor: [cor, "#000000"]
@@ -117,17 +138,16 @@
             options: {
                 responsive: true,
                 plugins: { legend: { display: false } },
-                cutout: "60%"
+                cutout: "70%" // Deixa um espaço maior para o número centralizado
             }
         });
     }
 
-    criarGraficoRosca(document.getElementById("chart-vencidos"), "Vencidos", statusData.vencidos, "#dc3545");
-    criarGraficoRosca(document.getElementById("chart-urgencia"), "Urgência", statusData.alerta, "#ffc107");
-    criarGraficoRosca(document.getElementById("chart-atencao"), "Atenção", statusData.atencao, "#007bff");
-    criarGraficoRosca(document.getElementById("chart-validos"), "Válidos", statusData.ok, "#28a745");
-    criarGraficoRosca(document.getElementById("chart-semvalidade"), "Sem Validade", statusData.semValidade, "#6c757d");
-
+    criarGraficoRosca(document.getElementById("statusVencidos"), statusData.vencidos, "#dc3545");
+    criarGraficoRosca(document.getElementById("statusAlerta"), statusData.alerta, "#ffc107");
+    criarGraficoRosca(document.getElementById("statusAtencao"), statusData.atencao, "#007bff");
+    criarGraficoRosca(document.getElementById("statusOk"), statusData.ok, "#28a745");
+    criarGraficoRosca(document.getElementById("statusSemValidade"), statusData.semValidade, "#6c757d");
 </script>
 
 {% endblock %}
