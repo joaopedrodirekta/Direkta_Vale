@@ -48,7 +48,7 @@ def cadastrar_treinamento(request):
     })
 
 def dashboard_treinamentos(request):
-    treinamentos = Treinamento.objects.all()
+    treinamentos = Treinamento.objects.select_related('funcionario').all()
 
     total_treinamentos = treinamentos.count()
     vencidos = treinamentos.filter(validade_passaporte__lte=date.today()).count()
