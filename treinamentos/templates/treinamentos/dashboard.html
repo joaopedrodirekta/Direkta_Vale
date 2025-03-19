@@ -68,6 +68,18 @@
         width: 140px !important;
         height: 140px !important;
     }
+
+    /* Estilos para a tabela */
+    .table-container {
+        margin-top: 40px;
+    }
+
+    .filter-container {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+
 </style>
 
 <div class="dashboard-container">
@@ -103,6 +115,42 @@
             <span class="chart-number" style="color: #6c757d;">{{ sem_validade }}</span>
             <p class="chart-label" style="color: #6c757d;">Sem Vencimento</p>
         </div>
+    </div>
+
+    <!-- Tabela de Treinamentos -->
+    <div class="table-container">
+        <h3 class="dashboard-title">Treinamentos Cadastrados</h3>
+
+        <div class="filter-container">
+            <input type="text" id="search" placeholder="Pesquisar..." class="form-control" style="width: 300px;">
+            <button id="exportExcel" class="btn btn-success">Exportar Excel</button>
+            <button id="exportPDF" class="btn btn-danger">Exportar PDF</button>
+        </div>
+
+        <table class="table table-striped" id="treinamentosTable">
+            <thead>
+                <tr>
+                    <th>ID Funcionário</th>
+                    <th>Nome</th>
+                    <th>Treinamento</th>
+                    <th>Norma</th>
+                    <th>Data de Vencimento</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for treinamento in treinamentos %}
+                <tr>
+                    <td>{{ treinamento.id_funcionario }}</td>
+                    <td>{{ treinamento.nome_funcionario }}</td>
+                    <td>{{ treinamento.nome_treinamento }}</td>
+                    <td>{{ treinamento.norma }}</td>
+                    <td>{{ treinamento.data_vencimento }}</td>
+                    <td>{{ treinamento.status }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </div>
 
@@ -144,6 +192,15 @@
     criarGraficoRosca(document.getElementById("statusAtencao"), statusData.atencao, "#007bff");
     criarGraficoRosca(document.getElementById("statusOk"), statusData.ok, "#28a745");
     criarGraficoRosca(document.getElementById("statusSemValidade"), statusData.semValidade, "#6c757d");
+</script>
+
+<script>
+    document.getElementById('search').addEventListener('keyup', function () {
+        let searchText = this.value.toLowerCase();
+        document.querySelectorAll('#treinamentosTable tbody tr').forEach(row => {
+            row.style.display = row.innerText.toLowerCase().includes(searchText) ? '' : 'none';
+        });
+    });
 </script>
 
 {% endblock %}
