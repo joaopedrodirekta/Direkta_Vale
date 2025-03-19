@@ -99,69 +99,94 @@ def dashboard_treinamentos(request):
 
 def exportar_excel(request):
     treinamentos = Treinamento.objects.select_related('funcionario').all()
+    today = date.today()
 
-    # Criar um DataFrame com os dados necessários
-    data = {
-        "ID Funcionário": [t.funcionario.id_funcionario for t in treinamentos],
-        "Nome": [t.funcionario.nome_completo for t in treinamentos],
-        "Treinamento": [t.nome_treinamento for t in treinamentos],
-        "Norma": [t.norma for t in treinamentos],
-        "Data de Vencimento": [t.validade_passaporte.strftime('%d/%m/%Y') if t.validade_passaporte else "-" for t in treinamentos],
-        "Status": [t.status_label for t in treinamentos]
-    }
+    dados = []
+    for treinamento in treinamentos:
+        # Recriando a lógica de status_label
+        if treinamento.validade_passaporte:
+            dias_restantes = (treinamento.validade_passaporte - today).days
+            if dias_restantes < 0:
+                status_label = "Vencido"
+            elif dias_restantes <= 14:
+                status_label = "Urgente"
+            elif dias_restantes <= 29:
+                status_label = "Atenção"
+            else:
+                status_label = "Válido"
+        else:
+            status_label = "Sem Validade"
 
-    df = pd.DataFrame(data)
+        dados.append({
+            "ID Funcionário": treinamento.funcionario.id_funcionario,
+            "Nome": treinamento.funcionario.nome_completo,
+            "Treinamento": treinamento.nome_treinamento,
+            "Norma": treinamento.norma,
+            "Data de Vencimento": treinamento.validade_passaporte.strftime("%d/%m/%Y") if treinamento.validade_passaporte else "-",
+            "Status": status_label
+        })
 
-    # Criar a resposta HTTP com o arquivo Excel
-    response = HttpResponse(content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-    response["Content-Disposition"] = 'attachment; filename="treinamentos.xlsx"'
+    df = pd.DataFrame(dados)
 
-    # Salvar o DataFrame no Excel e enviar a resposta
-    with pd.ExcelWriter(response, engine='xlsxwriter') as writer:
-        df.to_excel(writer, sheet_name="Treinamentos", index=False)
+    response = HttpResponse(content_type='application/vnd.ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="treinamentos.xlsx"'
+    df.to_excel(response, index=False)
 
     return response
 
 def exportar_pdf(request):
     treinamentos = Treinamento.objects.select_related('funcionario').all()
+    today = date.today()
 
-    buffer = BytesIO()
-    pdf = canvas.Canvas(buffer, pagesize=letter)
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="treinamentos.pdf"'
+
+    pdf = canvas.Canvas(response, pagesize=letter)
     width, height = letter
-    y = height - 40  # Posição inicial no PDF
 
-    # Título
     pdf.setFont("Helvetica-Bold", 16)
-    pdf.drawString(200, y, "Relatório de Treinamentos")
-    y -= 30
+    pdf.drawString(200, height - 40, "Relatório de Treinamentos")
 
-    # Cabeçalhos
     pdf.setFont("Helvetica-Bold", 10)
-    colunas = ["ID", "Nome", "Treinamento", "Norma", "Vencimento", "Status"]
-    x_positions = [30, 80, 200, 400, 500, 570]  # Posições das colunas
+    y = height - 80  
 
-    for i, coluna in enumerate(colunas):
-        pdf.drawString(x_positions[i], y, coluna)
+    col_titles = ["ID Func.", "Nome", "Treinamento", "Norma", "Vencimento", "Status"]
+    x_positions = [40, 100, 250, 400, 500, 580]  
 
-    pdf.setFont("Helvetica", 10)
-    y -= 20
+    for i, title in enumerate(col_titles):
+        pdf.drawString(x_positions[i], y, title)
 
-    # Dados da tabela
-    for t in treinamentos:
-        pdf.drawString(x_positions[0], y, str(t.funcionario.id_funcionario))
-        pdf.drawString(x_positions[1], y, t.funcionario.nome_completo[:20])  # Limita nome a 20 caracteres
-        pdf.drawString(x_positions[2], y, t.nome_treinamento[:30])  # Limita o treinamento a 30 caracteres
-        pdf.drawString(x_positions[3], y, t.norma)
-        pdf.drawString(x_positions[4], y, t.validade_passaporte.strftime('%d/%m/%Y') if t.validade_passaporte else "-")
-        pdf.drawString(x_positions[5], y, t.status_label)
-        y -= 20  # Move para a próxima linha
+    pdf.line(30, y - 5, 580, y - 5)  
+    pdf.setFont("Helvetica", 9)
+    y -= 20  
 
-        if y < 40:  # Adiciona nova página se necessário
+    for treinamento in treinamentos:
+        # Recriando a lógica de status_label
+        if treinamento.validade_passaporte:
+            dias_restantes = (treinamento.validade_passaporte - today).days
+            if dias_restantes < 0:
+                status_label = "Vencido"
+            elif dias_restantes <= 14:
+                status_label = "Urgente"
+            elif dias_restantes <= 29:
+                status_label = "Atenção"
+            else:
+                status_label = "Válido"
+        else:
+            status_label = "Sem Validade"
+
+        pdf.drawString(x_positions[0], y, treinamento.funcionario.id_funcionario)
+        pdf.drawString(x_positions[1], y, treinamento.funcionario.nome_completo[:22])  
+        pdf.drawString(x_positions[2], y, treinamento.nome_treinamento[:30])  
+        pdf.drawString(x_positions[3], y, treinamento.norma)
+        pdf.drawString(x_positions[4], y, treinamento.validade_passaporte.strftime("%d/%m/%Y") if treinamento.validade_passaporte else "-")
+        pdf.drawString(x_positions[5], y, status_label)
+
+        y -= 20  
+        if y < 50:
             pdf.showPage()
-            pdf.setFont("Helvetica", 10)
-            y = height - 40
+            pdf.setFont("Helvetica", 9)
+            y = height - 50
 
     pdf.save()
-    buffer.seek(0)
-
-    return FileResponse(buffer, as_attachment=True, filename="treinamentos.pdf")
+    return response
