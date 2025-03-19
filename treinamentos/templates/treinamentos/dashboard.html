@@ -141,16 +141,16 @@
             <tbody>
                 {% for treinamento in treinamentos %}
                 <tr>
-                    <td>{{ treinamento.id_funcionario }}</td>
-                    <td>{{ treinamento.nome_funcionario }}</td>
+                    <td>{{ treinamento.funcionario.id_funcionario }}</td>
+                    <td>{{ treinamento.funcionario.nome }}</td>
                     <td>{{ treinamento.nome_treinamento }}</td>
                     <td>{{ treinamento.norma }}</td>
-                    <td>{{ treinamento.data_vencimento }}</td>
+                    <td>{{ treinamento.validade_passaporte|default:"-" }}</td>
                     <td>{{ treinamento.status }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
-        </table>
+        </table>        
     </div>
 </div>
 
