@@ -10,3 +10,4 @@ typing_extensions==4.12.2
 tzdata==2025.1
 whitenoise==6.9.0
 pandas==2.2.2
+reportlab==4.0.7
