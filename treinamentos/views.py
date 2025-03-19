@@ -64,6 +64,7 @@ def dashboard_treinamentos(request):
         "atencao": atencao,
         "ok": ok,
         "sem_validade": sem_validade,
+        "treinamentos": treinamentos,
     }
 
     return render(request, "treinamentos/dashboard.html", context)
