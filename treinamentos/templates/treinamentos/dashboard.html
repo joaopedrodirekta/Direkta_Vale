@@ -142,24 +142,12 @@
                 {% for treinamento in treinamentos %}
                 <tr>
                     <td>{{ treinamento.funcionario.id_funcionario }}</td>
-                    <td>{{ treinamento.funcionario.nome }}</td>
+                    <td>{{ treinamento.funcionario.nome_completo }}</td>
                     <td>{{ treinamento.nome_treinamento }}</td>
                     <td>{{ treinamento.norma }}</td>
                     <td>{{ treinamento.validade_passaporte|default:"-" }}</td>
                     <td>
-                        {% if treinamento.validade_passaporte %}
-                            {% if treinamento.validade_passaporte <= today %}
-                                <span class="badge bg-danger">Vencido</span>
-                            {% elif treinamento.validade_passaporte <= today|add:"14 days" %}
-                                <span class="badge bg-warning">Urgente</span>
-                            {% elif treinamento.validade_passaporte <= today|add:"29 days" %}
-                                <span class="badge bg-primary">Atenção</span>
-                            {% else %}
-                                <span class="badge bg-success">Válido</span>
-                            {% endif %}
-                        {% else %}
-                            <span class="badge bg-secondary">Sem Validade</span>
-                        {% endif %}
+                        <span class="badge {{ treinamento.status_class }}">{{ treinamento.status_label }}</span>
                     </td>
                 </tr>
                 {% endfor %}
