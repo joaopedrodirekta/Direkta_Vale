@@ -23,6 +23,7 @@
     .chart-container {
         display: flex;
         justify-content: space-between;
+        gap: 30px;
         align-items: center;
         flex-wrap: nowrap;
         padding: 20px;
@@ -30,7 +31,7 @@
 
     .chart-box {
         width: 230px;
-        height: 230px;
+        height: 260px;
         background-color: #e9ecef;
         padding: 10px;
         border-radius: 15px;
@@ -52,6 +53,13 @@
         transform: translate(-50%, -50%);
     }
 
+    .chart-label {
+        margin-top: 10px;
+        font-size: 16px;
+        font-weight: bold;
+        text-align: center;
+    }    
+
     canvas {
         width: 140px !important;
         height: 140px !important;
@@ -65,26 +73,31 @@
         <div class="chart-box">
             <canvas id="statusVencidos"></canvas>
             <span class="chart-number" style="color: #dc3545;">{{ vencidos }}</span>
+            <p class="chart-label" style="color: #dc3545;">Treinamentos Vencidos</p>
         </div>
 
         <div class="chart-box">
             <canvas id="statusAlerta"></canvas>
             <span class="chart-number" style="color: #ffc107;">{{ alerta }}</span>
+            <p class="chart-label" style="color: #ffc107;">Urgência! Renovar!</p>
         </div>
 
         <div class="chart-box">
             <canvas id="statusAtencao"></canvas>
             <span class="chart-number" style="color: #007bff;">{{ atencao }}</span>
+            <p class="chart-label" style="color: #007bff;">Próximo ao Vencimento!</p>
         </div>
 
         <div class="chart-box">
             <canvas id="statusOk"></canvas>
             <span class="chart-number" style="color: #28a745;">{{ ok }}</span>
+            <p class="chart-label" style="color: #28a745;">Treinamentos Válidos</p>
         </div>
 
         <div class="chart-box">
             <canvas id="statusSemValidade"></canvas>
             <span class="chart-number" style="color: #6c757d;">{{ sem_validade }}</span>
+            <p class="chart-label" style="color: #6c757d;">Sem Vencimento</p>
         </div>
     </div>
 </div>
