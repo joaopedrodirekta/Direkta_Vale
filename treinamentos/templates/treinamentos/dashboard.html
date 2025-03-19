@@ -22,14 +22,15 @@
 
     .chart-container {
         display: flex;
-        justify-content: center;
-        gap: 40px;
-        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 10px;
+        flex-wrap: nowrap;
+        align-items: center;
     }
 
     .chart-box {
-        width: 250px;
-        height: 250px;
+        width: 220px;
+        height: 220px;
         background-color: white;
         padding: 15px;
         border-radius: 15px;
@@ -38,18 +39,12 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        position: relative;
     }
 
-    .chart-number {
-        position: absolute;
-        font-size: 26px;
-        font-weight: bold;
-    }
-
-    .chart-label {
-        margin-top: 10px;
-        font-size: 18px;
-        font-weight: bold;
+    /* Linha divisória preta */
+    .chart-box:not(:last-child) {
+        border-right: 5px solid black;
     }
 </style>
 
@@ -58,43 +53,23 @@
 
     <div class="chart-container">
         <div class="chart-box">
-            <div style="position: relative;">
-                <canvas id="statusVencidos"></canvas>
-                <span class="chart-number" style="color: #dc3545;">{{ vencidos }}</span>
-            </div>
-            <p class="chart-label" style="color: #dc3545;">Vencidos</p>
+            <canvas id="statusVencidos"></canvas>
         </div>
 
         <div class="chart-box">
-            <div style="position: relative;">
-                <canvas id="statusAlerta"></canvas>
-                <span class="chart-number" style="color: #ffc107;">{{ alerta }}</span>
-            </div>
-            <p class="chart-label" style="color: #ffc107;">Urgência</p>
+            <canvas id="statusAlerta"></canvas>
         </div>
 
         <div class="chart-box">
-            <div style="position: relative;">
-                <canvas id="statusAtencao"></canvas>
-                <span class="chart-number" style="color: #007bff;">{{ atencao }}</span>
-            </div>
-            <p class="chart-label" style="color: #007bff;">Atenção</p>
+            <canvas id="statusAtencao"></canvas>
         </div>
 
         <div class="chart-box">
-            <div style="position: relative;">
-                <canvas id="statusOk"></canvas>
-                <span class="chart-number" style="color: #28a745;">{{ ok }}</span>
-            </div>
-            <p class="chart-label" style="color: #28a745;">Válidos</p>
+            <canvas id="statusOk"></canvas>
         </div>
 
         <div class="chart-box">
-            <div style="position: relative;">
-                <canvas id="statusSemValidade"></canvas>
-                <span class="chart-number" style="color: #6c757d;">{{ sem_validade }}</span>
-            </div>
-            <p class="chart-label" style="color: #6c757d;">Sem Validade</p>
+            <canvas id="statusSemValidade"></canvas>
         </div>
     </div>
 </div>
