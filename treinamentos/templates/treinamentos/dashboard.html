@@ -140,8 +140,8 @@
 
         <div class="filter-container">
             <input type="text" id="search" placeholder="Pesquisar..." class="form-control" style="width: 300px;">
-            <button id="exportExcel" class="btn btn-success">Exportar Excel</button>
-            <button id="exportPDF" class="btn btn-danger">Exportar PDF</button>
+            <a href="{% url 'exportar_excel' %}" class="btn btn-success">Exportar Excel</a>
+            <a href="{% url 'exportar_pdf' %}" class="btn btn-danger">Exportar PDF</a>
         </div>
 
         <table class="table table-striped" id="treinamentosTable">
