@@ -12,6 +12,8 @@ from django.http import FileResponse
 from io import BytesIO
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
+from collections import defaultdict
+import calendar
 
 def cadastrar_treinamento(request):
     funcionarios = Funcionario.objects.all()  
@@ -56,14 +58,24 @@ def cadastrar_treinamento(request):
 
 def dashboard_treinamentos(request):
     treinamentos = Treinamento.objects.select_related('funcionario').all()
-    today = timezone.now().date()  # Garante que está usando a data correta
+    today = timezone.now().date()
 
     total_treinamentos = treinamentos.count()
-    vencidos = treinamentos.filter(validade_passaporte__lte=date.today()).count()
-    alerta = treinamentos.filter(validade_passaporte__gt=date.today(), validade_passaporte__lte=date.today() + timedelta(days=14)).count()
-    atencao = treinamentos.filter(validade_passaporte__gt=date.today() + timedelta(days=15), validade_passaporte__lte=date.today() + timedelta(days=29)).count()
-    ok = treinamentos.filter(validade_passaporte__gt=date.today() + timedelta(days=30)).count()
+    vencidos = treinamentos.filter(validade_passaporte__lte=today).count()
+    alerta = treinamentos.filter(validade_passaporte__gt=today, validade_passaporte__lte=today + timedelta(days=14)).count()
+    atencao = treinamentos.filter(validade_passaporte__gt=today + timedelta(days=15), validade_passaporte__lte=today + timedelta(days=29)).count()
+    ok = treinamentos.filter(validade_passaporte__gt=today + timedelta(days=30)).count()
     sem_validade = treinamentos.filter(validade_passaporte__isnull=True).count()
+
+    treinamentos_vencendo = treinamentos.filter(validade_passaporte__gt=today)
+    treinamentos_por_mes = defaultdict(int)
+
+    for t in treinamentos_vencendo:
+        if t.validade_passaporte:
+            mes = t.validade_passaporte.strftime("%Y-%m")
+            treinamentos_por_mes[mes] += 1
+
+    treinamentos_por_mes = {calendar.month_name[int(mes.split("-")[1])]: treinamentos_por_mes[mes] for mes in sorted(treinamentos_por_mes)}
 
     for treinamento in treinamentos:
         if treinamento.validade_passaporte:
@@ -92,7 +104,8 @@ def dashboard_treinamentos(request):
         "ok": ok,
         "sem_validade": sem_validade,
         "treinamentos": treinamentos,
-        "today": today,  # Passar a data atual para uso no template
+        "today": today,
+        "treinamentos_por_mes": treinamentos_por_mes,
     }
 
     return render(request, "treinamentos/dashboard.html", context)

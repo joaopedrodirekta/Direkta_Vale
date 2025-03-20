@@ -114,6 +114,41 @@
         border: 1px solid black;
     }
 
+    .info-cards-container {
+        display: flex;
+        justify-content: space-around;
+        margin: 20px 0;
+    }
+    
+    .info-card {
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        width: 200px;
+    }
+    
+    .info-card h4 {
+        font-size: 18px;
+        margin-bottom: 10px;
+    }
+    
+    .info-card p {
+        font-size: 22px;
+        font-weight: bold;
+        color: #007bff;
+    }    
+
+    .btn-info {
+        color: white;
+        background-color: #17a2b8;
+        border: none;
+    }
+    .btn-info:hover {
+        background-color: #138496;
+    }    
+
 </style>
 
 <div class="dashboard-container">
@@ -151,6 +186,25 @@
         </div>
     </div>
 
+    <div class="info-cards-container">
+        <div class="info-card">
+            <h4>Total de Treinamentos</h4>
+            <p>{{ total_treinamentos }}</p>
+        </div>
+        <div class="info-card">
+            <h4>Treinamentos Válidos</h4>
+            <p>{{ ok }}</p>
+        </div>
+        <div class="info-card">
+            <h4>Próximos ao Vencimento</h4>
+            <p>{{ alerta + atencao }}</p>
+        </div>
+        <div class="info-card">
+            <h4>Vencidos</h4>
+            <p>{{ vencidos }}</p>
+        </div>
+    </div>    
+
     <!-- Tabela de Treinamentos -->
     <div class="table-container">
         <h3 class="dashboard-title">Treinamentos Cadastrados</h3>
@@ -181,6 +235,7 @@
                     <th>Norma</th>
                     <th>Vencimento - Passaporte</th>
                     <th>Status</th>
+                    <th>Ações</th>
                 </tr>
             </thead>
             <tbody>
@@ -193,12 +248,37 @@
                     <td>{{ treinamento.validade_passaporte|default:"-" }}</td>
                     <td>
                         <span class="badge {{ treinamento.status_class }}">{{ treinamento.status_label }}</span>
-                    </td>
+                    <td>
+                        <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#detalhesTreinamento{{ treinamento.id }}">
+                            <i class="fas fa-eye"></i> Ver Detalhes
+                        </button>
+                    </td>                        
                 </tr>
+                <div class="modal fade" id="detalhesTreinamento{{ treinamento.id }}" tabindex="-1" aria-labelledby="detalhesTreinamentoLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Detalhes do Treinamento</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p><strong>Funcionário:</strong> {{ treinamento.funcionario.nome_completo }}</p>
+                                <p><strong>Treinamento:</strong> {{ treinamento.nome_treinamento }}</p>
+                                <p><strong>Norma:</strong> {{ treinamento.norma }}</p>
+                                <p><strong>Data de Vencimento:</strong> {{ treinamento.validade_passaporte|default:"-" }}</p>
+                                <p><strong>Status:</strong> <span class="badge {{ treinamento.status_class }}">{{ treinamento.status_label }}</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>                
                 {% endfor %}
             </tbody>
         </table>        
     </div>
+</div>
+
+<div class="chart-container">
+    <canvas id="treinamentosVencendoChart"></canvas>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -247,6 +327,34 @@
         document.querySelectorAll('#treinamentosTable tbody tr').forEach(row => {
             row.style.display = row.innerText.toLowerCase().includes(searchText) ? '' : 'none';
         });
+    });
+</script>
+
+<script>
+    const ctxLineChart = document.getElementById("treinamentosVencendoChart").getContext("2d");
+
+    const treinamentosPorMes = {{ treinamentos_por_mes|safe }};
+
+    new Chart(ctxLineChart, {
+        type: "line",
+        data: {
+            labels: Object.keys(treinamentosPorMes),
+            datasets: [{
+                label: "Treinamentos Vencendo",
+                data: Object.values(treinamentosPorMes),
+                borderColor: "#dc3545",
+                backgroundColor: "rgba(220, 53, 69, 0.2)",
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: true } },
+            scales: {
+                x: { title: { display: true, text: "Meses" } },
+                y: { title: { display: true, text: "Quantidade" }, beginAtZero: true }
+            }
+        }
     });
 </script>
 
