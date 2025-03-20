@@ -220,7 +220,7 @@
                     <th>Nome</th>
                     <th>Treinamento</th>
                     <th>Norma</th>
-                    <th>Vencimento - Passaporte</th>
+                    <th>Vencimento</th>
                     <th>Status</th>
                     <th>Ações</th>
                 </tr>
@@ -232,7 +232,7 @@
                     <td>{{ treinamento.funcionario.nome_completo }}</td>
                     <td>{{ treinamento.nome_treinamento }}</td>
                     <td>{{ treinamento.norma }}</td>
-                    <td>{{ treinamento.validade_passaporte|default:"-" }}</td>
+                    <td>{{ treinamento.validade_passaporte|date:"d/m/Y" }}</td>
                     <td>
                         <span class="badge {{ treinamento.status_class }}">{{ treinamento.status_label }}</span>
                     <td>
