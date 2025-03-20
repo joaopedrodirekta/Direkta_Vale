@@ -201,6 +201,46 @@
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const totalTreinamentos = {{ total_treinamentos }};
+    const statusData = {
+        vencidos: {{ vencidos }},
+        alerta: {{ alerta }},
+        atencao: {{ atencao }},
+        ok: {{ ok }},
+        semValidade: {{ sem_validade }}
+    };
+
+    function calcularRestante(valor) {
+        return totalTreinamentos - valor >= 0 ? totalTreinamentos - valor : 0;
+    }
+
+    function criarGraficoRosca(ctx, valor, cor) {
+        new Chart(ctx, {
+            type: "doughnut",
+            data: {
+                labels: ["", "Outros"],
+                datasets: [{
+                    data: [valor, calcularRestante(valor)],
+                    backgroundColor: [cor, "#000000"]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                cutout: "75%"
+            }
+        });
+    }
+
+    criarGraficoRosca(document.getElementById("statusVencidos"), statusData.vencidos, "#dc3545");
+    criarGraficoRosca(document.getElementById("statusAlerta"), statusData.alerta, "#ffc107");
+    criarGraficoRosca(document.getElementById("statusAtencao"), statusData.atencao, "#007bff");
+    criarGraficoRosca(document.getElementById("statusOk"), statusData.ok, "#28a745");
+    criarGraficoRosca(document.getElementById("statusSemValidade"), statusData.semValidade, "#6c757d");
+</script>
+
 <script>
     document.getElementById('search').addEventListener('keyup', function () {
         let searchText = this.value.toLowerCase();
