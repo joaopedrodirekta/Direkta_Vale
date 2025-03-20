@@ -149,16 +149,38 @@
         background-color: #138496;
     }    
 
+        /* Estilizando o card "Total de Treinamentos" */
+    .total-treinamentos-container {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+
+    .total-treinamentos-card {
+        background-color: #f8f9fa;
+        border: 2px solid #007bff; /* Contorno azul */
+        border-radius: 10px;
+        padding: 15px 40px;
+        font-size: 20px;
+        font-weight: bold;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    /* Adiciona contorno nos gráficos (status) */
+    .chart-box {
+        border: 2px solid #000; /* Contorno preto */
+    }
+
 </style>
 
 <div class="dashboard-container">
-    <div style="display: flex; align-items: center; justify-content: center; gap: 20px;">
-        <h2 class="dashboard-title" style="margin: 0;">Dashboard de Treinamentos</h2>
-        <div class="info-card" style="margin: 0;">
-            <h4 style="margin-bottom: 5px;">Total de Treinamentos</h4>
-            <p style="font-size: 22px; font-weight: bold; color: #007bff;">{{ total_treinamentos }}</p>
+    <div class="total-treinamentos-container">
+        <div class="total-treinamentos-card">
+            <h4>Total de Treinamentos</h4>
+            <p>{{ total_treinamentos }}</p>
         </div>
-    </div>    
+    </div>      
 
     <div class="chart-container">
         <div class="chart-box">
