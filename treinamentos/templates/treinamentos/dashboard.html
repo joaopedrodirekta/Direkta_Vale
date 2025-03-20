@@ -97,9 +97,14 @@
     }
 
     .table thead {
+        border-top: 2px solid black !important; /* Adiciona linha preta no topo */
         border-bottom: 2px solid black !important; /* Mantém linha preta abaixo do cabeçalho */
         background-color: #f8f9fa;
         font-weight: bold;
+    }
+
+    .table tbody tr:nth-child(even) {
+        background-color: #dcdcdc; /* Ajuste o tom de cinza conforme desejar */
     }
 
     /* Estilo para o campo de filtro com borda preta */
