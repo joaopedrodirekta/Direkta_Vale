@@ -206,5 +206,18 @@ def exportar_pdf(request):
 
 def atualizar_treinamento(request, treinamento_id):
     treinamento = get_object_or_404(Treinamento, id=treinamento_id)
-    
-    return render(request, 'treinamentos/atualizar_treinamento.html', {'treinamento': treinamento})
+
+    if request.method == "POST":
+        treinamento.data_realizacao = request.POST.get("data_realizacao") or None
+        treinamento.data_termino = request.POST.get("data_termino") or None
+        treinamento.carga_horaria = request.POST.get("carga_horaria") or None
+        treinamento.validade_certificado = request.POST.get("validade_certificado") or None
+        treinamento.validade_passaporte = request.POST.get("validade_passaporte") or None
+        treinamento.save()
+        
+        messages.success(request, "Treinamento atualizado com sucesso!")
+        return redirect("dashboard_treinamentos")
+
+    return render(request, 'treinamentos/atualizar_treinamento.html', {
+        'treinamento': treinamento
+    })

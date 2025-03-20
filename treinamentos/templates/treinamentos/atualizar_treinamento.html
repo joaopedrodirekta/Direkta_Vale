@@ -2,30 +2,125 @@
 {% block title %}Atualizar Treinamento{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <h2>Atualizar Treinamento</h2>
-    <form method="POST">
+
+<style>
+    .container-atualizar {
+        max-width: 900px;
+        margin: auto;
+        padding: 20px;
+        border: 2px solid #000;
+        border-radius: 10px;
+        background-color: #f8f9fa;
+    }
+
+    .titulo-atualizar {
+        text-align: center;
+        font-size: 22px;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    label {
+        font-weight: bold;
+    }
+
+    input, select {
+        width: 100%;
+        padding: 8px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+    }
+
+    .box-secao {
+        background-color: #03396e;
+        color: white;
+        padding: 10px;
+        font-weight: bold;
+        text-align: center;
+        border-radius: 5px;
+        margin-bottom: 10px;
+    }
+
+    .btn-verde {
+        background-color: #28a745;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        font-weight: bold;
+        cursor: pointer;
+        text-align: center;
+        display: block;
+        width: 100%;
+        font-size: 16px;
+        margin-top: 15px;
+    }
+
+</style>
+
+<div class="container-atualizar">
+    <div class="titulo-atualizar">Atualizar Treinamento</div>
+
+    {% if messages %}
+    <div class="alert-container">
+        {% for message in messages %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <form method="post">
         {% csrf_token %}
-        <label>Treinamento:</label>
-        <input type="text" class="form-control" value="{{ treinamento.nome_treinamento }}" disabled>
 
-        <label>Data de Realização:</label>
-        <input type="date" class="form-control" name="data_realizacao" value="{{ treinamento.data_realizacao|date:'Y-m-d' }}">
+        <div class="box-secao">Dados do Treinamento</div>
+        <div class="form-group">
+            <label>Nome do Treinamento</label>
+            <input type="text" value="{{ treinamento.nome_treinamento }}" class="form-control" disabled>
+        </div>
+        <div class="form-group">
+            <label>Norma</label>
+            <input type="text" value="{{ treinamento.norma }}" class="form-control" disabled>
+        </div>
+        <div class="form-group">
+            <label>Carga Horária (HH:MM)</label>
+            <input type="time" name="carga_horaria" class="form-control" value="{{ treinamento.carga_horaria }}">
+        </div>        
+        <div class="form-group">
+            <label>Data Inicial</label>
+            <input type="date" name="data_realizacao" class="form-control" value="{{ treinamento.data_realizacao|date:'Y-m-d' }}">
+        </div>
+        <div class="form-group">
+            <label>Data Final</label>
+            <input type="date" name="data_termino" class="form-control" value="{{ treinamento.data_termino|date:'Y-m-d' }}">
+        </div>
+        <div class="form-group">
+            <label>Validade do Certificado</label>
+            <input type="date" name="validade_certificado" class="form-control" value="{{ treinamento.validade_certificado|date:'Y-m-d' }}">
+        </div>
+        <div class="form-group">
+            <label>Validade Passaporte - Vale</label>
+            <input type="date" name="validade_passaporte" class="form-control" value="{{ treinamento.validade_passaporte|date:'Y-m-d' }}">
+        </div>
 
-        <label>Data de Término:</label>
-        <input type="date" class="form-control" name="data_termino" value="{{ treinamento.data_termino|date:'Y-m-d' }}">
-
-        <label>Carga Horária:</label>
-        <input type="number" class="form-control" name="carga_horaria" value="{{ treinamento.carga_horaria }}">
-
-        <label>Data de Vencimento (Certificado):</label>
-        <input type="date" class="form-control" name="validade_certificado" value="{{ treinamento.validade_certificado|date:'Y-m-d' }}">
-
-        <label>Data de Vencimento (Passaporte Vale):</label>
-        <input type="date" class="form-control" name="validade_passaporte" value="{{ treinamento.validade_passaporte|date:'Y-m-d' }}">
-
-        <button type="submit" class="btn btn-success mt-3">Salvar Alterações</button>
-        <a href="{% url 'dashboard_treinamentos' %}" class="btn btn-secondary mt-3">Cancelar</a>
+        <button type="submit" class="btn-verde">Salvar Alterações</button>
     </form>
 </div>
+
+<script>
+    setTimeout(function() {
+        let alertBox = document.querySelector('.alert-container');
+        if (alertBox) {
+            alertBox.style.transition = "opacity 0.5s";
+            alertBox.style.opacity = "0";
+            setTimeout(() => alertBox.remove(), 500);
+        }
+    }, 5000);
+</script>
+
 {% endblock %}
