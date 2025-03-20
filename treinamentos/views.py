@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.contrib import messages
 from datetime import date, timedelta
@@ -203,3 +203,8 @@ def exportar_pdf(request):
 
     pdf.save()
     return response
+
+def atualizar_treinamento(request, treinamento_id):
+    treinamento = get_object_or_404(Treinamento, id=treinamento_id)
+    
+    return render(request, 'treinamentos/atualizar_treinamento.html', {'treinamento': treinamento})
