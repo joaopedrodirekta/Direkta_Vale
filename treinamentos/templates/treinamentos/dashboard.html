@@ -3,6 +3,9 @@
 
 {% block content %}
 
+<!-- Adiciona os ícones do Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
 <style>
     .dashboard-container {
         max-width: 1400px;
@@ -87,7 +90,7 @@
     }
 
     .table th, .table td {
-        border: 1px solid black !important; /* Adiciona bordas pretas em todas as células */
+        border: 1px solid black !important; /* Adiciona bordas pretas nas colunas */
         padding: 10px; /* Espaçamento interno */
         text-align: center; /* Centraliza o conteúdo */
     }
@@ -95,6 +98,20 @@
     .table thead {
         background-color: #f8f9fa; /* Fundo cinza claro para o cabeçalho */
         font-weight: bold; /* Deixa o texto em negrito */
+    }
+
+    /* Estilo para o campo de filtro com borda preta */
+    .input-group {
+        width: 320px;
+    }
+
+    .input-group-text {
+        background-color: white;
+        border: 1px solid black;
+    }
+
+    .form-control {
+        border: 1px solid black;
     }
 
 </style>
@@ -139,9 +156,20 @@
         <h3 class="dashboard-title">Treinamentos Cadastrados</h3>
 
         <div class="filter-container">
-            <input type="text" id="search" placeholder="Pesquisar..." class="form-control" style="width: 300px;">
-            <a href="{% url 'exportar_excel' %}" class="btn btn-success">Exportar Excel</a>
-            <a href="{% url 'exportar_pdf' %}" class="btn btn-danger">Exportar PDF</a>
+            <div class="input-group">
+                <span class="input-group-text">
+                    <i class="fas fa-search"></i>
+                </span>
+                <input type="text" id="search" placeholder="Filtro" class="form-control">
+            </div>
+
+            <a href="{% url 'exportar_excel' %}" class="btn btn-success">
+                <i class="fas fa-file-excel"></i> Exportar Excel
+            </a>
+
+            <a href="{% url 'exportar_pdf' %}" class="btn btn-danger">
+                <i class="fas fa-file-pdf"></i> Gerar PDF
+            </a>
         </div>
 
         <table class="table table-striped" id="treinamentosTable">
@@ -172,46 +200,6 @@
         </table>        
     </div>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-    const totalTreinamentos = {{ total_treinamentos }};
-    const statusData = {
-        vencidos: {{ vencidos }},
-        alerta: {{ alerta }},
-        atencao: {{ atencao }},
-        ok: {{ ok }},
-        semValidade: {{ sem_validade }}
-    };
-
-    function calcularRestante(valor) {
-        return totalTreinamentos - valor >= 0 ? totalTreinamentos - valor : 0;
-    }
-
-    function criarGraficoRosca(ctx, valor, cor) {
-        new Chart(ctx, {
-            type: "doughnut",
-            data: {
-                labels: ["", "Outros"],
-                datasets: [{
-                    data: [valor, calcularRestante(valor)],
-                    backgroundColor: [cor, "#000000"]
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: { legend: { display: false } },
-                cutout: "75%"
-            }
-        });
-    }
-
-    criarGraficoRosca(document.getElementById("statusVencidos"), statusData.vencidos, "#dc3545");
-    criarGraficoRosca(document.getElementById("statusAlerta"), statusData.alerta, "#ffc107");
-    criarGraficoRosca(document.getElementById("statusAtencao"), statusData.atencao, "#007bff");
-    criarGraficoRosca(document.getElementById("statusOk"), statusData.ok, "#28a745");
-    criarGraficoRosca(document.getElementById("statusSemValidade"), statusData.semValidade, "#6c757d");
-</script>
 
 <script>
     document.getElementById('search').addEventListener('keyup', function () {
