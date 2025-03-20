@@ -279,6 +279,7 @@
                     </td>
                                                 
                 </tr>
+                <!-- Modal de Detalhes do Treinamento -->
                 <div class="modal fade" id="detalhesTreinamento{{ treinamento.id }}" tabindex="-1" aria-labelledby="detalhesTreinamentoLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -290,12 +291,20 @@
                                 <p><strong>Funcionário:</strong> {{ treinamento.funcionario.nome_completo }}</p>
                                 <p><strong>Treinamento:</strong> {{ treinamento.nome_treinamento }}</p>
                                 <p><strong>Norma:</strong> {{ treinamento.norma }}</p>
-                                <p><strong>Data de Vencimento:</strong> {{ treinamento.validade_passaporte|default:"-" }}</p>
+                                <p><strong>Data de Realização:</strong> {{ treinamento.data_realizacao|default:"-" }}</p>
+                                <p><strong>Data de Término:</strong> {{ treinamento.data_termino|default:"-" }}</p>
+                                <p><strong>Carga Horária:</strong> {{ treinamento.carga_horaria|default:"-" }} horas</p>
+                                <p><strong>Data de Vencimento (Certificado):</strong> {{ treinamento.validade_certificado|default:"-" }}</p>
+                                <p><strong>Data de Vencimento (Passaporte Vale):</strong> {{ treinamento.validade_passaporte|default:"-" }}</p>
                                 <p><strong>Status:</strong> <span class="badge {{ treinamento.status_class }}">{{ treinamento.status_label }}</span></p>
+                            </div>
+                            <div class="modal-footer">
+                                <a href="{% url 'atualizar_treinamento' treinamento.id %}" class="btn btn-warning">Atualizar Treinamento</a>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
                             </div>
                         </div>
                     </div>
-                </div>                
+                </div>              
                 {% endfor %}
             </tbody>
         </table>        
