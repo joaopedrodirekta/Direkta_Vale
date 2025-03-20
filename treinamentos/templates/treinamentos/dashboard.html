@@ -152,7 +152,13 @@
 </style>
 
 <div class="dashboard-container">
-    <h2 class="dashboard-title">Dashboard de Treinamentos</h2>
+    <div style="display: flex; align-items: center; justify-content: center; gap: 20px;">
+        <h2 class="dashboard-title" style="margin: 0;">Dashboard de Treinamentos</h2>
+        <div class="info-card" style="margin: 0;">
+            <h4 style="margin-bottom: 5px;">Total de Treinamentos</h4>
+            <p style="font-size: 22px; font-weight: bold; color: #007bff;">{{ total_treinamentos }}</p>
+        </div>
+    </div>    
 
     <div class="chart-container">
         <div class="chart-box">
@@ -185,25 +191,6 @@
             <p class="chart-label" style="color: #6c757d;">Sem Vencimento</p>
         </div>
     </div>
-
-    <div class="info-cards-container">
-        <div class="info-card">
-            <h4>Total de Treinamentos</h4>
-            <p>{{ total_treinamentos }}</p>
-        </div>
-        <div class="info-card">
-            <h4>Treinamentos Válidos</h4>
-            <p>{{ ok }}</p>
-        </div>
-        <div class="info-card">
-            <h4>Próximos ao Vencimento</h4>
-            <p>{{ proximos_vencimento }}</p>
-        </div>
-        <div class="info-card">
-            <h4>Vencidos</h4>
-            <p>{{ vencidos }}</p>
-        </div>
-    </div>    
 
     <!-- Tabela de Treinamentos -->
     <div class="table-container">
@@ -249,10 +236,11 @@
                     <td>
                         <span class="badge {{ treinamento.status_class }}">{{ treinamento.status_label }}</span>
                     <td>
-                        <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#detalhesTreinamento{{ treinamento.id }}">
-                            <i class="fas fa-eye"></i> Ver Detalhes
+                        <button class="btn btn-info btn-sm" style="padding: 5px 10px; font-size: 12px;" data-bs-toggle="modal" data-bs-target="#detalhesTreinamento{{ treinamento.id }}">
+                            Detalhes
                         </button>
-                    </td>                        
+                    </td>
+                                                
                 </tr>
                 <div class="modal fade" id="detalhesTreinamento{{ treinamento.id }}" tabindex="-1" aria-labelledby="detalhesTreinamentoLabel" aria-hidden="true">
                     <div class="modal-dialog">
