@@ -90,14 +90,16 @@
     }
 
     .table th, .table td {
-        border: 1px solid black !important; /* Adiciona bordas pretas nas colunas */
-        padding: 10px; /* Espaçamento interno */
-        text-align: center; /* Centraliza o conteúdo */
+        border-left: 1px solid black !important; /* Apenas bordas entre colunas */
+        border-right: 1px solid black !important; /* Apenas bordas entre colunas */
+        padding: 10px;
+        text-align: center;
     }
 
     .table thead {
-        background-color: #f8f9fa; /* Fundo cinza claro para o cabeçalho */
-        font-weight: bold; /* Deixa o texto em negrito */
+        border-bottom: 2px solid black !important; /* Mantém linha preta abaixo do cabeçalho */
+        background-color: #f8f9fa;
+        font-weight: bold;
     }
 
     /* Estilo para o campo de filtro com borda preta */
