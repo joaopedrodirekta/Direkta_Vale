@@ -204,6 +204,10 @@ def exportar_pdf(request):
     pdf.save()
     return response
 
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib import messages
+from .models import Treinamento
+
 def atualizar_treinamento(request, treinamento_id):
     treinamento = get_object_or_404(Treinamento, id=treinamento_id)
     funcionario = treinamento.funcionario  # Pegando o funcionário relacionado
@@ -215,7 +219,7 @@ def atualizar_treinamento(request, treinamento_id):
         treinamento.validade_certificado = request.POST.get("validade_certificado") or None
         treinamento.validade_passaporte = request.POST.get("validade_passaporte") or None
         treinamento.save()
-        
+
         messages.success(request, "Treinamento atualizado com sucesso!")
         return redirect("dashboard_treinamentos")
 
@@ -223,3 +227,9 @@ def atualizar_treinamento(request, treinamento_id):
         'treinamento': treinamento,
         'funcionario': funcionario
     })
+
+def excluir_treinamento(request, treinamento_id):
+    treinamento = get_object_or_404(Treinamento, id=treinamento_id)
+    treinamento.delete()
+    messages.success(request, "Treinamento excluído com sucesso!")
+    return redirect("dashboard_treinamentos")

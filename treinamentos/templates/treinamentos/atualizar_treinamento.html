@@ -125,8 +125,34 @@
         </div>
 
         <button type="submit" class="btn-verde">Salvar Alterações</button>
-    </form>
-</div>
+
+        <!-- Botão de Exclusão que aciona o modal -->
+        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmarExclusaoModal">
+            Excluir Treinamento
+        </button>
+        
+        <!-- Modal de Confirmação -->
+        <div class="modal fade" id="confirmarExclusaoModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title text-danger">Confirmar Exclusão</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Tem certeza que deseja excluir o treinamento <strong>{{ treinamento.nome_treinamento }}</strong> do funcionário <strong>{{ treinamento.funcionario.nome_completo }}</strong>?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <!-- Form para exclusão do treinamento -->
+                        <form method="POST" action="{% url 'excluir_treinamento' treinamento.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Sim, Excluir</button>
+                        </form>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+        </div>        
 
 <script>
     setTimeout(function() {
