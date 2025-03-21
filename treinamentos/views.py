@@ -206,6 +206,7 @@ def exportar_pdf(request):
 
 def atualizar_treinamento(request, treinamento_id):
     treinamento = get_object_or_404(Treinamento, id=treinamento_id)
+    funcionario = treinamento.funcionario  # Pegando o funcionário relacionado
 
     if request.method == "POST":
         treinamento.data_inicio = request.POST.get("data_inicio") or None
@@ -219,5 +220,6 @@ def atualizar_treinamento(request, treinamento_id):
         return redirect("dashboard_treinamentos")
 
     return render(request, 'treinamentos/atualizar_treinamento.html', {
-        'treinamento': treinamento
+        'treinamento': treinamento,
+        'funcionario': funcionario
     })

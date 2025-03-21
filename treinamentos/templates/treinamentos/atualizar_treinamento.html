@@ -78,6 +78,22 @@
     <form method="post">
         {% csrf_token %}
 
+        <div class="box-secao">Dados do Funcionário</div>
+        <div class="form-group">
+            <label>Nome do Funcionário</label>
+            <input type="text" class="form-control" value="{{ funcionario.nome_completo }}" disabled>
+        </div>
+
+        <div class="form-group">
+            <label>ID do Funcionário</label>
+            <input type="text" class="form-control" value="{{ funcionario.id_funcionario }}" disabled>
+        </div>
+
+        <div class="form-group">
+            <label>Função</label>
+            <input type="text" class="form-control" value="{{ funcionario.funcao }}" disabled>
+        </div>
+
         <div class="box-secao">Dados do Treinamento</div>
         <div class="form-group">
             <label>Nome do Treinamento</label>
