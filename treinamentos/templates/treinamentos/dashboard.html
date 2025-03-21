@@ -241,7 +241,7 @@
 
             <div class="export-buttons">
                 <a href="{% url 'exportar_excel' %}" class="btn btn-success">
-                    <i class="fas fa-file-excel"></i> Exportar Excel
+                    <i class="fas fa-file-excel"></i> Exportar para Excel
                 </a>
 
                 <a href="{% url 'exportar_pdf' %}" class="btn btn-danger">
@@ -291,8 +291,8 @@
                                 <p><strong>Funcionário:</strong> {{ treinamento.funcionario.nome_completo }}</p>
                                 <p><strong>Treinamento:</strong> {{ treinamento.nome_treinamento }}</p>
                                 <p><strong>Norma:</strong> {{ treinamento.norma }}</p>
-                                <p><strong>Data de Realização:</strong> {{ treinamento.data_realizacao|default:"-" }}</p>
-                                <p><strong>Data de Término:</strong> {{ treinamento.data_termino|default:"-" }}</p>
+                                <p><strong>Data de Realização:</strong> {{ treinamento.data_inicio|default:"-" }}</p>
+                                <p><strong>Data de Término:</strong> {{ treinamento.data_fim|default:"-" }}</p>
                                 <p><strong>Carga Horária:</strong> {{ treinamento.carga_horaria|default:"-" }} horas</p>
                                 <p><strong>Data de Vencimento (Certificado):</strong> {{ treinamento.validade_certificado|default:"-" }}</p>
                                 <p><strong>Data de Vencimento (Passaporte Vale):</strong> {{ treinamento.validade_passaporte|default:"-" }}</p>

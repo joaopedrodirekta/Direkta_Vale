@@ -208,8 +208,8 @@ def atualizar_treinamento(request, treinamento_id):
     treinamento = get_object_or_404(Treinamento, id=treinamento_id)
 
     if request.method == "POST":
-        treinamento.data_realizacao = request.POST.get("data_realizacao") or None
-        treinamento.data_termino = request.POST.get("data_termino") or None
+        treinamento.data_inicio = request.POST.get("data_inicio") or None
+        treinamento.data_fim = request.POST.get("data_fim") or None
         treinamento.carga_horaria = request.POST.get("carga_horaria") or None
         treinamento.validade_certificado = request.POST.get("validade_certificado") or None
         treinamento.validade_passaporte = request.POST.get("validade_passaporte") or None
