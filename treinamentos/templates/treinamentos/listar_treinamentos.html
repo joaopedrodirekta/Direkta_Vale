@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block title %}Listar Treinamentos{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Lista de Treinamentos</h2>
+
+    <!-- Filtros -->
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <input type="text" class="form-control" placeholder="Filtrar por Funcionário" id="filtroFuncionario">
+        </div>
+        <div class="col-md-4">
+            <input type="text" class="form-control" placeholder="Filtrar por Treinamento" id="filtroTreinamento">
+        </div>
+        <div class="col-md-4">
+            <select class="form-control" id="filtroStatus">
+                <option value="">Todos os Status</option>
+                <option value="Válido">Válido</option>
+                <option value="Urgente">Urgente</option>
+                <option value="Vencido">Vencido</option>
+                <option value="Sem Validade">Sem Validade</option>
+                <option value="Atenção">Atenção</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Tabela de Treinamentos -->
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped" id="tabelaTreinamentos">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>
+                        <button class="btn btn-link text-white p-0" onclick="ordenarPor('funcionario')">
+                            Funcionário <i class="fas fa-sort"></i>
+                        </button>
+                    </th>
+                    <th>
+                        <button class="btn btn-link text-white p-0" onclick="ordenarPor('treinamento')">
+                            Treinamento <i class="fas fa-sort"></i>
+                        </button>
+                    </th>
+                    <th>Norma</th>
+                    <th>Carga Horária</th>
+                    <th>Data Inicial</th>
+                    <th>Data Final</th>
+                    <th>Validade Certificado</th>
+                    <th>Validade Passaporte</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for treinamento in treinamentos %}
+                <tr>
+                    <td>{{ treinamento.funcionario.id_funcionario }}</td>
+                    <td>{{ treinamento.funcionario.nome_completo }}</td>
+                    <td>{{ treinamento.nome_treinamento }}</td>
+                    <td>{{ treinamento.norma }}</td>
+                    <td>{{ treinamento.carga_horaria }}</td>
+                    <td>{{ treinamento.data_inicio|date:"d/m/Y" }}</td>
+                    <td>{{ treinamento.data_fim|date:"d/m/Y" }}</td>
+                    <td>{{ treinamento.validade_certificado|date:"d/m/Y" }}</td>
+                    <td>{{ treinamento.validade_passaporte|date:"d/m/Y" }}</td>
+                    <td><span class="badge {{ treinamento.status_class }}">{{ treinamento.status_label }}</span></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+function ordenarPor(campo) {
+    // lógica JS para ordenação futura
+    alert("Ordenar por: " + campo);
+}
+</script>
+{% endblock %}
