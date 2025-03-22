@@ -8,5 +8,5 @@ urlpatterns = [
     path("exportar-excel/", exportar_excel, name="exportar_excel"),
     path("exportar-pdf/", exportar_pdf, name="exportar_pdf"),
     path('atualizar/<int:treinamento_id>/', atualizar_treinamento, name='atualizar_treinamento'),
-    path("excluir/<int:treinamento_id>/", excluir_treinamento, name="excluir_treinamento"),
+    path('treinamentos/excluir/<int:treinamento_id>/', views.excluir_treinamento, name='excluir_treinamento'),
 ]

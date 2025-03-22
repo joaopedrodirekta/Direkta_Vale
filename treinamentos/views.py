@@ -230,6 +230,11 @@ def atualizar_treinamento(request, treinamento_id):
 
 def excluir_treinamento(request, treinamento_id):
     treinamento = get_object_or_404(Treinamento, id=treinamento_id)
-    treinamento.delete()
-    messages.success(request, "Treinamento excluído com sucesso!")
-    return redirect("dashboard_treinamentos")
+
+    if request.method == 'POST':
+        treinamento.delete()
+        messages.success(request, "Treinamento excluído com sucesso!")
+        return redirect('dashboard_treinamentos')
+    
+    # Por segurança, se acessarem por GET, redireciona também
+    return redirect('dashboard_treinamentos')
