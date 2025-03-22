@@ -5,162 +5,93 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Sistema Empresarial{% endblock %}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+o+6Cc9pEJgqH1e3yZKtvA3c4UxKwmtYdZr1+4xTmFj7sKpY1f" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         body {
-            display: flex;
-            min-height: 100vh;
             margin: 0;
+            padding-top: 60px; /* Espaço para navbar fixa */
         }
-        .sidebar {
+        .navbar {
             background-color: #03396e;
-            color: white;
-            width: 220px;
-            padding: 10px 20px;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
         }
-        .sidebar h4 {
-            text-align: center;
-            font-size: 1.8rem;
-            margin-bottom: 20px;
-            margin-top: 10px;
+        .navbar .nav-link,
+        .navbar .navbar-brand,
+        .navbar .dropdown-toggle {
             color: white;
-        }
-        .sidebar h5 {
-            font-size: 1rem;
-            margin-top: 15px;
-            margin-bottom: 10px;
             font-weight: bold;
-            color: #f5f5f5;
         }
-        .topbar {
+        .navbar .nav-link:hover,
+        .navbar .dropdown-toggle:hover {
+            color: #ffc107;
+        }
+        .dropdown-menu {
             background-color: #03396e;
+        }
+        .dropdown-menu .dropdown-item {
             color: white;
-            padding: 15px 20px;
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            height: 60px;
-            position: fixed;
-            top: 0;
-            left: 220px;
-            right: 0;
-            z-index: 1000;
         }
-        .topbar a {
-            color: white;
-            text-decoration: none;
-            font-size: 1rem;
-            margin-left: 15px;
-        }
-        .btn-custom {
-            width: 100%;
-            text-align: left;
-            font-size: 1rem;
-            background-color: #03396e;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 5px;
-            transition: background 0.3s ease;
-            margin-bottom: 10px;
-        }
-        .btn-custom i {
-            margin-right: 8px;
-        }
-        .btn-custom:hover {
-            background-color: white;
-            color: #03396e;
+        .dropdown-menu .dropdown-item:hover {
+            background-color: #011f40;
         }
         .content {
-            flex: 1;
-            padding: 70px 20px 20px 200px;
+            padding: 20px;
         }
-        .content h1 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .card {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        .sidebar a.btn-custom {
-            display: flex;
-            align-items: center;
-            justify-content: left;
-            padding: 12px 15px;
-            width: 100%;
-            font-size: 16px;
-            font-weight: bold;
-            color: white;
-            background-color: #03396e;
-            border: none;
-            border-radius: 5px;
-            transition: background 0.3s ease;
-        }
-        .sidebar a.btn-custom i {
-            margin-right: 10px;
-        }
-        .sidebar a.btn-custom:hover {
-            background-color: white;
-            color: #03396e;
-        }
-        .custom-success-message {
-            background-color: white;
-            color: #007f00;
-            border: 2px solid #007f00;
-            border-radius: 8px;
-            padding: 10px;
-            text-align: center;
-            font-weight: bold;
-            max-width: 400px;
-            margin: 10px auto;
-            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-        }
-    </style>    
+    </style>
 </head>
 <body>
-    <div class="sidebar">
-        <h4>Direkta</h4>
-        
-        <h5><i class="fas fa-users"></i> Funcionários</h5>
-        <a href="{% url 'cadastrar_funcionario' %}" class="btn btn-custom">
-            <i class="fas fa-user-plus"></i> Cadastro
-        </a>
-        <a href="{% url 'listar_funcionarios' %}" class="btn btn-custom">
-            <i class="fas fa-list"></i> Lista de Funcionários
-        </a>      
 
-        <h5><i class="fas fa-chalkboard-teacher"></i> Treinamentos</h5>
-        <a href="{% url 'cadastrar_treinamento' %}" class="btn btn-custom">
-            <i class="fas fa-edit"></i> Cadastro
-        </a>
-        <a href="{% url 'dashboard_treinamentos' %}" class="btn btn-custom">
-            <i class="fas fa-chart-pie"></i> Dashboard
-        </a>
-
-        <h5><i class="fas fa-warehouse"></i> Almoxarifado</h5>
-        <a href="{% url 'inventario_home' %}" class="btn btn-custom">
-            <i class="fas fa-boxes"></i> Inventário
-        </a>
+<nav class="navbar navbar-expand-lg fixed-top">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Direkta</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <!-- Funcionários -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-users"></i> Funcionários
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'cadastrar_funcionario' %}"><i class="fas fa-user-plus"></i> Cadastro</a></li>
+                        <li><a class="dropdown-item" href="{% url 'listar_funcionarios' %}"><i class="fas fa-list"></i> Lista</a></li>
+                    </ul>
+                </li>
+                <!-- Treinamentos -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-chalkboard-teacher"></i> Treinamentos
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'cadastrar_treinamento' %}"><i class="fas fa-edit"></i> Cadastro</a></li>
+                        <li><a class="dropdown-item" href="{% url 'dashboard_treinamentos' %}"><i class="fas fa-chart-pie"></i> Dashboard</a></li>
+                    </ul>
+                </li>
+                <!-- Almoxarifado -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-warehouse"></i> Almoxarifado
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'inventario_home' %}"><i class="fas fa-boxes"></i> Inventário</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'home' %}"><i class="fas fa-home"></i> Página Inicial</a>
+                </li>
+            </ul>
+        </div>
     </div>
-    
-    <div class="topbar">
-        <a href="{% url 'home' %}"><i class="fas fa-home"></i> Página Inicial</a>
-    </div>
+</nav>
 
-    <div class="content">
-        {% block content %}
-        {% endblock %}
-    </div>
+<div class="content">
+    {% block content %}{% endblock %}
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-C7dAoxzDsCS2XnA1sMpy+qDGP9fDrweNMPFcu5D95d9TNNWDNQ1F9A0zwmVKe9jN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
