@@ -1,46 +1,36 @@
 {% extends 'base.html' %}
-{% block title %}Listar Treinamentos{% endblock %}
+{% block title %}Lista de Treinamentos{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
     <h2 class="text-center mb-4">Lista de Treinamentos</h2>
 
-    <!-- Filtros -->
     <div class="row mb-3">
         <div class="col-md-4">
-            <input type="text" class="form-control" placeholder="Filtrar por Funcionário" id="filtroFuncionario">
+            <input type="text" class="form-control" id="filtro-funcionario" placeholder="Filtrar por Funcionário">
         </div>
         <div class="col-md-4">
-            <input type="text" class="form-control" placeholder="Filtrar por Treinamento" id="filtroTreinamento">
+            <input type="text" class="form-control" id="filtro-treinamento" placeholder="Filtrar por Treinamento">
         </div>
         <div class="col-md-4">
-            <select class="form-control" id="filtroStatus">
+            <select class="form-control" id="filtro-status">
                 <option value="">Todos os Status</option>
                 <option value="Válido">Válido</option>
-                <option value="Urgente">Urgente</option>
                 <option value="Vencido">Vencido</option>
-                <option value="Sem Validade">Sem Validade</option>
+                <option value="Urgente">Urgente</option>
                 <option value="Atenção">Atenção</option>
+                <option value="Sem Validade">Sem Validade</option>
             </select>
         </div>
     </div>
 
-    <!-- Tabela de Treinamentos -->
     <div class="table-responsive">
-        <table class="table table-bordered table-striped" id="tabelaTreinamentos">
+        <table class="table table-bordered table-striped text-center align-middle">
             <thead class="table-dark">
                 <tr>
                     <th>ID</th>
-                    <th>
-                        <button class="btn btn-link text-white p-0" onclick="ordenarPor('funcionario')">
-                            Funcionário <i class="fas fa-sort"></i>
-                        </button>
-                    </th>
-                    <th>
-                        <button class="btn btn-link text-white p-0" onclick="ordenarPor('treinamento')">
-                            Treinamento <i class="fas fa-sort"></i>
-                        </button>
-                    </th>
+                    <th id="ordenar-nome" class="ordenavel" style="cursor: pointer;">Funcionário <i class="fas fa-sort"></i></th>
+                    <th>Treinamento</th>
                     <th>Norma</th>
                     <th>Carga Horária</th>
                     <th>Data Inicial</th>
@@ -50,18 +40,18 @@
                     <th>Status</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="tabela-treinamentos">
                 {% for treinamento in treinamentos %}
                 <tr>
                     <td>{{ treinamento.funcionario.id_funcionario }}</td>
                     <td>{{ treinamento.funcionario.nome_completo }}</td>
                     <td>{{ treinamento.nome_treinamento }}</td>
                     <td>{{ treinamento.norma }}</td>
-                    <td>{{ treinamento.carga_horaria }}</td>
-                    <td>{{ treinamento.data_inicio|date:"d/m/Y" }}</td>
-                    <td>{{ treinamento.data_fim|date:"d/m/Y" }}</td>
-                    <td>{{ treinamento.validade_certificado|date:"d/m/Y" }}</td>
-                    <td>{{ treinamento.validade_passaporte|date:"d/m/Y" }}</td>
+                    <td>{{ treinamento.carga_horaria|default:"-" }}</td>
+                    <td>{{ treinamento.data_inicio|date:'d/m/Y'|default:"-" }}</td>
+                    <td>{{ treinamento.data_fim|date:'d/m/Y'|default:"-" }}</td>
+                    <td>{{ treinamento.validade_certificado|date:'d/m/Y'|default:"-" }}</td>
+                    <td>{{ treinamento.validade_passaporte|date:'d/m/Y'|default:"-" }}</td>
                     <td><span class="badge {{ treinamento.status_class }}">{{ treinamento.status_label }}</span></td>
                 </tr>
                 {% endfor %}
@@ -71,9 +61,49 @@
 </div>
 
 <script>
-function ordenarPor(campo) {
-    // lógica JS para ordenação futura
-    alert("Ordenar por: " + campo);
-}
+    // Filtro por funcionário
+    document.getElementById('filtro-funcionario').addEventListener('input', function () {
+        let filtro = this.value.toLowerCase();
+        let linhas = document.querySelectorAll('#tabela-treinamentos tr');
+        linhas.forEach(function (linha) {
+            let nome = linha.children[1].textContent.toLowerCase();
+            linha.style.display = nome.includes(filtro) ? '' : 'none';
+        });
+    });
+
+    // Filtro por nome do treinamento
+    document.getElementById('filtro-treinamento').addEventListener('input', function () {
+        let filtro = this.value.toLowerCase();
+        let linhas = document.querySelectorAll('#tabela-treinamentos tr');
+        linhas.forEach(function (linha) {
+            let nome = linha.children[2].textContent.toLowerCase();
+            linha.style.display = nome.includes(filtro) ? '' : 'none';
+        });
+    });
+
+    // Filtro por status
+    document.getElementById('filtro-status').addEventListener('change', function () {
+        let filtro = this.value.toLowerCase();
+        let linhas = document.querySelectorAll('#tabela-treinamentos tr');
+        linhas.forEach(function (linha) {
+            let status = linha.children[9].textContent.toLowerCase();
+            linha.style.display = filtro === '' || status.includes(filtro) ? '' : 'none';
+        });
+    });
+
+    // Ordenar por nome do funcionário
+    document.getElementById('ordenar-nome').addEventListener('click', function () {
+        let tabela = document.getElementById('tabela-treinamentos');
+        let linhas = Array.from(tabela.querySelectorAll('tr'));
+        let ordenado = this.classList.toggle('ordenado');
+
+        linhas.sort(function (a, b) {
+            let nomeA = a.children[1].textContent.toLowerCase();
+            let nomeB = b.children[1].textContent.toLowerCase();
+            return ordenado ? nomeA.localeCompare(nomeB) : nomeB.localeCompare(nomeA);
+        });
+
+        linhas.forEach(linha => tabela.appendChild(linha));
+    });
 </script>
 {% endblock %}
