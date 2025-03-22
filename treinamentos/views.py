@@ -238,3 +238,35 @@ def excluir_treinamento(request, treinamento_id):
     
     # Por segurança, se acessarem por GET, redireciona também
     return redirect('dashboard_treinamentos')
+
+def listar_treinamentos(request):
+    treinamentos = Treinamento.objects.select_related('funcionario').all()
+
+    # Filtros
+    nome_funcionario = request.GET.get('nome_funcionario', '')
+    nome_treinamento = request.GET.get('nome_treinamento', '')
+    status = request.GET.get('status', '')
+
+    if nome_funcionario:
+        treinamentos = treinamentos.filter(funcionario__nome_completo__icontains=nome_funcionario)
+
+    if nome_treinamento:
+        treinamentos = treinamentos.filter(nome_treinamento__icontains=nome_treinamento)
+
+    if status:
+        treinamentos = treinamentos.filter(status=status)
+
+    # Ordenação A-Z
+    ordenar_por = request.GET.get('ordenar_por')
+    if ordenar_por == 'funcionario':
+        treinamentos = treinamentos.order_by('funcionario__nome_completo')
+    elif ordenar_por == 'treinamento':
+        treinamentos = treinamentos.order_by('nome_treinamento')
+
+    return render(request, 'treinamentos/listar_treinamentos.html', {
+        'treinamentos': treinamentos,
+        'nome_funcionario': nome_funcionario,
+        'nome_treinamento': nome_treinamento,
+        'status': status,
+        'ordenar_por': ordenar_por,
+    })
