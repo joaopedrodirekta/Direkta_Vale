@@ -117,10 +117,18 @@
             <tr>
                 <th>ID</th>
                 <th>
-                    <a href="?ordenar_por={% if request.GET.ordenar_por == 'nome' %}-nome{% else %}nome{% endif %}" 
-                       class="text-white text-decoration-none">
-                        Nome <i class="fas fa-sort"></i>
+                    <a href="?ordenar_por={% if ordenar_por == 'nome' %}-nome{% else %}nome{% endif %}" 
+                        class="text-white text-decoration-none">
+                        Nome 
+                        {% if ordenar_por == "nome" %}
+                            <i class="fas fa-sort-up"></i> <!-- Ícone de ordem crescente -->
+                        {% elif ordenar_por == "-nome" %}
+                            <i class="fas fa-sort-down"></i> <!-- Ícone de ordem decrescente -->
+                        {% else %}
+                            <i class="fas fa-sort"></i> <!-- Ícone padrão -->
+                        {% endif %}
                     </a>
+
                 </th>                               
                 <th>Departamento</th>
                 <th>Função</th>

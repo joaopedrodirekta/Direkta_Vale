@@ -22,25 +22,37 @@ def cadastrar_funcionario(request):
     return render(request, 'funcionarios/cadastro.html', {'form': form})
 
 def listar_funcionarios(request):
-    query = request.GET.get('q')
-    funcionarios = Funcionario.objects.all().order_by('-data_admissao')
+    query = request.GET.get('q', '')
+    ordenar_por = request.GET.get("ordenar_por", "id_funcionario")
+
+    # Definir os critérios de ordenação
+    if ordenar_por == "nome":
+        ordenacao = "nome_completo"
+    elif ordenar_por == "-nome":
+        ordenacao = "-nome_completo"
+    else:
+        ordenacao = "id_funcionario"
+
+    # Filtragem e ordenação antes da paginação
+    funcionarios = Funcionario.objects.all().order_by(ordenacao)
 
     if query:
         funcionarios = funcionarios.filter(nome_completo__icontains=query)
 
-    paginator = Paginator(funcionarios, 10)  # Paginação com 10 funcionários por página
+    # Paginação
+    paginator = Paginator(funcionarios, 10)  # 10 funcionários por página
     page = request.GET.get('page')
     funcionarios_paginados = paginator.get_page(page)
-    ordenar_por = request.GET.get("ordenar_por", "id_funcionario")
 
-    if ordenar_por == "nome":
-        funcionarios = Funcionario.objects.all().order_by("nome_completo")
-    elif ordenar_por == "-nome":
-        funcionarios = Funcionario.objects.all().order_by("-nome_completo")
-    else:
-        funcionarios = Funcionario.objects.all().order_by("id_funcionario")
-
-    return render(request, "funcionarios/listar.html", {"funcionarios": funcionarios_paginados, "query": query})
+    return render(
+        request,
+        "funcionarios/listar.html",
+        {
+            "funcionarios": funcionarios_paginados,
+            "query": query,
+            "ordenar_por": ordenar_por,
+        },
+    )
 
 def ficha_funcionario(request, id_funcionario):
     funcionario = get_object_or_404(Funcionario, id_funcionario=id_funcionario)
