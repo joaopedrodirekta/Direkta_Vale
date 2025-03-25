@@ -26,6 +26,10 @@
         margin-bottom: 15px;
     }
 
+    .form-control {
+        border: 2px solid black !important; /* Força a borda preta nos inputs do Bootstrap */
+    }
+
     label {
         font-weight: bold;
     }
@@ -34,8 +38,9 @@
         width: 100%;
         padding: 8px;
         border-radius: 5px;
-        border: 2px solid black;
-        blackground-color: white;
+        border: 2px solid black !important;
+        background-color: white !important;
+        box-shadow: none !important;
     }
 
     .box-secao {
@@ -140,23 +145,23 @@
         <div class="box-secao">Dados Pessoais</div>
         <div class="form-group">
             <label for="{{ form.nome_completo.id_for_label }}">Nome Completo</label>
-            {{ form.nome_completo }}
+            {{ form.nome_completo|add_class:"form-control" }}
         </div>
         <div class="form-group">
             <label for="{{ form.cpf.id_for_label }}">CPF</label>
-            {{ form.cpf }}
+            {{ form.cpf|add_class:"form-control" }}
         </div>
         <div class="form-group">
             <label for="{{ form.rg.id_for_label }}">RG</label>
-            {{ form.rg }}
+            {{ form.rg|add_class:"form-control" }}
         </div>
         <div class="form-group">
             <label for="{{ form.sexo.id_for_label }}">Sexo</label>
-            {{ form.sexo }}
+            {{ form.sexo|add_class:"form-control" }}
         </div>
         <div class="form-group">
             <label for="{{ form.data_nascimento.id_for_label }}">Data de Nascimento</label>
-            {{ form.data_nascimento }}
+            {{ form.data_nascimento|add_class:"form-control" }}
         </div>
         <div class="form-group">
             <label for="idade">Idade</label>
@@ -164,61 +169,61 @@
         </div>
         <div class="form-group">
             <label for="{{ form.cnh.id_for_label }}">CNH</label>
-            {{ form.cnh }}
+            {{ form.cnh|add_class:"form-control" }}
         </div>
         <div class="form-group">
             <label for="{{ form.validade_cnh.id_for_label }}">Validade da CNH</label>
-            {{ form.validade_cnh }}
+            {{ form.validade_cnh|add_class:"form-control" }}
         </div>
         <div class="form-group">
             <label for="{{ form.contato_pessoal.id_for_label }}">Contato Pessoal</label>
-            {{ form.contato_pessoal }}
+            {{ form.contato_pessoal|add_class:"form-control" }}
         </div>
         <div class="form-group">
             <label for="{{ form.contato_emergencia.id_for_label }}">Contato de Emergência</label>
-            {{ form.contato_emergencia }}
+            {{ form.contato_emergencia|add_class:"form-control" }}
         </div>
         <div class="form-group">
             <label for="{{ form.email.id_for_label }}">Email</label>
-            {{ form.email }}
+            {{ form.email|add_class:"form-control" }}
         </div>
 
         <div class="box-secao">Dados Profissionais</div>
         <div class="form-group">
             <label for="{{ form.id_funcionario.id_for_label }}">ID do Funcionário</label>
-            {{ form.id_funcionario }}
+            {{ form.id_funcionario|add_class:"form-control" }}
         </div>
         <div class="form-group">
             <label for="{{ form.funcao.id_for_label }}">Função</label>
-            {{ form.funcao }}
+            {{ form.funcao|add_class:"form-control" }}
         </div>
         <div class="form-group">
             <label for="{{ form.departamento.id_for_label }}">Departamento</label>
-            {{ form.departamento }}
+            {{ form.departamento|add_class:"form-control" }}
         </div>
         <div class="form-group">
             <label for="{{ form.status.id_for_label }}">Status</label>
-            {{ form.status }}
+            {{ form.status|add_class:"form-control" }}
         </div>
         <div class="form-group">
             <label for="{{ form.data_admissao.id_for_label }}">Data de Admissão</label>
-            {{ form.data_admissao }}
+            {{ form.data_admissao|add_class:"form-control" }}
         </div>
         <div class="form-group">
             <label for="{{ form.data_mobilizacao.id_for_label }}">Data de Mobilização</label>
-            {{ form.data_mobilizacao }}
+            {{ form.data_mobilizacao|add_class:"form-control" }}
         </div>
         <div class="form-group">
             <label for="{{ form.data_desligamento.id_for_label }}">Data de Desligamento</label>
-            {{ form.data_desligamento }}
+            {{ form.data_desligamento|add_class:"form-control" }}
         </div>
         <div class="form-group">
             <label for="{{ form.data_desmobilizacao.id_for_label }}">Data de Desmobilização</label>
-            {{ form.data_desmobilizacao }}
+            {{ form.data_desmobilizacao|add_class:"form-control" }}
         </div>
         <div class="form-group">
             <label for="{{ form.cracha_vale.id_for_label }}">Crachá Vale</label>
-            {{ form.cracha_vale }}
+            {{ form.cracha_vale|add_class:"form-control" }}
         </div>
 
         <button type="submit" class="btn btn-verde mt-3">Cadastrar Funcionário</button>

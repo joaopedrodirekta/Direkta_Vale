@@ -36,19 +36,27 @@
     }
 
     .table {
-        border-radius: 8px;
+        border-collapse: separate; /* Separa as bordas das células para um melhor design */
+        border-spacing: 0; /* Remove espaçamento extra entre células */
+        border-radius: 8px; /* Mantém o arredondamento da tabela */
         overflow: hidden;
         border: 2px solid black; /* Borda ao redor da tabela */
     }
 
     .table th, .table td {
-        border: 1px solid black !important; /* Bordas pretas para cada célula */
+        border: 1px solid black !important; /* Bordas pretas uniformes */
         text-align: center;
+        padding: 10px;
     }
 
-    .table thead {
+    .table thead th {
         background-color: #03396e;
         color: white;
+        border-bottom: 2px solid black;
+        padding: 12px;
+    }
+
+    .table tbody tr:last-child td {
         border-bottom: 2px solid black;
     }
 
