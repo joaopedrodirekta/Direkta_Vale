@@ -52,7 +52,11 @@
                     <td>{{ treinamento.data_fim|date:'d/m/Y'|default:"-" }}</td>
                     <td>{{ treinamento.validade_certificado|date:'d/m/Y'|default:"-" }}</td>
                     <td>{{ treinamento.validade_passaporte|date:'d/m/Y'|default:"-" }}</td>
-                    <td><span class="badge {{ treinamento.status_class }}">{{ treinamento.status_label }}</span></td>
+                    <td>
+                        <span class="badge {% if treinamento.status_class %}{{ treinamento.status_class }}{% else %}bg-secondary text-white{% endif %}">
+                            {% if treinamento.status_label %}{{ treinamento.status_label }}{% else %}Sem Informação{% endif %}
+                        </span>
+                    </td>                    
                 </tr>
                 {% endfor %}
             </tbody>

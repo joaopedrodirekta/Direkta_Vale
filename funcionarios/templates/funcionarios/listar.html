@@ -38,11 +38,18 @@
     .table {
         border-radius: 8px;
         overflow: hidden;
+        border: 2px solid black; /* Borda ao redor da tabela */
+    }
+
+    .table th, .table td {
+        border: 1px solid black !important; /* Bordas pretas para cada célula */
+        text-align: center;
     }
 
     .table thead {
         background-color: #03396e;
         color: white;
+        border-bottom: 2px solid black;
     }
 
     .table tbody tr:hover {
@@ -71,6 +78,7 @@
         font-size: 14px;
         padding: 6px 10px;
         border-radius: 5px;
+        border: 1px solid black !important;
     }
 
     .pagination {
@@ -100,7 +108,12 @@
         <thead>
             <tr>
                 <th>ID</th>
-                <th>Nome</th>
+                <th>
+                    <a href="?ordenar_por={% if request.GET.ordenar_por == 'nome' %}-nome{% else %}nome{% endif %}" 
+                       class="text-white text-decoration-none">
+                        Nome <i class="fas fa-sort"></i>
+                    </a>
+                </th>                               
                 <th>Departamento</th>
                 <th>Função</th>
                 <th>Status</th>

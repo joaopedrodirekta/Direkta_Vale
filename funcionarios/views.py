@@ -31,6 +31,14 @@ def listar_funcionarios(request):
     paginator = Paginator(funcionarios, 10)  # Paginação com 10 funcionários por página
     page = request.GET.get('page')
     funcionarios_paginados = paginator.get_page(page)
+    ordenar_por = request.GET.get("ordenar_por", "id_funcionario")
+
+    if ordenar_por == "nome":
+        funcionarios = Funcionario.objects.all().order_by("nome_completo")
+    elif ordenar_por == "-nome":
+        funcionarios = Funcionario.objects.all().order_by("-nome_completo")
+    else:
+        funcionarios = Funcionario.objects.all().order_by("id_funcionario")
 
     return render(request, "funcionarios/listar.html", {"funcionarios": funcionarios_paginados, "query": query})
 

@@ -3,8 +3,30 @@
 {% block title %}Página Inicial{% endblock %}
 
 {% block content %}
+<style>
+    .welcome-box {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 80vh; /* Ajuste a altura para centralizar */
+        text-align: center;
+    }
+
+    .welcome-box h2 {
+        font-size: 2rem;
+        font-weight: bold;
+    }
+
+    .welcome-box p {
+        font-size: 1.2rem;
+        color: #555;
+    }
+</style>
+
 <div class="welcome-box">
     <h2>Bem-vindo ao Sistema de Gerenciamento</h2>
     <p>Aqui você poderá gerenciar funcionários, treinamentos e inventário.</p>
 </div>
+
 {% endblock %}

@@ -241,6 +241,7 @@ def excluir_treinamento(request, treinamento_id):
 
 def listar_treinamentos(request):
     treinamentos = Treinamento.objects.select_related('funcionario').all()
+    today = timezone.now().date()
 
     # Filtros
     nome_funcionario = request.GET.get('nome_funcionario', '')
@@ -262,6 +263,26 @@ def listar_treinamentos(request):
         treinamentos = treinamentos.order_by('funcionario__nome_completo')
     elif ordenar_por == 'treinamento':
         treinamentos = treinamentos.order_by('nome_treinamento')
+
+    # Adiciona os status aos treinamentos
+    for treinamento in treinamentos:
+        if treinamento.validade_passaporte:
+            dias_restantes = (treinamento.validade_passaporte - today).days
+            if dias_restantes < 0:
+                treinamento.status_label = "Vencido"
+                treinamento.status_class = "bg-danger text-white"
+            elif dias_restantes <= 14:
+                treinamento.status_label = "Urgente"
+                treinamento.status_class = "bg-warning text-dark"
+            elif dias_restantes <= 29:
+                treinamento.status_label = "Atenção"
+                treinamento.status_class = "bg-primary text-white"
+            else:
+                treinamento.status_label = "Válido"
+                treinamento.status_class = "bg-success text-white"
+        else:
+            treinamento.status_label = "Sem Validade"
+            treinamento.status_class = "bg-secondary text-white"
 
     return render(request, 'treinamentos/listar_treinamentos.html', {
         'treinamentos': treinamentos,
