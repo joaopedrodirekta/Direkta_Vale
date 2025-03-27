@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block title %}Lista de Inventário{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center">Lista de Inventário</h2>
+
+    <div class="row mt-3">
+        <div class="col-md-4">
+            <input type="text" id="filtro-nome" class="form-control" placeholder="Filtrar por Nome">
+        </div>
+        <div class="col-md-4">
+            <select id="filtro-categoria" class="form-control">
+                <option value="">Todas as Categorias</option>
+                <option value="EPI">EPI</option>
+                <option value="Ferramenta">Ferramenta</option>
+                <option value="Material">Material</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <input type="text" id="filtro-localizacao" class="form-control" placeholder="Filtrar por Localização">
+        </div>
+    </div>
+
+    <table class="table table-bordered mt-3">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Categoria</th>
+                <th>Quantidade</th>
+                <th>Localização</th>
+            </tr>
+        </thead>
+        <tbody id="tabela-inventario">
+            {% for item in itens %}
+            <tr>
+                <td>{{ item.id }}</td>
+                <td>{{ item.nome }}</td>
+                <td>{{ item.categoria }}</td>
+                <td>{{ item.quantidade }}</td>
+                <td>{{ item.localizacao }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-center">Nenhum item encontrado.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    document.getElementById('filtro-nome').addEventListener('input', function () {
+        let filtro = this.value.toLowerCase();
+        document.querySelectorAll('#tabela-inventario tr').forEach(row => {
+            let nome = row.children[1].textContent.toLowerCase();
+            row.style.display = nome.includes(filtro) ? '' : 'none';
+        });
+    });
+
+    document.getElementById('filtro-categoria').addEventListener('change', function () {
+        let filtro = this.value.toLowerCase();
+        document.querySelectorAll('#tabela-inventario tr').forEach(row => {
+            let categoria = row.children[2].textContent.toLowerCase();
+            row.style.display = filtro === '' || categoria.includes(filtro) ? '' : 'none';
+        });
+    });
+
+    document.getElementById('filtro-localizacao').addEventListener('input', function () {
+        let filtro = this.value.toLowerCase();
+        document.querySelectorAll('#tabela-inventario tr').forEach(row => {
+            let localizacao = row.children[4].textContent.toLowerCase();
+            row.style.display = localizacao.includes(filtro) ? '' : 'none';
+        });
+    });
+</script>
+{% endblock %}

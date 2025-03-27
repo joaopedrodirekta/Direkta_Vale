@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Inventário{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center">Bem-vindo ao Inventário</h2>
+    <p class="text-center">Gerencie os itens do almoxarifado.</p>
+    
+    <div class="d-flex justify-content-center mt-4">
+        <a href="{% url 'cadastrar_item' %}" class="btn btn-primary mx-2">Cadastrar Item</a>
+        <a href="{% url 'listar_inventario' %}" class="btn btn-secondary mx-2">Ver Inventário</a>
+        <a href="{% url 'imprimir_lista' %}" class="btn btn-success mx-2">Gerar Relatórios</a>
+    </div>
+</div>
+{% endblock %}

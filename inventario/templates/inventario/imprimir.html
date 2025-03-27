@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}Gerar Relatórios{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center">Gerar Relatórios do Inventário</h2>
+
+    <div class="mt-3">
+        <a href="{% url 'exportar_pdf' %}" class="btn btn-danger">
+            <i class="fas fa-file-pdf"></i> Exportar para PDF
+        </a>
+        <a href="{% url 'exportar_excel' %}" class="btn btn-success">
+            <i class="fas fa-file-excel"></i> Exportar para Excel
+        </a>
+    </div>
+
+    <table class="table table-bordered mt-3">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Categoria</th>
+                <th>Quantidade</th>
+                <th>Localização</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in itens %}
+            <tr>
+                <td>{{ item.id }}</td>
+                <td>{{ item.nome }}</td>
+                <td>{{ item.categoria }}</td>
+                <td>{{ item.quantidade }}</td>
+                <td>{{ item.localizacao }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-center">Nenhum item encontrado.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
