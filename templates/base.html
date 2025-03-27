@@ -75,8 +75,11 @@
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                         <i class="fas fa-warehouse"></i> Almoxarifado
                     </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="{% url 'inventario_home' %}"><i class="fas fa-boxes"></i> Inventário</a></li>
+                    <ul class="dropdown-menu" aria-labelledby="almoxarifadoDropdown">
+                        <li><a class="dropdown-item" href="{% url 'inventario_home' %}">🏠 Início</a></li>
+                        <li><a class="dropdown-item" href="{% url 'cadastrar_item' %}">📦 Cadastrar Item</a></li>
+                        <li><a class="dropdown-item" href="{% url 'listar_inventario' %}">📋 Ver Inventário</a></li>
+                        <li><a class="dropdown-item" href="{% url 'exportar_pdf_inventario' %}">🖨️ Gerar Relatórios</a></li>
                     </ul>
                 </li>
             </ul>
