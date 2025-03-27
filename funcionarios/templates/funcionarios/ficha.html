@@ -210,6 +210,32 @@
             <th>Desligamento</th>
             <td colspan="3">{{ funcionario.data_desligamento|default:"-"|date:"d/m/Y" }}</td>
         </tr>
+
+        <div class="mt-4">
+            <div class="box-secao">Treinamentos</div>
+            <table class="table table-bordered text-center align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Nome do Treinamento</th>
+                        <th>Validade - Vale</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if treinamentos %}
+                        {% for t in treinamentos %}
+                        <tr>
+                            <td>{{ t.nome_treinamento }}</td>
+                            <td>{{ t.validade_passaporte|date:"d/m/Y" }}</td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="2">Nenhum treinamento cadastrado.</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>        
     </table>
 
     <!-- Botões de Voltar e Imprimir -->

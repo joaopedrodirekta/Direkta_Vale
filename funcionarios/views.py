@@ -4,6 +4,7 @@ from django.core.paginator import Paginator
 from django.db import IntegrityError
 from .forms import FuncionarioForm
 from .models import Funcionario
+from treinamentos.models import Treinamento
 
 def cadastrar_funcionario(request):
     if request.method == 'POST':
@@ -54,9 +55,16 @@ def listar_funcionarios(request):
         },
     )
 
-def ficha_funcionario(request, id_funcionario):
+def ficha_funcionario(request, id_funcionario): 
     funcionario = get_object_or_404(Funcionario, id_funcionario=id_funcionario)
-    return render(request, "funcionarios/ficha.html", {"funcionario": funcionario})
+    
+    # Buscar todos os treinamentos desse funcionário
+    treinamentos = Treinamento.objects.filter(funcionario=funcionario).order_by('validade_passaporte')
+
+    return render(request, "funcionarios/ficha.html", {
+        "funcionario": funcionario,
+        "treinamentos": treinamentos,
+    })
 
 def editar_funcionario(request, id_funcionario):
     funcionario = get_object_or_404(Funcionario, id_funcionario=id_funcionario)
