@@ -31,9 +31,9 @@ class Funcionario(models.Model):
     data_nascimento = models.DateField()
     cnh = models.CharField(max_length=20, blank=True, null=True)
     validade_cnh = models.DateField(blank=True, null=True)
-    contato_pessoal = models.CharField(max_length=20)
-    contato_emergencia = models.CharField(max_length=20)
-    email = models.EmailField(unique=True, db_index=True)
+    contato_pessoal = models.CharField(max_length=20, blank=True, null=True)
+    contato_emergencia = models.CharField(max_length=20, blank=True, null=True)
+    email = models.EmailField(unique=True, db_index=True, blank=True, null=True)
 
     # Dados Profissionais
     funcao = models.CharField(max_length=100, db_index=True)

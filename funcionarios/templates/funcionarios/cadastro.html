@@ -1,8 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-
 {% block title %}Cadastro de Funcionário{% endblock %}
-
 {% block content %}
 
 <style>
@@ -27,7 +25,7 @@
     }
 
     .form-control {
-        border: 2px solid black !important; /* Força a borda preta nos inputs do Bootstrap */
+        border: 2px solid black !important;
     }
 
     label {
@@ -242,10 +240,9 @@
         }
     });
 
-    // Máscara automática para CPF
     document.getElementById('{{ form.cpf.auto_id }}').addEventListener('input', function (e) {
-        let value = e.target.value.replace(/\D/g, ''); // Remove tudo que não for número
-        if (value.length > 11) value = value.slice(0, 11); // Limita a 11 dígitos
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length > 11) value = value.slice(0, 11);
 
         if (value.length > 9) {
             e.target.value = value.replace(/^(\d{3})(\d{3})(\d{3})(\d{1,2})$/, "$1.$2.$3-$4");
@@ -258,7 +255,6 @@
         }
     });
 
-    // Atualiza a idade ao inserir a data de nascimento
     document.getElementById('{{ form.data_nascimento.auto_id }}').addEventListener('change', function () {
         let nascimento = new Date(this.value);
         let hoje = new Date();
