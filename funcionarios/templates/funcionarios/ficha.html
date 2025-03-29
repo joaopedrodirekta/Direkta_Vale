@@ -211,32 +211,35 @@
             <td colspan="3">{{ funcionario.data_desligamento|default:"-"|date:"d/m/Y" }}</td>
         </tr>
 
-        <div class="mt-4">
-            <div class="box-secao">Treinamentos</div>
-            <table class="table table-bordered text-center align-middle">
-                <thead class="table-dark">
+        <div class="titulo-secao">Treinamentos</div>
+        <table class="table-ficha text-center">
+            <thead style="background-color: #f8f9fa;">
+                <tr>
+                    <th>Nome do Treinamento</th>
+                    <th>Validade - Vale</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if treinamentos %}
+                    {% for t in treinamentos %}
                     <tr>
-                        <th>Nome do Treinamento</th>
-                        <th>Validade - Vale</th>
+                        <td>{{ t.nome_treinamento }}</td>
+                        <td>
+                            {% if t.validade_passaporte %}
+                                {{ t.validade_passaporte|date:"d/m/Y" }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
                     </tr>
-                </thead>
-                <tbody>
-                    {% if treinamentos %}
-                        {% for t in treinamentos %}
-                        <tr>
-                            <td>{{ t.nome_treinamento }}</td>
-                            <td>{{ t.validade_passaporte|date:"d/m/Y" }}</td>
-                        </tr>
-                        {% endfor %}
-                    {% else %}
-                        <tr>
-                            <td colspan="2">Nenhum treinamento cadastrado.</td>
-                        </tr>
-                    {% endif %}
-                </tbody>
-            </table>
-        </div>        
-    </table>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="2">Nenhum treinamento cadastrado.</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>        
 
     <!-- Botões de Voltar e Imprimir -->
     <div class="botoes-ficha">
