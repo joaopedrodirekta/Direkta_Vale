@@ -58,14 +58,14 @@
             <tbody>
                 {% for t in treinamentos %}
                     <tr data-id="{{ t.id }}">
-                        <td><span class="ellipsis" title="{{ t.nome_treinamento }}">{{ t.nome_treinamento }}</span></td>
-                        <td><span class="ellipsis" title="{{ t.norma }}">{{ t.norma }}</span></td>
+                        <td class="nome"><span class="ellipsis" title="{{ t.nome_treinamento }}">{{ t.nome_treinamento }}</span></td>
+                        <td class="norma"><span class="ellipsis" title="{{ t.norma }}">{{ t.norma }}</span></td>
                         <td class="inicio">{{ t.data_inicio|date:"d/m/Y"|default:"-" }}</td>
                         <td class="fim">{{ t.data_fim|date:"d/m/Y"|default:"-" }}</td>
                         <td class="carga">{{ t.carga_horaria|default:"-" }}</td>
                         <td class="certificado">{{ t.validade_certificado|date:"d/m/Y"|default:"-" }}</td>
                         <td class="vale">{{ t.validade_passaporte|date:"d/m/Y"|default:"-" }}</td>
-                        <td class="text-center">
+                        <td class="text-center acao">
                             <button class="btn btn-sm btn-primary btn-editar">Editar</button>
                         </td>
                     </tr>
@@ -84,22 +84,23 @@
     </div>
 </div>
 
-<!-- Scripts para Edição Inline -->
 <script>
-    document.querySelectorAll(".btn-editar").forEach(function(botao) {
+    document.querySelectorAll(".btn-editar").forEach(function (botao) {
         botao.addEventListener("click", function () {
             const row = botao.closest("tr");
 
             if (botao.textContent === "Editar") {
-                row.querySelectorAll("td").forEach(function (td) {
+                row.querySelectorAll("td").forEach(function (td, index) {
                     const className = td.className;
-                    if (["nome", "norma"].includes(className)) return;
+
+                    // Ignorar as colunas Nome, Norma e Ações
+                    if (["nome", "norma", "acao"].includes(className)) return;
 
                     const valorAtual = td.textContent.trim();
                     if (className === "carga") {
                         td.innerHTML = `<input type="text" class="form-control" value="${valorAtual}">`;
                     } else {
-                        td.innerHTML = `<input type="date" class="form-control" value="${valorAtual || ''}">`;
+                        td.innerHTML = `<input type="date" class="form-control" value="${formatarParaInput(valorAtual)}">`;
                     }
                 });
 
@@ -107,7 +108,6 @@
                 botao.classList.remove("btn-primary");
                 botao.classList.add("btn-success");
 
-                // Adiciona botão cancelar
                 const td = botao.closest("td");
                 const btnCancelar = document.createElement("button");
                 btnCancelar.textContent = "Cancelar";
@@ -115,11 +115,10 @@
                 td.appendChild(btnCancelar);
 
                 btnCancelar.addEventListener("click", function () {
-                    location.reload(); // Simples e eficaz por enquanto
+                    location.reload();
                 });
 
             } else {
-                // Aqui você pode coletar os dados e enviar via fetch/AJAX ou um form oculto
                 const idTreinamento = row.getAttribute("data-id");
                 const inputs = row.querySelectorAll("input");
 
@@ -132,14 +131,18 @@
                     validade_passaporte: inputs[4].value,
                 };
 
-                console.log("Salvar:", payload); // por enquanto só mostramos no console
-
-                // Futuro: enviar via fetch/POST para uma view no backend
+                console.log("Salvar:", payload);
 
                 alert("Dados prontos para salvar (ver console)");
             }
         });
     });
+
+    function formatarParaInput(dataBR) {
+        if (!dataBR || dataBR === "-") return "";
+        const [dia, mes, ano] = dataBR.split("/");
+        return `${ano}-${mes}-${dia}`;
+    }
 </script>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
