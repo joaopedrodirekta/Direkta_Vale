@@ -93,8 +93,9 @@
                 row.querySelectorAll("td").forEach(function (td, index) {
                     const className = td.className;
 
-                    // Ignorar as colunas Nome, Norma e Ações
-                    if (["nome", "norma", "acao"].includes(className)) return;
+                    if (className.includes("nome") || className.includes("norma") || className.includes("acao")) {
+                        return;
+                    }
 
                     const valorAtual = td.textContent.trim();
                     if (className === "carga") {
