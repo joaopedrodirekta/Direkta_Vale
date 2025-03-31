@@ -117,24 +117,55 @@
     }
 
     @media print {
+        body {
+            zoom: 85%; /* Reduz o tamanho geral da página impressa */
+        }
+    
         body * {
             visibility: hidden;
         }
+    
         .container-ficha, .container-ficha * {
             visibility: visible;
         }
+    
         .container-ficha {
             position: absolute;
             left: 50%;
             top: 0;
             transform: translateX(-50%);
-            width: 90%;
+            width: 100%;
             max-width: 1000px;
+            box-shadow: none !important;
+            border: none !important;
         }
-        .botoes-ficha {
-            display: none;
+    
+        .botoes-ficha,
+        .navbar,
+        footer {
+            display: none !important;
         }
-    }
+    
+        .table-ficha th, .table-ficha td {
+            font-size: 11px;
+            padding: 4px 6px;
+        }
+    
+        .titulo-ficha {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+    
+        .foto-funcionario img {
+            width: 100px;
+            height: 100px;
+        }
+    
+        .titulo-secao {
+            font-size: 13px;
+            padding: 6px;
+        }
+    }    
     
 </style>
 
