@@ -6,26 +6,32 @@
     <h2 class="text-center mb-4">Treinamentos de {{ funcionario.nome_completo }}</h2>
 
     {% if treinamentos %}
-        <table class="table table-bordered table-striped">
+        <table class="table table-bordered table-striped" id="tabela-treinamentos">
             <thead class="table-dark text-center">
                 <tr>
                     <th>Nome do Treinamento</th>
+                    <th>Norma</th>
                     <th>Data de Realização</th>
                     <th>Data de Término</th>
                     <th>Carga Horária</th>
                     <th>Validade Certificado</th>
                     <th>Validade Vale</th>
+                    <th>Ações</th>
                 </tr>
             </thead>
             <tbody>
                 {% for t in treinamentos %}
-                    <tr>
-                        <td>{{ t.nome_treinamento }}</td>
-                        <td>{{ t.data_realizacao|date:"d/m/Y"|default:"-" }}</td>
-                        <td>{{ t.data_termino|date:"d/m/Y"|default:"-" }}</td>
-                        <td>{{ t.carga_horaria|default:"-" }}</td>
-                        <td>{{ t.validade_certificado|date:"d/m/Y"|default:"-" }}</td>
-                        <td>{{ t.validade_passaporte|date:"d/m/Y"|default:"-" }}</td>
+                    <tr data-id="{{ t.id }}">
+                        <td class="nome">{{ t.nome_treinamento }}</td>
+                        <td class="norma">{{ t.norma }}</td>
+                        <td class="inicio">{{ t.data_inicio|date:"Y-m-d" }}</td>
+                        <td class="fim">{{ t.data_fim|date:"Y-m-d" }}</td>
+                        <td class="carga">{{ t.carga_horaria }}</td>
+                        <td class="certificado">{{ t.validade_certificado|date:"Y-m-d" }}</td>
+                        <td class="vale">{{ t.validade_passaporte|date:"Y-m-d" }}</td>
+                        <td class="text-center">
+                            <button class="btn btn-sm btn-primary btn-editar">Editar</button>
+                        </td>
                     </tr>
                 {% endfor %}
             </tbody>
@@ -41,6 +47,63 @@
     </div>
 </div>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<!-- Scripts para Edição Inline -->
+<script>
+    document.querySelectorAll(".btn-editar").forEach(function(botao) {
+        botao.addEventListener("click", function () {
+            const row = botao.closest("tr");
 
+            if (botao.textContent === "Editar") {
+                row.querySelectorAll("td").forEach(function (td) {
+                    const className = td.className;
+                    if (["nome", "norma"].includes(className)) return;
+
+                    const valorAtual = td.textContent.trim();
+                    if (className === "carga") {
+                        td.innerHTML = `<input type="text" class="form-control" value="${valorAtual}">`;
+                    } else {
+                        td.innerHTML = `<input type="date" class="form-control" value="${valorAtual || ''}">`;
+                    }
+                });
+
+                botao.textContent = "Salvar";
+                botao.classList.remove("btn-primary");
+                botao.classList.add("btn-success");
+
+                // Adiciona botão cancelar
+                const td = botao.closest("td");
+                const btnCancelar = document.createElement("button");
+                btnCancelar.textContent = "Cancelar";
+                btnCancelar.className = "btn btn-sm btn-danger ms-1 btn-cancelar";
+                td.appendChild(btnCancelar);
+
+                btnCancelar.addEventListener("click", function () {
+                    location.reload(); // Simples e eficaz por enquanto
+                });
+
+            } else {
+                // Aqui você pode coletar os dados e enviar via fetch/AJAX ou um form oculto
+                const idTreinamento = row.getAttribute("data-id");
+                const inputs = row.querySelectorAll("input");
+
+                const payload = {
+                    id: idTreinamento,
+                    data_inicio: inputs[0].value,
+                    data_fim: inputs[1].value,
+                    carga_horaria: inputs[2].value,
+                    validade_certificado: inputs[3].value,
+                    validade_passaporte: inputs[4].value,
+                };
+
+                console.log("Salvar:", payload); // por enquanto só mostramos no console
+
+                // Futuro: enviar via fetch/POST para uma view no backend
+
+                alert("Dados prontos para salvar (ver console)");
+            }
+        });
+    });
+</script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 {% endblock %}
