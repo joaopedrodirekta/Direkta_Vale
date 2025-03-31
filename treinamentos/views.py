@@ -23,7 +23,7 @@ def cadastrar_treinamento(request):
         form = TreinamentoForm(request.POST)
         if form.is_valid():
             treinamento = form.save(commit=False)
-            funcionario_id = request.POST.get("funcionario")  # Captura corretamente o ID do funcionário
+            funcionario_id = request.POST.get("funcionario")
 
             try:
                 treinamento.funcionario = Funcionario.objects.get(id_funcionario=funcionario_id)
@@ -36,15 +36,14 @@ def cadastrar_treinamento(request):
                     "normas": NORMAS
                 })
 
-            # Define automaticamente a norma antes de salvar
             treinamento.norma = NORMAS.get(treinamento.nome_treinamento, "")
             treinamento.save()
             
             messages.success(request, "Treinamento cadastrado com sucesso!")
-            form = TreinamentoForm()  # Reinicia o formulário para um novo cadastro
+            form = TreinamentoForm()
         else:
             messages.error(request, "Erro ao cadastrar treinamento. Verifique os campos obrigatórios.")
-            print(form.errors)  # Para depuração no terminal
+            print(form.errors)
 
     else:
         form = TreinamentoForm()
@@ -116,7 +115,6 @@ def exportar_excel(request):
 
     dados = []
     for treinamento in treinamentos:
-        # Recriando a lógica de status_label
         if treinamento.validade_passaporte:
             dias_restantes = (treinamento.validade_passaporte - today).days
             if dias_restantes < 0:
@@ -174,7 +172,6 @@ def exportar_pdf(request):
     y -= 20  
 
     for treinamento in treinamentos:
-        # Recriando a lógica de status_label
         if treinamento.validade_passaporte:
             dias_restantes = (treinamento.validade_passaporte - today).days
             if dias_restantes < 0:
@@ -210,7 +207,7 @@ from .models import Treinamento
 
 def atualizar_treinamento(request, treinamento_id):
     treinamento = get_object_or_404(Treinamento, id=treinamento_id)
-    funcionario = treinamento.funcionario  # Pegando o funcionário relacionado
+    funcionario = treinamento.funcionario
 
     if request.method == "POST":
         treinamento.data_inicio = request.POST.get("data_inicio") or None
@@ -236,14 +233,12 @@ def excluir_treinamento(request, treinamento_id):
         messages.success(request, "Treinamento excluído com sucesso!")
         return redirect('dashboard_treinamentos')
     
-    # Por segurança, se acessarem por GET, redireciona também
     return redirect('dashboard_treinamentos')
 
 def listar_treinamentos(request):
     treinamentos = Treinamento.objects.select_related('funcionario').all()
     today = timezone.now().date()
 
-    # Filtros
     nome_funcionario = request.GET.get('nome_funcionario', '')
     nome_treinamento = request.GET.get('nome_treinamento', '')
     status = request.GET.get('status', '')
@@ -257,14 +252,12 @@ def listar_treinamentos(request):
     if status:
         treinamentos = treinamentos.filter(status=status)
 
-    # Ordenação A-Z
     ordenar_por = request.GET.get('ordenar_por')
     if ordenar_por == 'funcionario':
         treinamentos = treinamentos.order_by('funcionario__nome_completo')
     elif ordenar_por == 'treinamento':
         treinamentos = treinamentos.order_by('nome_treinamento')
 
-    # Adiciona os status aos treinamentos
     for treinamento in treinamentos:
         if treinamento.validade_passaporte:
             dias_restantes = (treinamento.validade_passaporte - today).days

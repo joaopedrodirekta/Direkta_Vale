@@ -11,6 +11,6 @@ class TreinamentoAdmin(admin.ModelAdmin):
     def get_status(self, obj):
         if obj.validade_passaporte is None:
             return "Sem Validade"
-        return obj.calcular_status()[0]  # Retorna apenas o texto do status
+        return obj.calcular_status()[0]
 
     get_status.short_description = "Status"

@@ -22,8 +22,7 @@ class Funcionario(models.Model):
 
     id_funcionario = models.CharField(max_length=20, primary_key=True, unique=True)
     foto = models.ImageField(upload_to=upload_funcionario, blank=True, null=True)
-
-    # Dados Pessoais
+    
     nome_completo = models.CharField(max_length=255)
     cpf = models.CharField(max_length=14, unique=True, validators=[validar_cpf], db_index=True)
     rg = models.CharField(max_length=20, blank=True, null=True)
@@ -35,7 +34,6 @@ class Funcionario(models.Model):
     contato_emergencia = models.CharField(max_length=20, blank=True, null=True)
     email = models.EmailField(unique=True, db_index=True, blank=True, null=True)
 
-    # Dados Profissionais
     funcao = models.CharField(max_length=100, db_index=True)
     departamento = models.CharField(max_length=100)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Contratado')
@@ -45,7 +43,6 @@ class Funcionario(models.Model):
     data_desmobilizacao = models.DateField(blank=True, null=True)
     cracha_vale = models.CharField(max_length=50, blank=True, null=True)
 
-    # Auditoria
     data_criacao = models.DateTimeField(auto_now_add=True)
     data_atualizacao = models.DateTimeField(auto_now=True)
 

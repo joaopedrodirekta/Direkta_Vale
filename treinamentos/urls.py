@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .views import exportar_excel, exportar_pdf, atualizar_treinamento, excluir_treinamento
+from .views import exportar_excel, exportar_pdf, atualizar_treinamento, excluir_treinamento, editar_treinamentos_funcionario
 
 urlpatterns = [
     path("cadastrar/", views.cadastrar_treinamento, name="cadastrar_treinamento"),
@@ -10,4 +10,5 @@ urlpatterns = [
     path("exportar-pdf/", exportar_pdf, name="exportar_pdf"),
     path('atualizar/<int:treinamento_id>/', atualizar_treinamento, name='atualizar_treinamento'),
     path('treinamentos/excluir/<int:treinamento_id>/', views.excluir_treinamento, name='excluir_treinamento'),
+    path('treinamentos/editar/<str:id_funcionario>/', editar_treinamentos_funcionario, name='editar_treinamentos_funcionario'),
 ]

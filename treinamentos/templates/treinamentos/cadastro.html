@@ -55,7 +55,7 @@
     .status-azul { background-color: #007bff; color: white; }
     .status-amarelo { background-color: #ffc107; color: black; }
     .status-vermelho { background-color: #dc3545; color: white; }
-    .status-cinza { background-color: #6c757d; color: white; } /* Novo status */
+    .status-cinza { background-color: #6c757d; color: white; }
 
     .btn-verde {
         background-color: #28a745;
@@ -177,19 +177,16 @@
 <script>
     const normas = {{ normas|safe }};
 
-    // Atualiza o ID e Função do Funcionário ao selecionar
     document.getElementById('id_funcionario').addEventListener('change', function() {
         const selectedOption = this.options[this.selectedIndex];
         document.getElementById('funcionario_id').value = selectedOption.getAttribute('data-id');
         document.getElementById('funcionario_funcao').value = selectedOption.getAttribute('data-funcao');
     });
 
-    // Atualiza a Norma com base no treinamento selecionado
     document.getElementById('nome_treinamento').addEventListener('change', function() {
         document.getElementById('norma').value = normas[this.value] || '';
     });
 
-    // Atualiza o Status com base na validade do passaporte
     document.getElementById('validade_passaporte').addEventListener('change', function() {
         const validade = new Date(this.value);
         const hoje = new Date();
@@ -226,7 +223,6 @@
 </script>
 
 <script>
-    // Esconder automaticamente a mensagem após 5 segundos (5000 ms)
     setTimeout(function() {
         let alertBox = document.querySelector('.alert-container');
         if (alertBox) {

@@ -3,7 +3,6 @@
 
 {% block content %}
 
-<!-- Adiciona os ícones do Font Awesome -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
 <style>
@@ -50,7 +49,7 @@
         position: absolute;
         font-size: 32px;
         font-weight: bold;
-        color: white; /* Ajuste conforme necessário */
+        color: white;
         top: 40%;
         left: 50%;
         transform: translate(-50%, -50%);
@@ -72,7 +71,6 @@
         height: 140px !important;
     }
 
-    /* Estilos para a tabela */
     .table-container {
         margin-top: 40px;
     }
@@ -83,31 +81,29 @@
         margin-bottom: 10px;
     }
 
-    /* Estiliza a tabela com bordas pretas */
     .table {
-        border-collapse: collapse; /* Garante que as bordas não fiquem duplas */
+        border-collapse: collapse;
         width: 100%;
     }
 
     .table th, .table td {
-        border-left: 2px solid black !important; /* Apenas bordas entre colunas */
-        border-right: 2px solid black !important; /* Apenas bordas entre colunas */
+        border-left: 2px solid black !important;
+        border-right: 2px solid black !important;
         padding: 10px;
         text-align: center;
     }
 
     .table thead {
-        border-top: 2px solid black !important; /* Adiciona linha preta no topo */
-        border-bottom: 2px solid black !important; /* Mantém linha preta abaixo do cabeçalho */
+        border-top: 2px solid black !important;
+        border-bottom: 2px solid black !important;
         background-color: #f8f9fa;
         font-weight: bold;
     }
 
     .table tbody tr:nth-child(even) {
-        background-color:rgb(190, 190, 190); /* Ajuste o tom de cinza conforme desejar */
+        background-color:rgb(190, 190, 190);
     }
 
-    /* Estilo para o campo de filtro com borda preta */
     .input-group {
         width: 320px;
     }
@@ -156,7 +152,6 @@
         background-color: #138496;
     }    
 
-        /* Estilizando o card "Total de Treinamentos" */
     .total-treinamentos-container {
         display: flex;
         justify-content: center;
@@ -165,7 +160,7 @@
 
     .total-treinamentos-card {
         background-color: #f8f9fa;
-        border: 2px solid #000000; /* Contorno azul */
+        border: 2px solid #000000;
         border-radius: 10px;
         padding: 15px 40px;
         font-size: 20px;
@@ -174,14 +169,13 @@
         text-align: center;
     }
 
-    /* Adiciona contorno nos gráficos (status) */
     .chart-box {
-        border: 2px solid #000; /* Contorno preto */
+        border: 2px solid #000;
     }
 
     .export-buttons {
         display: flex;
-        gap: 10px; /* Espaçamento entre os botões */
+        gap: 10px;
         align-items: center;
     }    
 
@@ -227,7 +221,6 @@
         </div>
     </div>
 
-    <!-- Tabela de Treinamentos -->
     <div class="table-container">
         <h3 class="dashboard-title">Treinamentos Cadastrados</h3>
 
@@ -279,7 +272,6 @@
                     </td>
                                                 
                 </tr>
-                <!-- Modal de Detalhes do Treinamento -->
                 <div class="modal fade" id="detalhesTreinamento{{ treinamento.id }}" tabindex="-1" aria-labelledby="detalhesTreinamentoLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">

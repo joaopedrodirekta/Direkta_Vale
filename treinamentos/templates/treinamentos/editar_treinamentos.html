@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}Editar Treinamentos - {{ funcionario.nome_completo }}{% endblock %}
+{% block content %}
+
+<div class="container mt-4 mb-5">
+    <h2 class="text-center mb-4">Treinamentos de {{ funcionario.nome_completo }}</h2>
+
+    {% if treinamentos %}
+        <table class="table table-bordered table-striped">
+            <thead class="table-dark text-center">
+                <tr>
+                    <th>Nome do Treinamento</th>
+                    <th>Data de Realização</th>
+                    <th>Data de Término</th>
+                    <th>Carga Horária</th>
+                    <th>Validade Certificado</th>
+                    <th>Validade Vale</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in treinamentos %}
+                    <tr>
+                        <td>{{ t.nome_treinamento }}</td>
+                        <td>{{ t.data_realizacao|date:"d/m/Y"|default:"-" }}</td>
+                        <td>{{ t.data_termino|date:"d/m/Y"|default:"-" }}</td>
+                        <td>{{ t.carga_horaria|default:"-" }}</td>
+                        <td>{{ t.validade_certificado|date:"d/m/Y"|default:"-" }}</td>
+                        <td>{{ t.validade_passaporte|date:"d/m/Y"|default:"-" }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="alert alert-warning text-center">Nenhum treinamento cadastrado para este funcionário.</div>
+    {% endif %}
+
+    <div class="d-flex justify-content-end mt-3">
+        <a href="{% url 'ficha_funcionario' funcionario.id_funcionario %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Voltar para Ficha
+        </a>
+    </div>
+</div>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+{% endblock %}

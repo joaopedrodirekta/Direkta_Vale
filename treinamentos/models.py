@@ -2,7 +2,6 @@ from django.db import models
 from datetime import date
 from funcionarios.models import Funcionario
 
-# Lista de treinamentos disponíveis
 TREINAMENTOS_CHOICES = [
     ("Disposições Gerais - PGR", "Disposições Gerais - PGR"),
     ("Equipamentos de Proteção Individual - EPI", "Equipamentos de Proteção Individual - EPI"),
@@ -51,7 +50,6 @@ TREINAMENTOS_CHOICES = [
     ("Operador de Plataformas Elevatórias", "Operador de Plataformas Elevatórias"),
 ]
 
-# Mapeamento do treinamento para a norma correspondente
 NORMAS = {
     treinamento[0]: norma for treinamento, norma in zip(TREINAMENTOS_CHOICES, [
         "NR 01", "NR 06", "NR 10", "NR 11", "NR 12", "NR 17", "NR 18", "NR 35",
@@ -66,16 +64,16 @@ NORMAS = {
 class Treinamento(models.Model):
     funcionario = models.ForeignKey(
         Funcionario, on_delete=models.CASCADE, verbose_name="Funcionário"
-    )  # Obrigatório
+    )
     nome_treinamento = models.CharField(
         max_length=255, choices=TREINAMENTOS_CHOICES, verbose_name="Nome do Treinamento"
-    )  # Obrigatório
-    norma = models.CharField(max_length=50, verbose_name="Norma")  # Obrigatório
-    carga_horaria = models.TimeField(blank=True, null=True, verbose_name="Carga Horária")  # Opcional
-    data_inicio = models.DateField(blank=True, null=True, verbose_name="Data de Início")  # Opcional
-    data_fim = models.DateField(blank=True, null=True, verbose_name="Data de Fim")  # Opcional
-    validade_certificado = models.DateField(blank=True, null=True, verbose_name="Validade do Certificado")  # Opcional
-    validade_passaporte = models.DateField(blank=True, null=True, verbose_name="Validade do Passaporte")  # Opcional
+    )
+    norma = models.CharField(max_length=50, verbose_name="Norma")
+    carga_horaria = models.TimeField(blank=True, null=True, verbose_name="Carga Horária")
+    data_inicio = models.DateField(blank=True, null=True, verbose_name="Data de Início")
+    data_fim = models.DateField(blank=True, null=True, verbose_name="Data de Fim")
+    validade_certificado = models.DateField(blank=True, null=True, verbose_name="Validade do Certificado")
+    validade_passaporte = models.DateField(blank=True, null=True, verbose_name="Validade do Passaporte")
 
     class Meta:
         verbose_name = "Treinamento"
@@ -86,7 +84,6 @@ class Treinamento(models.Model):
         """Calcula os dias restantes para o vencimento e retorna um status formatado"""
         hoje = date.today()
 
-        # Verifica se a validade do passaporte está em branco
         if not self.validade_passaporte:
             return "Sem Validade", "cinza"
 

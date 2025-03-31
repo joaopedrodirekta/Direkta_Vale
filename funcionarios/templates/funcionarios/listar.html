@@ -36,15 +36,15 @@
     }
 
     .table {
-        border-collapse: separate; /* Separa as bordas das células para um melhor design */
-        border-spacing: 0; /* Remove espaçamento extra entre células */
-        border-radius: 8px; /* Mantém o arredondamento da tabela */
+        border-collapse: separate;
+        border-spacing: 0;
+        border-radius: 8px;
         overflow: hidden;
-        border: 2px solid black; /* Borda ao redor da tabela */
+        border: 2px solid black;
     }
 
     .table th, .table td {
-        border: 1px solid black !important; /* Bordas pretas uniformes */
+        border: 1px solid black !important;
         text-align: center;
         padding: 10px;
     }
@@ -98,7 +98,6 @@
 <div class="container-lista">
     <h2 class="titulo-lista">Lista de Funcionários</h2>
 
-    <!-- Campo de Busca -->
     <form method="GET" class="form-busca">
         <div class="input-group">
             <input type="text" name="q" class="form-control" placeholder="Buscar por nome ou departamento..." value="{{ request.GET.q }}">
@@ -111,7 +110,6 @@
         </a>
     </form>
 
-    <!-- Tabela de Funcionários -->
     <table class="table table-striped mt-3">
         <thead>
             <tr>
@@ -121,11 +119,11 @@
                         class="text-white text-decoration-none">
                         Nome 
                         {% if ordenar_por == "nome" %}
-                            <i class="fas fa-sort-up"></i> <!-- Ícone de ordem crescente -->
+                            <i class="fas fa-sort-up"></i>
                         {% elif ordenar_por == "-nome" %}
-                            <i class="fas fa-sort-down"></i> <!-- Ícone de ordem decrescente -->
+                            <i class="fas fa-sort-down"></i>
                         {% else %}
-                            <i class="fas fa-sort"></i> <!-- Ícone padrão -->
+                            <i class="fas fa-sort"></i>
                         {% endif %}
                     </a>
 
@@ -164,7 +162,6 @@
         </tbody>
     </table>
 
-    <!-- Paginação -->
     {% if funcionarios.has_other_pages %}
         <nav>
             <ul class="pagination justify-content-center">

@@ -62,7 +62,6 @@
         font-weight: bold;
     }
 
-    /* Estilo dos botões no canto inferior direito */
     .botoes-ficha {
         display: flex;
         justify-content: flex-end;
@@ -164,19 +163,19 @@
         </tr>
         <tr>
             <th>CNH</th>
-            <td>{{ funcionario.cnh }}</td>
+            <td>{{ funcionario.cnh|default_if_none:"-" }}</td>
             <th>Validade da CNH</th>
             <td>{{ funcionario.validade_cnh|date:"d/m/Y"|default:"-" }}</td>
         </tr>
         <tr>
             <th>Contato Pessoal</th>
-            <td>{{ funcionario.contato_pessoal }}</td>
+            <td>{{ funcionario.contato_pessoal|default_if_none:"-" }}</td>
             <th>Contato de Emergência</th>
-            <td>{{ funcionario.contato_emergencia }}</td>
+            <td>{{ funcionario.contato_emergencia|default_if_none:"-" }}</td>
         </tr>
         <tr>
             <th>Email</th>
-            <td colspan="3">{{ funcionario.email }}</td>
+            <td colspan="3">{{ funcionario.email|default_if_none:"-" }}</td>
         </tr>
     </table>
 
@@ -202,13 +201,13 @@
         </tr>
         <tr>
             <th>Mobilização</th>
-            <td>{{ funcionario.data_mobilizacao|default:"-"|date:"d/m/Y" }}</td>
+            <td>{{ funcionario.data_mobilizacao|date:"d/m/Y"|default_if_none:"-" }}</td>
             <th>Desmobilização</th>
-            <td>{{ funcionario.data_desmobilizacao|default:"-"|date:"d/m/Y" }}</td>
+            <td>{{ funcionario.data_desmobilizacao|date:"d/m/Y"|default_if_none:"-" }}</td>
         </tr>
         <tr>
             <th>Desligamento</th>
-            <td colspan="3">{{ funcionario.data_desligamento|default:"-"|date:"d/m/Y" }}</td>
+            <td colspan="3">{{ funcionario.data_desligamento|date:"d/m/Y"|default_if_none:"-" }}</td>
         </tr>
     </table>
     
@@ -251,18 +250,19 @@
         </button>
         <button class="btn-editar" onclick="window.location.href='{% url 'editar_funcionario' funcionario.id_funcionario %}'">
             <i class="fas fa-edit"></i> Editar Dados
-        </button>        
+        </button>
+        <button class="btn-editar" onclick="window.location.href='{% url 'editar_treinamentos_funcionario' funcionario.id_funcionario %}'">
+            <i class="fas fa-edit"></i> Editar Treinamentos
+        </button>                
     </div>
 </div>
 
-<!-- Script para impressão -->
 <script>
     function imprimirFicha() {
         window.print();
     }
 </script>
 
-<!-- Importação de ícones Font Awesome -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
 {% endblock %}
