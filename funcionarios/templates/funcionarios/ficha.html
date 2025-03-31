@@ -81,21 +81,39 @@
     }
 
     .btn-voltar {
-        background-color: #6c757d;
+        background-color:rgb(0, 30, 200);
         color: white;
     }
 
     .btn-voltar:hover {
-        background-color: #5a6268;
+        background-color:rgb(0, 30, 200);
     }
 
     .btn-imprimir {
-        background-color: #28a745;
+        background-color:rgb(180, 200, 0);
         color: white;
     }
 
     .btn-imprimir:hover {
-        background-color: #218838;
+        background-color:rgb(180, 200, 0);
+    }
+
+    .btn-editar {
+        background-color:rgb(80, 85, 90);
+        color: white;
+    }
+    
+    .btn-editar:hover {
+        background-color:rgb(80, 85, 90);
+    }
+
+    .btn-edicao {
+        background-color:rgb(0, 250, 50);
+        color: white;
+    }
+    
+    .btn-edicao:hover {
+        background-color:rgb(0, 250, 50);
     }
 
     @media print {
@@ -116,15 +134,6 @@
         .botoes-ficha {
             display: none;
         }
-    }
-    
-    .btn-editar {
-        background-color: #007bff;
-        color: white;
-    }
-    
-    .btn-editar:hover {
-        background-color: #0056b3;
     }
     
 </style>
@@ -251,7 +260,7 @@
         <button class="btn-editar" onclick="window.location.href='{% url 'editar_funcionario' funcionario.id_funcionario %}'">
             <i class="fas fa-user-pen"></i> Editar Dados
         </button>
-        <button class="btn-editar" onclick="window.location.href='{% url 'editar_treinamentos_funcionario' funcionario.id_funcionario %}'">
+        <button class="btn-edicao" onclick="window.location.href='{% url 'editar_treinamentos_funcionario' funcionario.id_funcionario %}'">
             <i class="fas fa-chalkboard-teacher"></i> Editar Treinamentos
         </button>                
     </div>
