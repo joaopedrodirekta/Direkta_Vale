@@ -1,23 +1,31 @@
+# ========================
+# IMPORTS
+# ========================
+import calendar
+import pandas as pd
+
+from datetime import date, timedelta
+from collections import defaultdict
+from io import BytesIO
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.contrib import messages
-from datetime import date, timedelta
+from django.http import HttpResponse, JsonResponse, FileResponse
+from django.views.decorators.http import require_POST
+from django.utils import timezone
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
 from .forms import TreinamentoForm
 from .models import Treinamento, TREINAMENTOS_CHOICES, NORMAS
 from funcionarios.models import Funcionario
-from django.utils import timezone
-import pandas as pd
-from django.http import HttpResponse
-from django.http import FileResponse
-from io import BytesIO
-from reportlab.lib.pagesizes import letter
-from reportlab.pdfgen import canvas
-from collections import defaultdict
-import calendar
+
+# ========================
+# CADASTRO DE TREINAMENTO
+# ========================
 
 def cadastrar_treinamento(request):
-    funcionarios = Funcionario.objects.all()  
-    treinamentos = [treinamento[0] for treinamento in TREINAMENTOS_CHOICES]  
+    funcionarios = Funcionario.objects.all()
+    treinamentos = [treinamento[0] for treinamento in TREINAMENTOS_CHOICES]
 
     if request.method == "POST":
         form = TreinamentoForm(request.POST)
@@ -38,13 +46,11 @@ def cadastrar_treinamento(request):
 
             treinamento.norma = NORMAS.get(treinamento.nome_treinamento, "")
             treinamento.save()
-            
             messages.success(request, "Treinamento cadastrado com sucesso!")
             form = TreinamentoForm()
         else:
-            messages.error(request, "Erro ao cadastrar treinamento. Verifique os campos obrigatórios.")
+            messages.error(request, "Erro ao cadastrar treinamento.")
             print(form.errors)
-
     else:
         form = TreinamentoForm()
 
@@ -54,6 +60,10 @@ def cadastrar_treinamento(request):
         "treinamentos": treinamentos,
         "normas": NORMAS
     })
+
+# ========================
+# DASHBOARD
+# ========================
 
 def dashboard_treinamentos(request):
     treinamentos = Treinamento.objects.select_related('funcionario').all()
@@ -74,7 +84,10 @@ def dashboard_treinamentos(request):
             mes = t.validade_passaporte.strftime("%Y-%m")
             treinamentos_por_mes[mes] += 1
 
-    treinamentos_por_mes = {calendar.month_name[int(mes.split("-")[1])]: treinamentos_por_mes[mes] for mes in sorted(treinamentos_por_mes)}
+    treinamentos_por_mes = {
+        calendar.month_name[int(m.split("-")[1])]: treinamentos_por_mes[m]
+        for m in sorted(treinamentos_por_mes)
+    }
 
     for treinamento in treinamentos:
         if treinamento.validade_passaporte:
@@ -106,8 +119,11 @@ def dashboard_treinamentos(request):
         "today": today,
         "treinamentos_por_mes": treinamentos_por_mes,
     }
-
     return render(request, "treinamentos/dashboard.html", context)
+
+# ========================
+# EXPORTAR DADOS
+# ========================
 
 def exportar_excel(request):
     treinamentos = Treinamento.objects.select_related('funcionario').all()
@@ -115,8 +131,9 @@ def exportar_excel(request):
 
     dados = []
     for treinamento in treinamentos:
-        if treinamento.validade_passaporte:
-            dias_restantes = (treinamento.validade_passaporte - today).days
+        validade = treinamento.validade_passaporte
+        if validade:
+            dias_restantes = (validade - today).days
             if dias_restantes < 0:
                 status_label = "Vencido"
             elif dias_restantes <= 14:
@@ -133,16 +150,14 @@ def exportar_excel(request):
             "Nome": treinamento.funcionario.nome_completo,
             "Treinamento": treinamento.nome_treinamento,
             "Norma": treinamento.norma,
-            "Data de Vencimento": treinamento.validade_passaporte.strftime("%d/%m/%Y") if treinamento.validade_passaporte else "-",
+            "Data de Vencimento": validade.strftime("%d/%m/%Y") if validade else "-",
             "Status": status_label
         })
 
     df = pd.DataFrame(dados)
-
     response = HttpResponse(content_type='application/vnd.ms-excel')
     response['Content-Disposition'] = 'attachment; filename="treinamentos.xlsx"'
     df.to_excel(response, index=False)
-
     return response
 
 def exportar_pdf(request):
@@ -151,29 +166,28 @@ def exportar_pdf(request):
 
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="treinamentos.pdf"'
-
     pdf = canvas.Canvas(response, pagesize=letter)
     width, height = letter
 
     pdf.setFont("Helvetica-Bold", 16)
     pdf.drawString(200, height - 40, "Relatório de Treinamentos")
 
-    pdf.setFont("Helvetica-Bold", 10)
-    y = height - 80  
-
+    y = height - 80
     col_titles = ["ID Func.", "Nome", "Treinamento", "Norma", "Vencimento", "Status"]
-    x_positions = [40, 100, 250, 400, 500, 580]  
+    x_positions = [40, 100, 250, 400, 500, 580]
 
+    pdf.setFont("Helvetica-Bold", 10)
     for i, title in enumerate(col_titles):
         pdf.drawString(x_positions[i], y, title)
 
-    pdf.line(30, y - 5, 580, y - 5)  
+    pdf.line(30, y - 5, 580, y - 5)
     pdf.setFont("Helvetica", 9)
-    y -= 20  
+    y -= 20
 
-    for treinamento in treinamentos:
-        if treinamento.validade_passaporte:
-            dias_restantes = (treinamento.validade_passaporte - today).days
+    for t in treinamentos:
+        validade = t.validade_passaporte
+        if validade:
+            dias_restantes = (validade - today).days
             if dias_restantes < 0:
                 status_label = "Vencido"
             elif dias_restantes <= 14:
@@ -185,14 +199,14 @@ def exportar_pdf(request):
         else:
             status_label = "Sem Validade"
 
-        pdf.drawString(x_positions[0], y, treinamento.funcionario.id_funcionario)
-        pdf.drawString(x_positions[1], y, treinamento.funcionario.nome_completo[:22])  
-        pdf.drawString(x_positions[2], y, treinamento.nome_treinamento[:30])  
-        pdf.drawString(x_positions[3], y, treinamento.norma)
-        pdf.drawString(x_positions[4], y, treinamento.validade_passaporte.strftime("%d/%m/%Y") if treinamento.validade_passaporte else "-")
+        pdf.drawString(x_positions[0], y, t.funcionario.id_funcionario)
+        pdf.drawString(x_positions[1], y, t.funcionario.nome_completo[:22])
+        pdf.drawString(x_positions[2], y, t.nome_treinamento[:30])
+        pdf.drawString(x_positions[3], y, t.norma)
+        pdf.drawString(x_positions[4], y, validade.strftime("%d/%m/%Y") if validade else "-")
         pdf.drawString(x_positions[5], y, status_label)
 
-        y -= 20  
+        y -= 20
         if y < 50:
             pdf.showPage()
             pdf.setFont("Helvetica", 9)
@@ -201,9 +215,9 @@ def exportar_pdf(request):
     pdf.save()
     return response
 
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib import messages
-from .models import Treinamento
+# ========================
+# ATUALIZAR / EXCLUIR
+# ========================
 
 def atualizar_treinamento(request, treinamento_id):
     treinamento = get_object_or_404(Treinamento, id=treinamento_id)
@@ -225,15 +239,33 @@ def atualizar_treinamento(request, treinamento_id):
         'funcionario': funcionario
     })
 
+@require_POST
+def atualizar_treinamento_ajax(request):
+    try:
+        data = request.POST
+        treinamento = Treinamento.objects.get(id=data.get("id"))
+        treinamento.data_inicio = data.get("data_inicio") or None
+        treinamento.data_fim = data.get("data_fim") or None
+        treinamento.carga_horaria = data.get("carga_horaria") or None
+        treinamento.validade_certificado = data.get("validade_certificado") or None
+        treinamento.validade_passaporte = data.get("validade_passaporte") or None
+        treinamento.save()
+        return JsonResponse({"status": "ok"})
+    except Treinamento.DoesNotExist:
+        return JsonResponse({"status": "erro", "mensagem": "Treinamento não encontrado"}, status=404)
+    except Exception as e:
+        return JsonResponse({"status": "erro", "mensagem": str(e)}, status=400)
+
 def excluir_treinamento(request, treinamento_id):
     treinamento = get_object_or_404(Treinamento, id=treinamento_id)
-
     if request.method == 'POST':
         treinamento.delete()
         messages.success(request, "Treinamento excluído com sucesso!")
-        return redirect('dashboard_treinamentos')
-    
     return redirect('dashboard_treinamentos')
+
+# ========================
+# LISTAGEM E EDIÇÃO
+# ========================
 
 def listar_treinamentos(request):
     treinamentos = Treinamento.objects.select_related('funcionario').all()
@@ -245,10 +277,8 @@ def listar_treinamentos(request):
 
     if nome_funcionario:
         treinamentos = treinamentos.filter(funcionario__nome_completo__icontains=nome_funcionario)
-
     if nome_treinamento:
         treinamentos = treinamentos.filter(nome_treinamento__icontains=nome_treinamento)
-
     if status:
         treinamentos = treinamentos.filter(status=status)
 
@@ -258,24 +288,24 @@ def listar_treinamentos(request):
     elif ordenar_por == 'treinamento':
         treinamentos = treinamentos.order_by('nome_treinamento')
 
-    for treinamento in treinamentos:
-        if treinamento.validade_passaporte:
-            dias_restantes = (treinamento.validade_passaporte - today).days
-            if dias_restantes < 0:
-                treinamento.status_label = "Vencido"
-                treinamento.status_class = "bg-danger text-white"
-            elif dias_restantes <= 14:
-                treinamento.status_label = "Urgente"
-                treinamento.status_class = "bg-warning text-dark"
-            elif dias_restantes <= 29:
-                treinamento.status_label = "Atenção"
-                treinamento.status_class = "bg-primary text-white"
+    for t in treinamentos:
+        if t.validade_passaporte:
+            dias = (t.validade_passaporte - today).days
+            if dias < 0:
+                t.status_label = "Vencido"
+                t.status_class = "bg-danger text-white"
+            elif dias <= 14:
+                t.status_label = "Urgente"
+                t.status_class = "bg-warning text-dark"
+            elif dias <= 29:
+                t.status_label = "Atenção"
+                t.status_class = "bg-primary text-white"
             else:
-                treinamento.status_label = "Válido"
-                treinamento.status_class = "bg-success text-white"
+                t.status_label = "Válido"
+                t.status_class = "bg-success text-white"
         else:
-            treinamento.status_label = "Sem Validade"
-            treinamento.status_class = "bg-secondary text-white"
+            t.status_label = "Sem Validade"
+            t.status_class = "bg-secondary text-white"
 
     return render(request, 'treinamentos/listar_treinamentos.html', {
         'treinamentos': treinamentos,

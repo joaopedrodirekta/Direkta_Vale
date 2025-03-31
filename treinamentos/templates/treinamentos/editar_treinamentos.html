@@ -132,9 +132,44 @@
                     validade_passaporte: inputs[4].value,
                 };
 
-                console.log("Salvar:", payload);
-
-                alert("Dados prontos para salvar (ver console)");
+                fetch("{% url 'atualizar_treinamento_ajax' %}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                        "X-CSRFToken": getCookie("csrftoken")
+                    },
+                    body: new URLSearchParams(payload)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === "ok") {
+                        alert("Treinamento atualizado com sucesso!");
+                        location.reload();
+                    } else {
+                        alert("Erro ao atualizar: " + data.mensagem);
+                    }
+                })
+                .catch(error => {
+                    console.error("Erro na requisição:", error);
+                    alert("Erro inesperado ao salvar.");
+                });
+                
+                // Função auxiliar para pegar o CSRF token do cookie
+                function getCookie(name) {
+                    let cookieValue = null;
+                    if (document.cookie && document.cookie !== "") {
+                        const cookies = document.cookie.split(";");
+                        for (let i = 0; i < cookies.length; i++) {
+                            const cookie = cookies[i].trim();
+                            // Cookie começa com "csrftoken="
+                            if (cookie.substring(0, name.length + 1) === name + "=") {
+                                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                                break;
+                            }
+                        }
+                    }
+                    return cookieValue;
+                }                
             }
         });
     });
