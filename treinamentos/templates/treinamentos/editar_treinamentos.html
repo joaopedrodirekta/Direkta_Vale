@@ -2,6 +2,36 @@
 {% block title %}Editar Treinamentos - {{ funcionario.nome_completo }}{% endblock %}
 {% block content %}
 
+<style>
+    .table th, .table td {
+        vertical-align: middle;
+        padding: 12px 16px !important;
+        white-space: nowrap;
+    }
+
+    .table td input {
+        min-width: 130px;
+    }
+
+    .table td:nth-child(1), .table td:nth-child(2) {
+        min-width: 200px;
+        white-space: nowrap;
+    }
+
+    .table td input[type="date"] {
+        width: 150px;
+    }
+
+    .ellipsis {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 220px;
+        display: inline-block;
+    }
+
+</style>
+
 <div class="container mt-4 mb-5">
     <h2 class="text-center mb-4">Treinamentos de {{ funcionario.nome_completo }}</h2>
 
@@ -22,13 +52,13 @@
             <tbody>
                 {% for t in treinamentos %}
                     <tr data-id="{{ t.id }}">
-                        <td class="nome">{{ t.nome_treinamento }}</td>
+                        <td><span class="ellipsis" title="{{ t.nome_treinamento }}">{{ t.nome_treinamento }}</span></td>
                         <td class="norma">{{ t.norma }}</td>
-                        <td class="inicio">{{ t.data_inicio|date:"Y-m-d" }}</td>
-                        <td class="fim">{{ t.data_fim|date:"Y-m-d" }}</td>
-                        <td class="carga">{{ t.carga_horaria }}</td>
-                        <td class="certificado">{{ t.validade_certificado|date:"Y-m-d" }}</td>
-                        <td class="vale">{{ t.validade_passaporte|date:"Y-m-d" }}</td>
+                        <td class="inicio">{{ t.data_inicio|date:"d/m/Y"|default:"-" }}</td>
+                        <td class="fim">{{ t.data_fim|date:"d/m/Y"|default:"-" }}</td>
+                        <td class="carga">{{ t.carga_horaria|default:"-" }}</td>
+                        <td class="certificado">{{ t.validade_certificado|date:"d/m/Y"|default:"-" }}</td>
+                        <td class="vale">{{ t.validade_passaporte|date:"d/m/Y"|default:"-" }}</td>
                         <td class="text-center">
                             <button class="btn btn-sm btn-primary btn-editar">Editar</button>
                         </td>
