@@ -284,3 +284,12 @@ def listar_treinamentos(request):
         'status': status,
         'ordenar_por': ordenar_por,
     })
+
+def editar_treinamentos_funcionario(request, id_funcionario):
+    funcionario = get_object_or_404(Funcionario, id_funcionario=id_funcionario)
+    treinamentos = Treinamento.objects.filter(funcionario=funcionario)
+
+    return render(request, 'treinamentos/editar_treinamentos.html', {
+        'funcionario': funcionario,
+        'treinamentos': treinamentos,
+    })
