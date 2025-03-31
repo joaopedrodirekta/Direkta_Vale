@@ -118,6 +118,7 @@
     .btn-voltar:hover {
         background-color: #5a6268;
     }
+
 </style>
 
 <div class="container-cadastro">
@@ -227,10 +228,14 @@
             {{ form.cracha_vale }}
         </div>
 
-        <button type="submit" class="btn btn-verde mt-3"><i class="fas fa-save"></i> Salvar Alterações</button>
-        <a href="{% url 'ficha_funcionario' funcionario.id_funcionario %}" class="btn btn-voltar mt-3">
-            <i class="fas fa-arrow-left"></i> Cancelar
-        </a>
+        <div class='d-flex justify-content-center gap-3 mt-4'>
+            <button type="submit" class="btn btn-success px-4">
+                <i class="fas fa-save"></i> Salvar Alterações
+            </button>
+            <a href="{% url 'ficha_funcionario' funcionario.id_funcionario %}" class="btn btn-danger px-4">
+                <i class="fas fa-arrow-left"></i> Cancelar
+            </a>
+        </div>
     </form>
 </div>
 
