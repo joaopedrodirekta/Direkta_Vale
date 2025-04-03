@@ -20,6 +20,13 @@
         color: white;
     }
 
+    .tabela-limitada {
+        max-width: 180px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }    
+
 </style>
 
 <div class="container mt-4">
@@ -53,8 +60,6 @@
                     <th>Treinamento</th>
                     <th>Norma</th>
                     <th>Carga Horária</th>
-                    <th>Data Inicial</th>
-                    <th>Data Final</th>
                     <th>Validade Certificado</th>
                     <th>Validade Passaporte</th>
                     <th>Status</th>
@@ -64,12 +69,10 @@
                 {% for treinamento in treinamentos %}
                 <tr>
                     <td>{{ treinamento.funcionario.id_funcionario }}</td>
-                    <td>{{ treinamento.funcionario.nome_completo }}</td>
-                    <td>{{ treinamento.nome_treinamento }}</td>
+                    <td class="tabela-limitada">{{ t.funcionario.nome_completo }}</td>
+                    <td class="tabela-limitada">{{ t.nome_treinamento }}</td>                    
                     <td>{{ treinamento.norma }}</td>
                     <td>{{ treinamento.carga_horaria|default:"-" }}</td>
-                    <td>{{ treinamento.data_inicio|date:'d/m/Y'|default:"-" }}</td>
-                    <td>{{ treinamento.data_fim|date:'d/m/Y'|default:"-" }}</td>
                     <td>{{ treinamento.validade_certificado|date:'d/m/Y'|default:"-" }}</td>
                     <td>{{ treinamento.validade_passaporte|date:'d/m/Y'|default:"-" }}</td>
                     <td>
