@@ -233,4 +233,14 @@
     }, 5000);
 </script>
 
+<script>
+    $(document).ready(function() {
+        $('#id_funcionario, #nome_treinamento').select2({
+            placeholder: "Selecione...",
+            width: '100%',
+            allowClear: true
+        });
+    });
+</script>
+
 {% endblock %}
