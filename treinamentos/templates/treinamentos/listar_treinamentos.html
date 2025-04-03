@@ -69,8 +69,8 @@
                 {% for treinamento in treinamentos %}
                 <tr>
                     <td>{{ treinamento.funcionario.id_funcionario }}</td>
-                    <td class="tabela-limitada">{{ t.funcionario.nome_completo }}</td>
-                    <td class="tabela-limitada">{{ t.nome_treinamento }}</td>                    
+                    <td class="tabela-limitada" title="{{ treinamento.funcionario.nome_completo }}">{{ treinamento.funcionario.nome_completo }}</td>
+                    <td class="tabela-limitada" title="{{ treinamento.nome_treinamento }}">{{ treinamento.nome_treinamento }}</td>                                      
                     <td>{{ treinamento.norma }}</td>
                     <td>{{ treinamento.carga_horaria|default:"-" }}</td>
                     <td>{{ treinamento.validade_certificado|date:'d/m/Y'|default:"-" }}</td>
